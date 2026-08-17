@@ -1,0 +1,7 @@
+/* Terminal.jsx is rendered inside both DesktopShell (desktop.css) and
+   MobileShell (mobile.css) — its own focus style lives here so it's correct
+   in either context rather than duplicated in both stylesheets. */
+.term-input:focus-visible {
+  outline: 2px solid #7fd8ff;
+  outline-offset: 2px;
+}

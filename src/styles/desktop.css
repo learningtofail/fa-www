@@ -1,0 +1,195 @@
+/* GNOME-style desktop shell. Loaded only by DesktopShell.jsx.
+   Chrome (topbar/dock/window titlebars/buttons) is skinned after the Orchis
+   GTK theme: flat dark panels, a Material-blue accent, and rounded (not
+   square) corners throughout. The wallpaper gradient is independent of the
+   GTK theme itself, so it's left as-is. */
+
+.gnome-root {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(160deg, #2c3e50 0%, #3a5a7a 60%, #4a6d8c 100%);
+  font-family: system-ui, -apple-system, sans-serif;
+  --orchis-accent: #5e9ef4;
+  --orchis-accent-soft: rgba(94, 158, 244, 0.32);
+  --orchis-chrome: #2d2d2d;
+  --orchis-chrome-elevated: #363636;
+  --orchis-radius: 10px;
+}
+
+.gnome-topbar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  background: rgba(28, 28, 28, 0.85);
+  backdrop-filter: blur(8px);
+  color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.6rem;
+  font-size: 0.8rem;
+  z-index: 1000;
+  user-select: none;
+}
+
+.gnome-activities {
+  background: transparent;
+  border: none;
+  color: #eee;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.gnome-activities:hover {
+  background: var(--orchis-accent-soft);
+}
+
+.gnome-clock {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-variant-numeric: tabular-nums;
+}
+
+.gnome-tray {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.85rem;
+}
+.gnome-tray span {
+  cursor: default;
+}
+
+.gnome-desktop-surface {
+  position: absolute;
+  top: 30px;
+  left: 0;
+  right: 0;
+  bottom: 76px;
+}
+
+.desktop-icon-grid {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.desktop-icon {
+  width: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0.4rem 0.2rem;
+  cursor: default;
+}
+.desktop-icon.selected {
+  background: var(--orchis-accent-soft);
+  border-color: var(--orchis-accent);
+}
+.desktop-icon:focus-visible,
+.dock-icon-btn:focus-visible,
+.gnome-activities:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 2px;
+}
+.desktop-icon-label {
+  color: #fff;
+  font-size: 0.72rem;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+/* Floating rounded dock, in the style of dash-to-dock as commonly paired
+   with Orchis — not a full-width bar. */
+.gnome-dock {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 52px;
+  width: auto;
+  background: rgba(30, 30, 30, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0 0.85rem;
+  z-index: 1000;
+}
+
+.dock-icon-btn {
+  position: relative;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s ease;
+}
+.dock-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+.dock-icon-btn.running::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--orchis-accent);
+}
+
+/* Window chrome (Window.jsx) — cosmetic values live here so they follow the
+   GTK theme; Window.jsx keeps only structural (position/size) inline styles. */
+.win {
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: var(--orchis-radius);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.32);
+}
+.win-titlebar {
+  background: var(--orchis-chrome-elevated);
+  color: #e8e8e8;
+  border-radius: var(--orchis-radius) var(--orchis-radius) 0 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.28);
+}
+.win-btn {
+  background: transparent;
+  border: none;
+  color: #e8e8e8;
+  cursor: pointer;
+  font-size: 0.7rem;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  border-radius: 50%;
+  transition: background 0.12s ease;
+}
+.win-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
