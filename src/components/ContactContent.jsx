@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/form.css";
 
 // Matches the /contact endpoint spec'd in Phase 3 (claude/phase-3-shared-foundations.md).
 const CONTACT_ENDPOINT = "https://contact-api.jrflab.dev/contact";
@@ -26,20 +27,18 @@ export default function ContactContent() {
     }
   };
 
-  const inputStyle = {
-    width: "100%",
-    padding: "0.4rem 0.5rem",
-    border: "1px solid #ccc",
-    borderRadius: 4,
-    fontSize: "0.85rem",
-    fontFamily: "inherit",
-    marginBottom: "0.6rem",
-  };
-
   return (
-    <div style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", fontSize: "0.85rem", lineHeight: 1.6 }}>
-      <p style={{ color: "#6b6b6b", margin: "0 0 0.75rem" }}>faysal@desktop:~$ cat contact.txt</p>
-      <p style={{ fontFamily: "system-ui, sans-serif" }}>
+    <div style={{ fontFamily: "var(--font-ui)", fontSize: "0.85rem", lineHeight: "var(--line-height-body)" }}>
+      <p
+        style={{
+          fontFamily: "var(--font-terminal)",
+          color: "var(--content-text-muted)",
+          margin: "0 0 0.75rem",
+        }}
+      >
+        faysal@desktop:~$ cat contact.txt
+      </p>
+      <p>
         The direct line: <a href="mailto:contactfaysal@gmail.com">contactfaysal@gmail.com</a>
         <br />
         The professional line:{" "}
@@ -49,11 +48,9 @@ export default function ContactContent() {
       </p>
 
       {status === "sent" ? (
-        <p style={{ fontFamily: "system-ui, sans-serif", color: "#2a8a4a" }}>
-          Sent. Thanks — I'll get back to you.
-        </p>
+        <p className="gtk-status-success">Sent. Thanks — I'll get back to you.</p>
       ) : (
-        <form onSubmit={onSubmit} style={{ fontFamily: "system-ui, sans-serif", marginTop: "0.75rem" }}>
+        <form onSubmit={onSubmit} style={{ marginTop: "0.75rem" }}>
           {/* Honeypot — hidden from real visitors via CSS, bots often fill it anyway */}
           <input
             type="text"
@@ -65,36 +62,38 @@ export default function ContactContent() {
             style={{ position: "absolute", left: "-9999px", width: 1, height: 1 }}
             aria-hidden="true"
           />
-          <input type="text" name="name" placeholder="Name" value={form.name} onChange={onChange} required style={inputStyle} />
-          <input type="email" name="email" placeholder="Email" value={form.email} onChange={onChange} required style={inputStyle} />
+          <input
+            className="gtk-field"
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={form.name}
+            onChange={onChange}
+            required
+          />
+          <input
+            className="gtk-field"
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={onChange}
+            required
+          />
           <textarea
+            className="gtk-field"
             name="message"
             placeholder="Message"
             value={form.message}
             onChange={onChange}
             required
             rows={3}
-            style={{ ...inputStyle, resize: "vertical" }}
           />
-          <button
-            type="submit"
-            disabled={status === "sending"}
-            style={{
-              padding: "0.4rem 1rem",
-              background: "#2b2b2b",
-              color: "#fff",
-              border: "none",
-              borderRadius: 4,
-              cursor: status === "sending" ? "default" : "pointer",
-              opacity: status === "sending" ? 0.6 : 1,
-            }}
-          >
+          <button className="gtk-btn-primary" type="submit" disabled={status === "sending"}>
             {status === "sending" ? "Sending..." : "Send a message"}
           </button>
           {status === "error" && (
-            <p style={{ color: "#b00020", fontSize: "0.8rem", marginTop: "0.5rem" }}>
-              Send failed — try again, or email directly.
-            </p>
+            <p className="gtk-status-error">Send failed — try again, or email directly.</p>
           )}
         </form>
       )}

@@ -185,26 +185,39 @@ export default function Terminal({ onOpenTool }) {
       onClick={() => inputRef.current?.focus()}
       style={{
         height: "100%",
-        background: "#111",
-        color: "#ddd",
-        fontFamily: "ui-monospace, Menlo, Consolas, monospace",
-        fontSize: "0.82rem",
+        background: "var(--term-bg)",
+        color: "var(--term-fg)",
+        fontFamily: "var(--font-terminal)",
+        fontSize: "var(--term-font-size)",
         display: "flex",
         flexDirection: "column",
-        padding: "0.6rem",
+        padding: "var(--space-2x)",
       }}
     >
       <div ref={scrollRef} role="log" aria-live="polite" aria-label="Terminal output" style={{ flex: 1, overflowY: "auto" }}>
         {lines.map((line, i) => (
-          <div key={i} style={{ marginBottom: line.type === "input" ? 0 : "0.4rem", color: line.type === "input" ? "#7fd8ff" : line.type === "boot" ? "#888" : "#ddd" }}>
+          <div
+            key={i}
+            style={{
+              marginBottom: line.type === "input" ? 0 : "var(--space-half)",
+              color:
+                line.type === "input"
+                  ? "var(--term-accent)"
+                  : line.type === "boot"
+                    ? "var(--term-dim)"
+                    : "var(--term-fg)",
+            }}
+          >
             {line.text.map((t, j) => (
               <div key={j}>{t === "" ? " " : t}</div>
             ))}
           </div>
         ))}
       </div>
-      <form onSubmit={onSubmit} style={{ display: "flex", alignItems: "center", marginTop: "0.3rem" }}>
-        <span style={{ color: "#7fd8ff", marginRight: "0.4rem" }}>faysal@desktop:{pathLabel(cwd)}$</span>
+      <form onSubmit={onSubmit} style={{ display: "flex", alignItems: "center", marginTop: "var(--space-half)" }}>
+        <span style={{ color: "var(--term-accent)", marginRight: "var(--space-size)" }}>
+          faysal@desktop:{pathLabel(cwd)}$
+        </span>
         <input
           ref={inputRef}
           className="term-input"
@@ -220,7 +233,7 @@ export default function Terminal({ onOpenTool }) {
             flex: 1,
             background: "transparent",
             border: "none",
-            color: "#fff",
+            color: "var(--white)",
             fontFamily: "inherit",
             fontSize: "inherit",
           }}

@@ -12,9 +12,9 @@ export default function AppIcon({ glyph, color, size = 44, fontSize }) {
         alignItems: "center",
         justifyContent: "center",
         fontSize: fontSize || size * 0.5,
-        color: "#fff",
+        color: "var(--white)",
         flexShrink: 0,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+        boxShadow: "var(--app-tile-shadow)",
       }}
       aria-hidden="true"
     >

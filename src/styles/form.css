@@ -1,0 +1,86 @@
+/* Contact form styling (ContactContent.jsx). Modeled on the design system's
+   Entry and Button controls (components/controls/Entry.jsx, Button.jsx), but
+   Entry's fill/text colors are flipped for a light surface — those components
+   assume the dark chrome background, and the window body here is deliberately
+   opaque white (see tokens.css's --content-* note). The submit button reuses
+   the "filled" Button variant as-is: blue-bg/white-text works on any
+   background, so no adaptation was needed there. */
+
+.gtk-field {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: var(--size-medium);
+  padding: 0 8px;
+  margin-bottom: var(--space-2x);
+  border: none;
+  border-radius: var(--radius-material);
+  background: var(--content-entry-fill);
+  color: var(--content-text);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-subheading);
+  line-height: var(--line-height-body);
+  box-shadow: inset 0 0 0 2px transparent;
+  transition: var(--transition);
+}
+.gtk-field::placeholder {
+  color: var(--placeholder-text);
+}
+.gtk-field:hover {
+  background: var(--content-entry-fill-hover);
+}
+.gtk-field:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--primary);
+  background: var(--content-entry-fill-hover);
+}
+textarea.gtk-field {
+  min-height: calc(var(--size-medium) * 2);
+  padding: var(--space-size) 8px;
+  resize: vertical;
+  align-items: flex-start;
+}
+
+.gtk-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-size);
+  min-height: var(--size-medium);
+  padding: 0 var(--space-2x);
+  border: none;
+  border-radius: var(--radius-material);
+  background: var(--primary);
+  color: var(--primary-text);
+  font-family: var(--font-ui);
+  font-size: var(--type-button-size);
+  font-weight: var(--type-button-weight);
+  cursor: pointer;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.gtk-btn-primary:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--white) 10%, var(--primary));
+}
+.gtk-btn-primary:active:not(:disabled) {
+  background: color-mix(in srgb, var(--white) 20%, var(--primary));
+}
+.gtk-btn-primary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.gtk-btn-primary:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 2px;
+}
+
+.gtk-status-success {
+  color: var(--content-success);
+  font-family: var(--font-ui);
+}
+.gtk-status-error {
+  color: var(--content-error);
+  font-size: var(--font-size-caption);
+  margin-top: var(--space-size);
+  font-family: var(--font-ui);
+}

@@ -1,0 +1,310 @@
+/* Orchis Desktop Design System tokens, pulled from
+   learningtofail/Orchis-Desktop-Design-System (tokens/*.css). This is the
+   canonical source — see that repo's readme.md for provenance. Do not hand-edit
+   values here without checking upstream first; if a value needs to change,
+   change it there and re-sync. */
+
+/* ---- fonts.css ---- */
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:ital,wght@0,300..800;1,300..800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&display=swap");
+
+:root {
+  /* Base families */
+  --font-family: "Hanken Grotesk", Cantarell, sans-serif;
+  --font-family-large: "Instrument Serif", Georgia, serif;
+  --font-family-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* Semantic aliases */
+  --font-ui: var(--font-family);
+  --font-display: var(--font-family-large);
+  --font-terminal: var(--font-family-mono);
+
+  /* ---- colors.css ---- */
+  /* Material palette, light/dark pairs */
+  --red-light: #F44336;   --red-dark: #E53935;
+  --pink-light: #F06292;  --pink-dark: #EC407A;
+  --purple-light: #BA68C8;--purple-dark: #AB47BC;
+  --blue-light: #3281EA;  --blue-dark: #1A73E8;
+  --teal-light: #4DB6AC;  --teal-dark: #009688;
+  --green-light: #66BB6A; --green-dark: #4CAF50;
+  --sea-light: #81C995;   --sea-dark: #0F9D58;
+  --yellow-light: #FBC02D;--yellow-dark: #FFD600;
+  --orange-light: #FB8C00;--orange-dark: #F57C00;
+
+  /* Greys */
+  --grey-050: #FAFAFA; --grey-100: #F2F2F2; --grey-150: #EEEEEE;
+  --grey-200: #DDDDDD; --grey-250: #CCCCCC; --grey-300: #BFBFBF;
+  --grey-350: #A0A0A0; --grey-400: #9E9E9E; --grey-450: #868686;
+  --grey-500: #727272; --grey-550: #555555; --grey-600: #464646;
+  --grey-650: #3C3C3C; --grey-700: #2C2C2C; --grey-750: #242424;
+  --grey-800: #212121; --grey-850: #121212; --grey-900: #0F0F0F;
+  --grey-950: #030303;
+  --white: #FFFFFF; --black: #000000;
+
+  /* Background ladder */
+  --bg-a: var(--white);     --bg-b: var(--grey-050);
+  --bg-c: var(--grey-100);  --bg-d: var(--grey-250);
+  --bg-e: var(--grey-800);  --bg-f: var(--grey-750);
+  --bg-g: var(--grey-700);  --bg-h: var(--grey-650);
+
+  /* Accent */
+  --primary: var(--blue-light);
+  --primary-text: var(--white);
+  --primary-text-secondary: rgba(255, 255, 255, 0.7);
+  --primary-fill: rgba(255, 255, 255, 0.04);
+  --primary-track: rgba(255, 255, 255, 0.3);
+
+  /* Surfaces (dark variant — shell chrome only, not window content) */
+  --background: var(--bg-e);
+  --surface: var(--bg-h);
+  --base: var(--bg-g);
+  --base-alt: var(--bg-f);
+  --osd: var(--bg-e);
+  --scrim: var(--bg-f);
+  --scrim-alt: var(--bg-g);
+  --scrim-inverse: rgba(255, 255, 255, 0.1);
+  --popover: var(--bg-e);
+  --tooltip: rgba(25, 25, 25, 0.9);
+  --system: var(--grey-750);
+  --keyboard: var(--grey-800);
+  --keyboard-alt: var(--grey-900);
+
+  /* Titlebar / panel */
+  --titlebar: var(--bg-g);
+  --titlebar-backdrop: var(--bg-h);
+  --panel-solid: var(--bg-e);
+  --panel: rgba(33, 33, 33, 0.65);
+  --shell: rgba(0, 0, 0, 0.65);
+
+  /* Text on dark */
+  --text: var(--white);
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-disabled: rgba(255, 255, 255, 0.5);
+  --text-secondary-disabled: rgba(255, 255, 255, 0.3);
+  --track: rgba(255, 255, 255, 0.3);
+  --track-disabled: rgba(255, 255, 255, 0.15);
+  --divider: rgba(255, 255, 255, 0.12);
+  --secondary-fill: rgba(255, 255, 255, 0.08);
+  --fill: rgba(255, 255, 255, 0.04);
+
+  /* Overlay states — the six numbers: hover 8%, active 12%, checked 10%, track 30%, divider 12%, selected 6% */
+  --overlay-normal: rgba(255, 255, 255, 0.05);
+  --overlay-hover: rgba(255, 255, 255, 0.08);
+  --overlay-focus: rgba(255, 255, 255, 0.08);
+  --overlay-focus-hover: rgba(255, 255, 255, 0.16);
+  --overlay-active: rgba(255, 255, 255, 0.12);
+  --overlay-checked: rgba(255, 255, 255, 0.10);
+  --overlay-selected: rgba(255, 255, 255, 0.06);
+  --button-fill: rgba(255, 255, 255, 0.05);
+  --entry-fill: rgba(255, 255, 255, 0.05);
+
+  /* Borders / frames */
+  --frame: rgba(0, 0, 0, 0.25);
+  --border: rgba(255, 255, 255, 0.12);
+  --border-alt: rgba(0, 0, 0, 0.16);
+  --solid-border: #3F3F3F;
+
+  /* Semantic */
+  --link: var(--primary);
+  --link-visited: var(--purple-light);
+  --warning: var(--yellow-light);
+  --error: var(--red-light);
+  --success: var(--sea-light);
+  --suggested: var(--primary);
+  --destructive: var(--error);
+  --drop-target: var(--orange-dark);
+  --placeholder-text: #A9A9A9;
+
+  /* Titlebuttons */
+  --titlebutton-close: #fd5f51;
+  --titlebutton-max: #38c76a;
+  --titlebutton-min: #fdbe04;
+
+  /* ---- typography.css ---- */
+  --font-size-root: 14px;
+  --font-size-subheading: 16px;
+  --font-size-caption: 12px;
+
+  --type-display-4-size: 112px; --type-display-4-weight: 300;
+  --type-display-3-size: 56px;  --type-display-3-weight: 400;
+  --type-display-2-size: 45px;  --type-display-2-weight: 400;
+  --type-display-1-size: 34px;  --type-display-1-weight: 400;
+  --type-headline-size: 24px;   --type-headline-weight: 400;
+  --type-title-size: 20px;      --type-title-weight: 500;
+  --type-subheading-size: 16px; --type-subheading-weight: 400;
+  --type-body-2-size: 14px;     --type-body-2-weight: 500;
+  --type-body-1-size: 14px;     --type-body-1-weight: 400;
+  --type-button-size: 14px;     --type-button-weight: 500;
+  --type-caption-size: 12px;    --type-caption-weight: 400;
+
+  --type-panel-weight: 700;
+  --type-panel-feature-settings: "tnum";
+
+  --text-body: var(--type-body-1-size);
+  --text-label: var(--type-body-2-size);
+  --text-titlebar: var(--type-body-2-size);
+  --line-height-tight: 1.2;
+  --line-height-body: 1.45;
+  --line-height-terminal: 1.6;
+
+  /* ---- spacing.css ---- */
+  --space-size: 6px;
+  --margin-size: 4px;
+  --space-half: 3px;
+  --space-2x: 12px;
+  --space-3x: 18px;
+  --space-4x: 24px;
+
+  --size-small: 24px;
+  --size-medium: 36px;
+  --size-large: 48px;
+  --size-menuitem: 28px;
+  --bar-size: 6px;
+
+  --icon-size-base: 16px;
+  --icon-size-medium: 24px;
+  --icon-size-large: 32px;
+
+  --panel-height: 38px;
+  --panel-margin: 3px;
+  --panel-button-hpadding: 11px;
+  --dash-padding: 12px;
+  --dash-spacing: 2px;
+  --dash-edge-offset: 12px;
+  --dash-placeholder-size: 32px;
+
+  --pad-button: var(--space-size) var(--space-2x);
+  --pad-menuitem: 8px;
+  --pad-entry: 0 8px;
+
+  /* ---- radius.css ---- */
+  --default-corner: 12px;
+  --radius-window: 18px;
+  --radius-corner: 12px;
+  --radius-material: 10px;
+  --radius-menu: 11px;
+  --radius-popup: 20px;
+  --radius-menuitem: 5px;
+  --radius-circular: 9999px;
+  --radius-panel: 13px;
+  --radius-dash: 24px;
+  --radius-quick-settings: 38px;
+  --radius-panel-corner: 0;
+
+  --radius-card: var(--radius-material);
+  --radius-control: var(--radius-material);
+  --radius-pill: var(--radius-circular);
+
+  /* ---- elevation.css ---- */
+  --shadow-z1: 0 2px 2px -2px rgba(0,0,0,0.3), 0 1px 2px -1px rgba(0,0,0,0.24), 0 1px 2px -1px rgba(0,0,0,0.17);
+  --shadow-z2: 0 3px 2px -3px rgba(0,0,0,0.3), 0 2px 2px -1px rgba(0,0,0,0.24), 0 1px 3px 0 rgba(0,0,0,0.12);
+  --shadow-z3: 0 3px 3px -2px rgba(0,0,0,0.2), 0 3px 3px 0 rgba(0,0,0,0.14), 0 1px 5px 0 rgba(0,0,0,0.12);
+  --shadow-z4: 0 2px 2px -1px rgba(0,0,0,0.2), 0 4px 4px 0 rgba(0,0,0,0.14), 0 1px 6px 0 rgba(0,0,0,0.12);
+  --shadow-z6: 0 3px 3px -1px rgba(0,0,0,0.2), 0 6px 6px 0 rgba(0,0,0,0.14), 0 1px 11px 0 rgba(0,0,0,0.12);
+  --shadow-z8: 0 5px 5px -3px rgba(0,0,0,0.2), 0 8px 8px 1px rgba(0,0,0,0.14), 0 3px 9px 2px rgba(0,0,0,0.12);
+  --shadow-z12: 0 7px 7px -4px rgba(0,0,0,0.2), 0 12px 12px 2px rgba(0,0,0,0.14), 0 5px 13px 4px rgba(0,0,0,0.12);
+  --shadow-z16: 0 8px 6px -5px rgba(0,0,0,0.2), 0 16px 16px 2px rgba(0,0,0,0.14), 0 6px 18px 5px rgba(0,0,0,0.12);
+  --shadow-z24: 0 11px 11px -7px rgba(0,0,0,0.2), 0 24px 24px 3px rgba(0,0,0,0.14), 0 9px 28px 8px rgba(0,0,0,0.12);
+
+  --text-shadow: 0 1px 1px rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.14), 0 1px 3px rgba(0,0,0,0.12);
+
+  /* gnome-shell single-shadow workarounds (chrome can't render stacked shadows) */
+  --shell-shadow-z1: 0 1px 2px rgba(0,0,0,0.25);
+  --shell-shadow-z2: 0 3px 3px rgba(0,0,0,0.32);
+  --shell-shadow-z3: 0 3px 8px rgba(0,0,0,0.2);
+  --shell-shadow-z4: 0 6px 10px rgba(0,0,0,0.32);
+  --shell-shadow-z5: 0 10px 15px rgba(0,0,0,0.45);
+  --shell-shadow-z6: 0 12px 20px rgba(0,0,0,0.6);
+
+  --shadow-card: var(--shadow-z2);
+  --shadow-menu: var(--shadow-z8);
+  --shadow-dialog: var(--shadow-z24);
+  --shadow-window: 0 10px 30px rgba(0, 0, 0, 0.32);
+  --shadow-dock: 0 10px 26px rgba(0, 0, 0, 0.4);
+  --label-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+
+  /* ---- chrome.css (fa-www shell-specific values) ---- */
+  --orchis-accent: #5e9ef4;
+  --orchis-accent-soft: rgba(94, 158, 244, 0.32);
+  --orchis-chrome: #2d2d2d;
+  --orchis-chrome-elevated: #363636;
+  --orchis-radius: 10px;
+
+  --wallpaper: linear-gradient(160deg, #2c3e50 0%, #3a5a7a 60%, #4a6d8c 100%);
+  --wallpaper-stop-1: #2c3e50;
+  --wallpaper-stop-2: #3a5a7a;
+  --wallpaper-stop-3: #4a6d8c;
+
+  --topbar-height: 30px;
+  --topbar-bg: rgba(28, 28, 28, 0.85);
+  --topbar-blur: blur(8px);
+  --topbar-fg: #eee;
+  --topbar-font-size: 0.8rem;
+
+  --dock-height: 52px;
+  --dock-bg: rgba(30, 30, 30, 0.92);
+  --dock-border: 1px solid rgba(255, 255, 255, 0.07);
+  --dock-blur: blur(10px);
+  --dock-radius: 16px;
+  --dock-gap: 0.6rem;
+  --dock-inset-bottom: 10px;
+  --dock-hover: rgba(255, 255, 255, 0.12);
+
+  --win-bg: #fff;
+  --win-border: 1px solid rgba(0, 0, 0, 0.18);
+  --win-titlebar-bg: var(--orchis-chrome-elevated);
+  --win-titlebar-fg: #e8e8e8;
+  --win-titlebar-divider: 1px solid rgba(0, 0, 0, 0.28);
+  --win-btn-size: 22px;
+  --win-btn-hover: rgba(255, 255, 255, 0.16);
+
+  --desktop-icon-width: 84px;
+  --desktop-icon-radius: 6px;
+  --desktop-icon-label-size: 0.72rem;
+  --app-tile-radius-ratio: 0.24;
+  --app-tile-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  --term-bg: #111;
+  --term-fg: #ddd;
+  --term-accent: #7fd8ff;
+  --term-dim: #888;
+  --term-font-size: 0.82rem;
+
+  --mobile-folder-bg: rgba(30, 30, 30, 0.96);
+  --mobile-folder-radius: 20px;
+  --mobile-backdrop: rgba(0, 0, 0, 0.35);
+  --mobile-header-bg: #2b2b2b;
+  --mobile-hit-target: 52px;
+
+  --dash-bg: rgba(255, 255, 255, 0.2);
+  --dash-separator: rgba(255, 255, 255, 0.15);
+
+  /* ---- motion.css ---- */
+  --duration: 75ms;
+  --duration-shorter: 100ms;
+  --duration-longer: 150ms;
+  --duration-panel: 250ms;
+  --duration-ripple-in: 225ms;
+  --duration-ripple-out: 300ms;
+  --duration-ripple-fade: 1200ms;
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.6, 1);
+
+  --transition: all var(--duration) var(--ease-out);
+  --transition-shadow: box-shadow var(--duration) var(--ease-out);
+  --transition-chrome: background 0.12s ease;
+
+  /* ---- window-content tokens (fa-www-specific, not covered by the DS repo:
+     window bodies are deliberately light/opaque, so the dark-chrome text/fill
+     tokens above don't apply inside them — see readme's "Known substitutions
+     and gaps") ---- */
+  --content-text: #1a1a1a;
+  --content-text-muted: #6b6b6b;
+  --content-success: #2a8a4a;
+  --content-error: #b00020;
+  --content-entry-fill: rgba(0, 0, 0, 0.05);
+  --content-entry-fill-hover: rgba(0, 0, 0, 0.08);
+  --content-border-alt: rgba(0, 0, 0, 0.16);
+}

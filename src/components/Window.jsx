@@ -78,22 +78,9 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
       role="dialog"
       aria-label={title}
     >
-      <div
-        className="win-titlebar"
-        onMouseDown={onTitleBarMouseDown}
-        style={{
-          padding: "0.4rem 0.6rem",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          cursor: "move",
-          fontSize: "0.8rem",
-          fontFamily: "system-ui, sans-serif",
-          userSelect: "none",
-        }}
-      >
+      <div className="win-titlebar" onMouseDown={onTitleBarMouseDown}>
         <span>{title}</span>
-        <span style={{ display: "flex", gap: "0.3rem" }}>
+        <span className="win-titlebar-controls">
           <button
             className="win-btn"
             data-window-control
@@ -107,26 +94,16 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
           </button>
         </span>
       </div>
-      <div
-        tabIndex={0}
-        style={{ flex: 1, overflow: "auto", padding: noPadding ? 0 : "0.9rem", fontFamily: "system-ui, sans-serif" }}
-      >
+      <div tabIndex={0} className={`win-body${noPadding ? " no-padding" : ""}`}>
         {children}
       </div>
-      <div
-        onMouseDown={onResizeHandleMouseDown}
-        style={{
-          position: "absolute",
-          right: 0,
-          bottom: 0,
-          width: 16,
-          height: 16,
-          cursor: "nwse-resize",
-        }}
-        aria-hidden="true"
-      >
+      <div className="win-resize-handle" onMouseDown={onResizeHandleMouseDown} aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 16 16">
-          <path d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14" stroke="#999" strokeWidth="1.5" />
+          <path
+            d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14"
+            style={{ stroke: "var(--grey-400)" }}
+            strokeWidth="1.5"
+          />
         </svg>
       </div>
     </div>
