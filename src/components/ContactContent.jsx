@@ -92,9 +92,7 @@ export default function ContactContent() {
           <button className="gtk-btn-primary" type="submit" disabled={status === "sending"}>
             {status === "sending" ? "Sending..." : "Send a message"}
           </button>
-          {status === "error" && (
-            <p className="gtk-status-error">Send failed — try again, or email directly.</p>
-          )}
+          {status === "error" && <p className="gtk-status-error">Send failed — try again, or email directly.</p>}
         </form>
       )}
     </div>

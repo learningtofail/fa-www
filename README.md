@@ -20,7 +20,7 @@ Two genuinely separate shells, not one responsive layout: a GNOME-style desktop 
 ## Phase 9 — Assets
 
 - **Favicon** (`public/favicon.svg` + rasterized PNGs) — a dark tile with a bright-blue `>_` terminal-prompt glyph, matching the terminal's own color scheme. Built directly as SVG, not AI-generated.
-- **OG/Twitter card** — `public/og-image.png` (1200×630) is a real Playwright screenshot of the actual live desktop shell (About/Contact/status windows open, Tools folder open) rather than an AI-generated mockup of what the site *might* look like. More accurate, and avoids the risk of an AI image inventing UI that doesn't match the real site. Meta tags wired into `Base.astro` the same way as `fa-portfolio`. This is what renders when the link is shared in Slack/iMessage/LinkedIn — Phase 8's Cloudflare rule specifically keeps that working.
+- **OG/Twitter card** — `public/og-image.png` (1200×630) is a real Playwright screenshot of the actual live desktop shell (About/Contact/status windows open, Tools folder open) rather than an AI-generated mockup of what the site _might_ look like. More accurate, and avoids the risk of an AI image inventing UI that doesn't match the real site. Meta tags wired into `Base.astro` the same way as `fa-portfolio`. This is what renders when the link is shared in Slack/iMessage/LinkedIn — Phase 8's Cloudflare rule specifically keeps that working.
 - **App icon set — prompts drafted, not yet generated.** The current About/Contact/Now/Tools/Terminal icons are emoji glyphs on flat colored tiles (`src/data/apps.js`), explicitly called out as placeholders pending this phase. Per your call, these get replaced with real icon art rather than kept as final — Gemini prompts for a consistent 5-icon set (shared style block + a per-icon subject line, so a Material/Orchis-consistent look survives across five separate generations) are in `phase9-icon-prompts.md`, delivered alongside this zip. Once you generate and send the 5 PNGs back, I'll wire them into `apps.js` and `AppIcon.jsx` (with a fallback to the current glyph rendering so nothing breaks mid-transition) and re-verify both shells.
 
 ## Discoverability model changed in Phase 7 — worth flagging explicitly
@@ -54,6 +54,7 @@ The original Phase 1 IA framed tool access as terminal-only: no visible links, f
 Per the plan, `www` gets a best-effort baseline rather than the full WCAG 2.1 AA set on `portfolio` — the window-manager concept is inherently spatial (drag/resize by mouse) and reproducing that losslessly for keyboard/screen-reader use isn't a realistic goal here. What "best-effort" means concretely, and what's still a known gap:
 
 Fixed:
+
 - **Desktop icons couldn't be opened by keyboard at all.** Opening required a double-click, and double-click has no keyboard equivalent — tabbing to a desktop icon and pressing Enter only "selected" it (native `<button>` click behavior), with no way to actually open the window. Fixed: Enter/Space on a desktop icon now opens directly, matching double-click's effect. (Dock icons were already fine — those open on a single click, which Enter already triggers natively.)
 - **Escape now closes the topmost open window** on desktop, so closing something doesn't require precisely hitting a 22px × button — a keyboard affordance layered on top of the existing mouse close button, not a replacement for it.
 - **The terminal's scrollback had no live region** — new command output wasn't announced to screen readers unless the user manually re-navigated into it. Fixed with `role="log" aria-live="polite"`, the standard ARIA pattern for exactly this (chat/terminal-style logs).
@@ -61,6 +62,7 @@ Fixed:
 - Added explicit `:focus-visible` rings (accent-colored, matching each shell's palette) to dock icons, desktop icons, the Activities button, mobile app icons, and the mobile back button, on top of whatever the browser already provides by default.
 
 Still a known, documented gap, not fixed here:
+
 - **Window dragging and resizing remain mouse-only on desktop.** No keyboard equivalent for repositioning or resizing a window — this is the one piece of the "best-effort, not full AA" framing that's a genuine, acknowledged limitation rather than an oversight. A keyboard-accessible alternative (e.g., arrow-key nudging while a window has focus) would be real design work, scoped out of Phase 8.
 - Mobile's full-screen app views and folder popup don't have this problem — no dragging/resizing exists there in the first place, so mobile's keyboard/screen-reader story is materially better than desktop's by nature of the simpler interaction model.
 

@@ -72,10 +72,7 @@ export const FILESYSTEM = {
         },
         "resume-link.txt": {
           type: "file",
-          content: [
-            "the paper trail lives at portfolio.faysalahmed.ca",
-            "run 'open resume' to go there directly.",
-          ],
+          content: ["the paper trail lives at portfolio.faysalahmed.ca", "run 'open resume' to go there directly."],
         },
       },
     },

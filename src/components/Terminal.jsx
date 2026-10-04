@@ -1,6 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import "../styles/terminal.css";
-import { BOOT_LINE, HELP_TEXT, WHOAMI_TEXT, SUDO_TEXT, COMMAND_NOT_FOUND, FILE_NOT_FOUND, IS_A_DIRECTORY, NO_SUCH_DIR, FILESYSTEM } from "../data/terminalContent.js";
+import {
+  BOOT_LINE,
+  HELP_TEXT,
+  WHOAMI_TEXT,
+  SUDO_TEXT,
+  COMMAND_NOT_FOUND,
+  FILE_NOT_FOUND,
+  IS_A_DIRECTORY,
+  NO_SUCH_DIR,
+  FILESYSTEM,
+} from "../data/terminalContent.js";
 import { tools, toolUrl } from "../data/tools.js";
 
 function pathLabel(pathArr) {
@@ -146,7 +156,7 @@ export default function Terminal({ onOpenTool }) {
           print(COMMAND_NOT_FOUND);
       }
     },
-    [cwd, print, onOpenTool]
+    [cwd, print, onOpenTool],
   );
 
   const onSubmit = (e) => {
@@ -195,7 +205,13 @@ export default function Terminal({ onOpenTool }) {
         padding: "var(--space-2x)",
       }}
     >
-      <div ref={scrollRef} role="log" aria-live="polite" aria-label="Terminal output" style={{ flex: 1, overflowY: "auto" }}>
+      <div
+        ref={scrollRef}
+        role="log"
+        aria-live="polite"
+        aria-label="Terminal output"
+        style={{ flex: 1, overflowY: "auto" }}
+      >
         {lines.map((line, i) => (
           <div
             // eslint-disable-next-line react/no-array-index-key -- append-only output list; rewritten with stable ids in Phase 4

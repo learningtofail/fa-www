@@ -52,7 +52,7 @@ export default function DesktopShell({ lastDeploy }) {
       }));
       focusWindow(id);
     },
-    [focusWindow]
+    [focusWindow],
   );
 
   const closeWindow = useCallback((id) => {
