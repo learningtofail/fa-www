@@ -205,6 +205,19 @@
   font-family: var(--font-ui);
   user-select: none;
 }
+.win-title {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: inherit;
+  font: inherit;
+}
+.win-title:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 4px;
+  border-radius: var(--radius-menuitem);
+}
 .win-titlebar-controls {
   display: flex;
   gap: var(--space-half);

@@ -48,3 +48,35 @@ export function clampSize(size, origin, viewport) {
     height: clamp(size.height, MIN_WINDOW_SIZE.height, Math.max(MIN_WINDOW_SIZE.height, viewport.height - origin.y)),
   };
 }
+
+/** Arrow keys that move or resize a window from the keyboard, as unit vectors. */
+const ARROW_VECTORS = Object.freeze({
+  ArrowLeft: [-1, 0],
+  ArrowRight: [1, 0],
+  ArrowUp: [0, -1],
+  ArrowDown: [0, 1],
+});
+
+/**
+ * Keyboard move and resize. An arrow key moves the window by `step`; with Shift it resizes
+ * instead. The result stays inside `viewport` and above the minimum size.
+ * @param {{ x: number, y: number, width: number, height: number }} rect
+ * @param {{ key: string, shiftKey: boolean }} press
+ * @param {number} step distance in px
+ * @param {Size} viewport
+ * @returns {{ kind: "move", x: number, y: number } | { kind: "resize", width: number, height: number } | null} null for any other key
+ */
+export function applyKeyboardGesture(rect, press, step, viewport) {
+  if (!Object.hasOwn(ARROW_VECTORS, press.key)) return null;
+  const [dx, dy] = ARROW_VECTORS[/** @type {keyof typeof ARROW_VECTORS} */ (press.key)];
+  if (press.shiftKey) {
+    const size = clampSize(
+      { width: rect.width + dx * step, height: rect.height + dy * step },
+      { x: rect.x, y: rect.y },
+      viewport,
+    );
+    return { kind: "resize", ...size };
+  }
+  const position = clampPosition({ x: rect.x + dx * step, y: rect.y + dy * step }, rect, viewport);
+  return { kind: "move", ...position };
+}

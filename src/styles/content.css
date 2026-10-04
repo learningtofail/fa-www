@@ -22,8 +22,29 @@
 }
 
 .iframe-content {
-  display: block;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
   height: 100%;
+}
+
+.iframe-content__bar {
+  margin: 0;
+  padding: var(--space-half) var(--space-2x);
+  background: var(--content-entry-fill);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-caption);
+}
+
+.iframe-content__fallback {
+  margin: 0;
+  padding: var(--space-size) var(--space-2x);
+  color: var(--content-error);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-caption);
+}
+
+.iframe-content__frame {
+  flex: 1;
+  width: 100%;
   border: none;
 }

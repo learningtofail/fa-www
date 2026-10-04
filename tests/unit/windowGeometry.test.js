@@ -1,4 +1,10 @@
-import { MIN_WINDOW_SIZE, clamp, clampPosition, clampSize } from "../../src/lib/windowGeometry.js";
+import {
+  MIN_WINDOW_SIZE,
+  applyKeyboardGesture,
+  clamp,
+  clampPosition,
+  clampSize,
+} from "../../src/lib/windowGeometry.js";
 
 const viewport = { width: 1000, height: 600 };
 
@@ -39,5 +45,46 @@ describe("clampSize", () => {
 
   it("never drops below the minimum when the origin is near the edge", () => {
     expect(clampSize({ width: 500, height: 500 }, { x: 990, y: 590 }, viewport)).toEqual(MIN_WINDOW_SIZE);
+  });
+});
+
+describe("applyKeyboardGesture", () => {
+  const rect = { x: 100, y: 100, width: 400, height: 300 };
+
+  it.each([
+    ["ArrowLeft", { kind: "move", x: 84, y: 100 }],
+    ["ArrowRight", { kind: "move", x: 116, y: 100 }],
+    ["ArrowUp", { kind: "move", x: 100, y: 84 }],
+    ["ArrowDown", { kind: "move", x: 100, y: 116 }],
+  ])("%s moves by one step", (key, expected) => {
+    expect(applyKeyboardGesture(rect, { key, shiftKey: false }, 16, viewport)).toEqual(expected);
+  });
+
+  it.each([
+    ["ArrowLeft", { kind: "resize", width: 384, height: 300 }],
+    ["ArrowRight", { kind: "resize", width: 416, height: 300 }],
+    ["ArrowUp", { kind: "resize", width: 400, height: 284 }],
+    ["ArrowDown", { kind: "resize", width: 400, height: 316 }],
+  ])("Shift+%s resizes by one step", (key, expected) => {
+    expect(applyKeyboardGesture(rect, { key, shiftKey: true }, 16, viewport)).toEqual(expected);
+  });
+
+  it("keeps a moved window inside the viewport and a resized one above the minimum", () => {
+    expect(applyKeyboardGesture({ ...rect, x: 0 }, { key: "ArrowLeft", shiftKey: false }, 16, viewport)).toEqual({
+      kind: "move",
+      x: 0,
+      y: 100,
+    });
+    expect(applyKeyboardGesture({ ...rect, width: 240 }, { key: "ArrowLeft", shiftKey: true }, 16, viewport)).toEqual({
+      kind: "resize",
+      width: 240,
+      height: 300,
+    });
+  });
+
+  it("ignores every other key, including inherited property names", () => {
+    for (const key of ["Enter", "a", "Tab", "constructor"]) {
+      expect(applyKeyboardGesture(rect, { key, shiftKey: false }, 16, viewport)).toBeNull();
+    }
   });
 });

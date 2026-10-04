@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/content.css";
 import "../styles/form.css";
+import { PROFILE } from "../data/profile.js";
 import { config } from "../lib/config.js";
 
 /** Abort the request, and show the error state, if the API has not answered by then. */
@@ -37,11 +38,11 @@ export default function ContactContent() {
     <div className="content">
       <p className="content__prompt">faysal@desktop:~$ cat contact.txt</p>
       <p>
-        The direct line: <a href="mailto:contactfaysal@gmail.com">contactfaysal@gmail.com</a>
+        The direct line: <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
         <br />
         The professional line:{" "}
-        <a href="https://linkedin.com/in/faysalahmed" target="_blank" rel="noreferrer">
-          linkedin.com/in/faysalahmed
+        <a href={PROFILE.linkedin.url} target="_blank" rel="noreferrer">
+          {PROFILE.linkedin.label}
         </a>
       </p>
 

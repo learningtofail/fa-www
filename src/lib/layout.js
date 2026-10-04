@@ -8,7 +8,7 @@ import { MIN_WINDOW_SIZE } from "./windowGeometry.js";
 /**
  * @typedef {{ width: number, height: number }} Size
  * @typedef {{ x: number, y: number, width: number, height: number }} Rect
- * @typedef {{ tileMargin: number, tileGap: number }} LayoutTokens
+ * @typedef {{ tileMargin: number, tileGap: number, windowKeyStep: number }} LayoutTokens
  */
 
 /**
@@ -28,7 +28,11 @@ export function readPxToken(styles, name) {
  */
 export function readLayoutTokens(root = document.documentElement) {
   const styles = getComputedStyle(root);
-  return { tileMargin: readPxToken(styles, "--tile-margin"), tileGap: readPxToken(styles, "--tile-gap") };
+  return {
+    tileMargin: readPxToken(styles, "--tile-margin"),
+    tileGap: readPxToken(styles, "--tile-gap"),
+    windowKeyStep: readPxToken(styles, "--window-key-step"),
+  };
 }
 
 /**
@@ -50,7 +54,7 @@ export function measureBounds(windowEl) {
  * edge and `tileGap` between neighbours. Every rect honours the minimum window size.
  * @param {number} count
  * @param {Size} surface
- * @param {LayoutTokens} tokens
+ * @param {Pick<LayoutTokens, "tileMargin" | "tileGap">} tokens
  * @returns {Rect[]}
  */
 export function computeTileLayout(count, surface, tokens) {
