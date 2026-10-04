@@ -20,11 +20,15 @@ Content components (`About`, `Contact`, `Now`, `Iframe`, `ToolsFolder`, `Termina
 
 ## Styles
 
-`src/styles/tokens.css` is vendored from the Orchis design system and excluded from Prettier. `desktop.css`, `mobile.css`, `form.css` and `terminal.css` hold the rest. Inline styles still exist in several components; Phase 3 of the refactor plan removes them.
+`src/styles/tokens.css` is vendored from the Orchis design system and excluded from Prettier. `src/styles/site.tokens.css` loads after it and holds fa-www's own overrides (the D5 AA-passing link, primary, visited, placeholder and success colors). `desktop.css`, `mobile.css`, `form.css` and `terminal.css` hold the rest. Inline styles still exist in several components; Phase 3 of the refactor plan removes them.
+
+## Windows and terminal
+
+`Window.jsx` drags and resizes with Pointer Events and pointer capture, clamped to the desktop surface by `src/lib/windowGeometry.js`. Escape closes the window that holds focus, never while typing in a field (`src/lib/keyboard.js`). The terminal resolves paths with `src/lib/terminal/path.js`. The contact form endpoint comes from `src/lib/config.js`.
 
 ## Quality gates
 
-Lint (ESLint 9, pinned rules with commented exceptions), Prettier, `tsc --noEmit` with `checkJs`, Vitest unit tests, Playwright e2e plus axe. Known defects are pinned by `it.fails` (unit) and `test.fixme` (e2e) and carry their review IDs (D3, D4, D5, D6).
+Lint (ESLint 9, pinned rules with commented exceptions), Prettier, `tsc --noEmit` with `checkJs`, Vitest unit tests, Playwright e2e plus axe. No known-defect pins remain: D3 to D7 are fixed and tested. `tests/unit/contrast.test.js` recomputes the WCAG ratio of every text and background token pair, and the axe e2e tests run with every rule, color-contrast included.
 
 ## Delivery
 
