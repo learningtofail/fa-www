@@ -6,6 +6,7 @@ import Desktop from "../components/Desktop.jsx";
 // frontmatter runs at build time in Node), passed down as a plain prop.
 const lastDeploy = new Date().toISOString().slice(0, 10);
 ---
+
 <Base title="faysal's desktop." description="a playful landing page. there's a terminal. use it.">
   <Desktop client:only="react" lastDeploy={lastDeploy} />
 </Base>

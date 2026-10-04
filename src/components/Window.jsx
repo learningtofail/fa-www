@@ -7,7 +7,22 @@ const MIN_HEIGHT = 160;
  * Draggable/resizable window chrome. Purely presentational + interaction —
  * position/size/z-index state lives in Desktop.jsx.
  */
-export default function Window({ id, title, x, y, width, height, zIndex, onFocus, onClose, onMinimize, onMove, onResize, noPadding, children }) {
+export default function Window({
+  id,
+  title,
+  x,
+  y,
+  width,
+  height,
+  zIndex,
+  onFocus,
+  onClose,
+  onMinimize,
+  onMove,
+  onResize,
+  noPadding,
+  children,
+}) {
   const dragState = useRef(null);
   const resizeState = useRef(null);
 
@@ -31,7 +46,7 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
       window.addEventListener("mousemove", onMouseMove);
       window.addEventListener("mouseup", onMouseUp);
     },
-    [id, x, y, onFocus, onMove]
+    [id, x, y, onFocus, onMove],
   );
 
   const onResizeHandleMouseDown = useCallback(
@@ -46,7 +61,7 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
         onResize(
           id,
           Math.max(MIN_WIDTH, resizeState.current.origW + dx),
-          Math.max(MIN_HEIGHT, resizeState.current.origH + dy)
+          Math.max(MIN_HEIGHT, resizeState.current.origH + dy),
         );
       };
       const onMouseUp = () => {
@@ -57,10 +72,11 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
       window.addEventListener("mousemove", onMouseMove);
       window.addEventListener("mouseup", onMouseUp);
     },
-    [id, width, height, onFocus, onResize]
+    [id, width, height, onFocus, onResize],
   );
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- window root focuses itself on mouse down; keyboard focus handling arrives in Phase 4 (S11)
     <div
       className="win"
       style={{
@@ -78,6 +94,7 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
       role="dialog"
       aria-label={title}
     >
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- mouse-only titlebar drag, a documented gap; Pointer Events and keyboard move land in Phase 2 (D7) and Phase 4 */}
       <div className="win-titlebar" onMouseDown={onTitleBarMouseDown}>
         <span>{title}</span>
         <span className="win-titlebar-controls">
@@ -94,16 +111,13 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
           </button>
         </span>
       </div>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- scrollable window body must be keyboard focusable; gets role and label in Phase 4 (S11) */}
       <div tabIndex={0} className={`win-body${noPadding ? " no-padding" : ""}`}>
         {children}
       </div>
       <div className="win-resize-handle" onMouseDown={onResizeHandleMouseDown} aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 16 16">
-          <path
-            d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14"
-            style={{ stroke: "var(--grey-400)" }}
-            strokeWidth="1.5"
-          />
+          <path d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14" style={{ stroke: "var(--grey-400)" }} strokeWidth="1.5" />
         </svg>
       </div>
     </div>

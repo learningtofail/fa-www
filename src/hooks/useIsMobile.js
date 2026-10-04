@@ -6,7 +6,7 @@ const BREAKPOINT = "(max-width: 768px)";
 // breakpoint actually swaps shells, not just a one-time check on load.
 export function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() =>
-    typeof window !== "undefined" ? window.matchMedia(BREAKPOINT).matches : false
+    typeof window !== "undefined" ? window.matchMedia(BREAKPOINT).matches : false,
   );
 
   useEffect(() => {
