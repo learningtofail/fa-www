@@ -21,9 +21,15 @@ export default function TopBar({ onActivities }) {
       </button>
       <div className="gnome-clock">{formatClock(now)}</div>
       <div className="gnome-tray">
-        <span title="Wi-Fi: connected (metaphorically)">&#x1F4F6;</span>
-        <span title="Volume: reasonable">&#x1F50A;</span>
-        <span title="Battery: 100% (this is a website)">&#x1F50B;</span>
+        <span aria-hidden="true" title="Wi-Fi: connected (metaphorically)">
+          &#x1F4F6;
+        </span>
+        <span aria-hidden="true" title="Volume: reasonable">
+          &#x1F50A;
+        </span>
+        <span aria-hidden="true" title="Battery: 100% (this is a website)">
+          &#x1F50B;
+        </span>
       </div>
     </div>
   );

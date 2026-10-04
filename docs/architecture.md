@@ -8,15 +8,31 @@
 
 ## Data
 
-| File                          | Role                                                                                         |
-| ----------------------------- | -------------------------------------------------------------------------------------------- |
-| `src/data/apps.js`            | App registry shared by both shells. `DESKTOP_ICON_APPS` excludes the terminal.               |
-| `src/data/tools.js`           | Tool slugs and `toolUrl()`. Hand-mirrored from fa-portfolio. Neither repo imports the other. |
-| `src/data/terminalContent.js` | Virtual filesystem and terminal flavor text.                                                 |
+| File                          | Role                                                                                                                                             |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `src/data/apps.js`            | App registry shared by both shells. `DESKTOP_ICON_APPS` excludes the terminal.                                                                   |
+| `src/data/tools.js`           | Tool slugs, `toolUrl()`, `TOOL_ICON`, and the `TOOL_FRAME` sandbox attributes. Hand-mirrored from the portfolio; neither repo imports the other. |
+| `src/data/windows.js`         | Default window geometry, which windows start open, dock order, tool window cascade.                                                              |
+| `src/data/profile.js`         | Single source for bio and contact copy. The years figure is computed from 2004.                                                                  |
+| `src/data/terminalContent.js` | Terminal flavor text, `MESSAGES`, and `createFilesystem()` (built from the profile).                                                             |
 
 ## Components
 
-Content components (`About`, `Contact`, `Now`, `Iframe`, `ToolsFolder`, `Terminal`) carry no window-chrome assumptions. Desktop wraps them in `Window.jsx`; mobile renders them full screen or in a popup.
+`Desktop.jsx` picks `DesktopShell` or `MobileShell` from `useIsMobile()`. `DesktopShell` is composition only: `useWindowManager` owns state, and `Dock`, `DesktopIconGrid`, `Window` and `WindowContent` render it. `MobileShell` shows the icon grid, a `FolderPopup` for tools and a `MobileAppView` per app. Content components (`About`, `Contact`, `Now`, `IframeContent`, `ToolsFolder`, `Terminal`) carry no window-chrome assumptions and are shared by both shells.
+
+`index.astro` also renders a `<noscript>` block with the About and Contact text, since the shell is a client-only island.
+
+## State and logic
+
+- `src/lib/windowManager.js`: `createWindowReducer(defaults)` returns a pure reducer for `open`, `openTool`, `close`, `focus`, `minimize`, `move`, `resize`, `tile` and `fit`. The measured desktop surface and layout tokens arrive in the action. `useWindowManager` measures the surface, observes its size to dispatch `fit`, and exposes stable callbacks.
+- `src/lib/terminal/TerminalEngine.js`: a class holding `#cwd` and a `Map` of commands, with `{ filesystem, tools, toolUrl, portfolioUrl, messages }` injected. `execute(raw)` returns `{ lines, effects }`. Effects are `clear`, `open-url` and `open-tool`; `Terminal.jsx` carries them out. This differs slightly from the plan, which injected `openUrl` and `openTool`: returning effects keeps the engine side-effect free and trivially testable.
+- `src/lib/terminal/path.js` resolves virtual paths, `history.js` does arrow-key recall.
+- `src/hooks/useFocusReturn.js`: when a user action opens a dialog, focus moves into it and returns to the opener on close. Windows that are open at page load do not take focus.
+- `src/hooks/useWindowGestures.js`: Pointer Events with capture for drag and resize, and keyboard move and resize on the title button (arrow keys move by `--window-key-step`, Shift plus arrow resizes).
+
+## Tool frames
+
+`IframeContent` embeds a tool with `sandbox="allow-scripts allow-same-origin allow-downloads"`, `loading="lazy"` and `referrerpolicy="strict-origin"`. It always shows a link that opens the tool in a new tab, and shows a notice if the frame has not loaded within 10 seconds, because a page can only detect a header-blocked frame by its absence. The origin comes from `PUBLIC_TOOLS_ORIGIN`.
 
 ## Styles
 
@@ -28,13 +44,13 @@ Three layers.
 
 Fonts come from `@fontsource-variable/hanken-grotesk`, `@fontsource/instrument-serif` and `@fontsource-variable/jetbrains-mono`, bundled by Vite, so there is no third-party font request.
 
-## Windows and terminal
+## Windows and keyboard
 
-`Window.jsx` drags and resizes with Pointer Events and pointer capture, clamped to the desktop surface by `src/lib/windowGeometry.js`. Activities tiling uses `src/lib/layout.js`, which reads the layout tokens and measures the desktop surface. Escape closes the window that holds focus, never while typing in a field (`src/lib/keyboard.js`). The terminal resolves paths with `src/lib/terminal/path.js`. The contact form endpoint comes from `src/lib/config.js`.
+Windows drag and resize with Pointer Events, clamped to the desktop surface by `src/lib/windowGeometry.js`. Activities tiling uses `src/lib/layout.js`. Escape closes the window that holds focus, never while typing in a field (`src/lib/keyboard.js`). Each window has a focusable title button that moves it with the arrow keys and resizes it with Shift plus the arrow keys, which closes the old keyboard gap.
 
 ## Quality gates
 
-Lint (ESLint 9, pinned rules with commented exceptions), Stylelint, `tokens:check`, Prettier, `tsc --noEmit` with `checkJs`, Vitest unit tests, Playwright e2e plus axe. No known-defect pins remain: D3 to D7 are fixed and tested. `tests/unit/contrast.test.js` recomputes the WCAG ratio of every text and background token pair, and the axe e2e tests run with every rule, color-contrast included.
+Lint (ESLint 9, pinned rules with commented exceptions), Stylelint, `tokens:check`, Prettier, `tsc --noEmit` with `checkJs`, Vitest unit tests (coverage threshold of 90 percent on `src/lib`), Playwright e2e plus axe. No known-defect pins remain: D3 to D7 are fixed and tested. `tests/unit/contrast.test.js` recomputes the WCAG ratio of every text and background token pair, and the axe e2e tests run with every rule, color-contrast included.
 
 ## Delivery
 

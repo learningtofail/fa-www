@@ -97,6 +97,7 @@
   --desktop-surface-bottom: calc(var(--dock-height) + var(--dock-inset-bottom) + var(--dock-clearance));
   --tile-margin: 20px; /* Activities: space between tiled windows and the surface edge */
   --tile-gap: 16px; /* Activities: space between neighbouring tiles */
+  --window-key-step: 16px; /* keyboard move and resize distance per key press */
   --icon-grid-inset: 16px;
   --content-font-size: 0.85rem;
   --content-gap: 0.75rem;

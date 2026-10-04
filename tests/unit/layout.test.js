@@ -44,7 +44,7 @@ describe("layout tokens", () => {
 
   it("reads px tokens from computed style and treats a missing token as 0", () => {
     document.documentElement.style.setProperty("--tile-margin", "24px");
-    expect(readLayoutTokens()).toEqual({ tileMargin: 24, tileGap: 0 });
+    expect(readLayoutTokens()).toEqual({ tileMargin: 24, tileGap: 0, windowKeyStep: 0 });
   });
 
   it("parses plain numbers and rejects garbage", () => {
