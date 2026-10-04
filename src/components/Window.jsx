@@ -1,20 +1,7 @@
 import { useRef, useCallback } from "react";
 import { isTextEntryTarget } from "../lib/keyboard.js";
+import { measureBounds } from "../lib/layout.js";
 import { clampPosition, clampSize } from "../lib/windowGeometry.js";
-
-/**
- * Size of the box the window is positioned in (the desktop surface), falling back to
- * the browser viewport when the element has no layout box.
- * @param {HTMLElement} windowEl
- * @returns {{ width: number, height: number }}
- */
-function boundsOf(windowEl) {
-  const parent = windowEl.offsetParent;
-  if (parent instanceof HTMLElement && parent.clientWidth > 0 && parent.clientHeight > 0) {
-    return { width: parent.clientWidth, height: parent.clientHeight };
-  }
-  return { width: window.innerWidth, height: window.innerHeight };
-}
 
 /**
  * Draggable/resizable window chrome. Purely presentational + interaction —
@@ -82,7 +69,7 @@ export default function Window({
     (e) => {
       const g = gesture.current;
       if (!g || g.pointerId !== e.pointerId || !rootRef.current) return;
-      const bounds = boundsOf(rootRef.current);
+      const bounds = measureBounds(rootRef.current);
       const dx = e.clientX - g.startX;
       const dy = e.clientY - g.startY;
       if (g.mode === "move") {
@@ -111,21 +98,20 @@ export default function Window({
     [id, onClose],
   );
 
+  const geometry = /** @type {React.CSSProperties} */ ({
+    "--window-x": `${x}px`,
+    "--window-y": `${y}px`,
+    "--window-width": `${width}px`,
+    "--window-height": `${height}px`,
+    "--window-z": zIndex,
+  });
+
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- the dialog root focuses itself on mouse down and closes on Escape from inside it; keyboard focus handoff arrives in Phase 4 (S11)
     <div
       className="win"
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        width,
-        height,
-        zIndex,
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
+      // eslint-disable-next-line react/forbid-dom-props -- sets geometry custom properties only (the documented inline-style exception in CLAUDE.md); all skin lives in desktop.css
+      style={geometry}
       ref={rootRef}
       onMouseDown={() => onFocus(id)}
       onKeyDown={onKeyDown}
@@ -167,7 +153,7 @@ export default function Window({
         aria-hidden="true"
       >
         <svg width="16" height="16" viewBox="0 0 16 16">
-          <path d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14" style={{ stroke: "var(--grey-400)" }} strokeWidth="1.5" />
+          <path className="win-resize-handle__glyph" d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14" strokeWidth="1.5" />
         </svg>
       </div>
     </div>

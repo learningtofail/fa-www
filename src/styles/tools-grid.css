@@ -1,0 +1,39 @@
+/* ToolsFolderContent.jsx renders inside both shells. */
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: var(--space-4x);
+  padding: var(--space-2x) 0;
+}
+
+.tools-grid--dense {
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: var(--space-2x);
+  padding: var(--space-2x);
+}
+
+.tools-grid__tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-half);
+  padding: var(--space-2x);
+  border: none;
+  border-radius: var(--radius-material);
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  transition: var(--transition-chrome);
+}
+
+.tools-grid__tile:hover {
+  background: color-mix(in srgb, currentcolor 8%, transparent);
+}
+
+.tools-grid__label {
+  font-size: var(--desktop-icon-label-size);
+  line-height: var(--line-height-tight);
+  text-align: center;
+}

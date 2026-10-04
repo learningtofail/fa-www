@@ -14,3 +14,6 @@ export const tools = [
 export function toolUrl(slug) {
   return `${PORTFOLIO_ORIGIN}/tools/${slug}/`;
 }
+
+/** Icon shared by every tool tile and dock button; `tone` names an `--app-tone-*` token. */
+export const TOOL_ICON = Object.freeze({ glyph: "\u{1F527}", tone: "tool" });

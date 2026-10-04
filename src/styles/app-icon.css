@@ -1,0 +1,50 @@
+/* AppIcon.jsx. Size and tone are modifiers, so no per-instance inline style is needed. */
+
+.app-icon {
+  --app-icon-size: var(--icon-size-lg);
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--app-icon-size);
+  height: var(--app-icon-size);
+  border-radius: calc(var(--app-icon-size) * var(--app-tile-radius-ratio));
+  box-shadow: var(--app-tile-shadow);
+  color: var(--white);
+  font-size: calc(var(--app-icon-size) * var(--app-icon-glyph-ratio));
+}
+
+.app-icon--xs {
+  --app-icon-size: var(--icon-size-xs);
+}
+.app-icon--sm {
+  --app-icon-size: var(--icon-size-sm);
+}
+.app-icon--md {
+  --app-icon-size: var(--icon-size-md);
+}
+.app-icon--lg {
+  --app-icon-size: var(--icon-size-lg);
+}
+.app-icon--xl {
+  --app-icon-size: var(--icon-size-xl);
+}
+
+.app-icon--about {
+  background: var(--app-tone-about);
+}
+.app-icon--contact {
+  background: var(--app-tone-contact);
+}
+.app-icon--now {
+  background: var(--app-tone-now);
+}
+.app-icon--tools {
+  background: var(--app-tone-tools);
+}
+.app-icon--terminal {
+  background: var(--app-tone-terminal);
+}
+.app-icon--tool {
+  background: var(--app-tone-tool);
+}

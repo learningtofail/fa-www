@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "../styles/content.css";
 import "../styles/form.css";
 import { config } from "../lib/config.js";
 
@@ -33,16 +34,8 @@ export default function ContactContent() {
   };
 
   return (
-    <div style={{ fontFamily: "var(--font-ui)", fontSize: "0.85rem", lineHeight: "var(--line-height-body)" }}>
-      <p
-        style={{
-          fontFamily: "var(--font-terminal)",
-          color: "var(--content-text-muted)",
-          margin: "0 0 0.75rem",
-        }}
-      >
-        faysal@desktop:~$ cat contact.txt
-      </p>
+    <div className="content">
+      <p className="content__prompt">faysal@desktop:~$ cat contact.txt</p>
       <p>
         The direct line: <a href="mailto:contactfaysal@gmail.com">contactfaysal@gmail.com</a>
         <br />
@@ -55,7 +48,7 @@ export default function ContactContent() {
       {status === "sent" ? (
         <p className="gtk-status-success">Sent. Thanks — I&apos;ll get back to you.</p>
       ) : (
-        <form onSubmit={onSubmit} style={{ marginTop: "0.75rem" }}>
+        <form className="contact-form" onSubmit={onSubmit}>
           {/* Honeypot — hidden from real visitors via CSS, bots often fill it anyway */}
           <input
             className="contact-form__honeypot"

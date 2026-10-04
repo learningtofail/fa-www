@@ -1,26 +1,14 @@
+import "../styles/app-icon.css";
+
 // Shared icon glyph used by desktop icons, the dock, the mobile home grid, and
-// the tools folder grid — one visual language across every navigation surface.
+// the tools folder grid: one visual language across every navigation surface.
 /**
- * @param {{ glyph: string, color: string, size?: number, fontSize?: number }} props
+ * @param {{ glyph: string, tone: string, size?: "xs" | "sm" | "md" | "lg" | "xl" }} props
+ * `tone` names an `--app-tone-*` token, `size` an `--icon-size-*` token.
  */
-export default function AppIcon({ glyph, color, size = 44, fontSize }) {
+export default function AppIcon({ glyph, tone, size = "lg" }) {
   return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size * 0.24,
-        background: color,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: fontSize || size * 0.5,
-        color: "var(--white)",
-        flexShrink: 0,
-        boxShadow: "var(--app-tile-shadow)",
-      }}
-      aria-hidden="true"
-    >
+    <div className={`app-icon app-icon--${size} app-icon--${tone}`} aria-hidden="true">
       {glyph}
     </div>
   );

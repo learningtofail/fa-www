@@ -10,6 +10,8 @@ import IframeContent from "./IframeContent.jsx";
 import ToolsFolderContent from "./ToolsFolderContent.jsx";
 import Terminal from "./Terminal.jsx";
 import { APPS, DESKTOP_ICON_APPS } from "../data/apps.js";
+import { TOOL_ICON } from "../data/tools.js";
+import { computeTileLayout, readLayoutTokens } from "../lib/layout.js";
 
 const FIXED_WINDOWS = {
   about: { title: "about.txt", x: 140, y: 60, width: 420, height: 260 },
@@ -23,6 +25,7 @@ const DOCK_APP_IDS = ["about", "contact", "now", "tools", "terminal"];
 
 export default function DesktopShell({ lastDeploy }) {
   const zCounter = useRef(10);
+  const surfaceRef = useRef(null);
   const [selectedIcon, setSelectedIcon] = useState(null);
   // eslint-disable-next-line react-hooks/refs -- initializer reads and writes zCounter during render; replaced by a pure windowReducer in Phase 4
   const [windows, setWindows] = useState(() => {
@@ -102,28 +105,24 @@ export default function DesktopShell({ lastDeploy }) {
     }));
   }, []);
 
-  // "Activities" — GNOME-lite: tile every open, non-minimized window into a
-  // simple non-overlapping grid rather than a full Expose-style overview.
+  // "Activities": GNOME-lite. Tile every open, non-minimized window into a simple
+  // non-overlapping grid rather than a full Expose-style overview. Metrics come from
+  // the layout tokens and the measured desktop surface (src/lib/layout.js).
   const tileWindows = useCallback(() => {
+    const surfaceEl = surfaceRef.current;
+    const surface = surfaceEl
+      ? { width: surfaceEl.clientWidth, height: surfaceEl.clientHeight }
+      : { width: window.innerWidth, height: window.innerHeight };
+    const tokens = readLayoutTokens();
     setWindows((prev) => {
       const openIds = Object.values(prev)
         .filter((w) => w.open && !w.minimized)
         .map((w) => w.id);
       if (openIds.length === 0) return prev;
-      const cols = Math.ceil(Math.sqrt(openIds.length));
-      const cellW = Math.floor((window.innerWidth - 40) / cols);
-      const cellH = Math.floor((window.innerHeight - 30 - 44 - 40) / Math.ceil(openIds.length / cols));
+      const rects = computeTileLayout(openIds.length, surface, tokens);
       const next = { ...prev };
       openIds.forEach((id, i) => {
-        const col = i % cols;
-        const row = Math.floor(i / cols);
-        next[id] = {
-          ...next[id],
-          x: 20 + col * cellW,
-          y: 40 + row * cellH,
-          width: cellW - 16,
-          height: cellH - 16,
-        };
+        next[id] = { ...next[id], ...rects[i] };
       });
       return next;
     });
@@ -138,25 +137,11 @@ export default function DesktopShell({ lastDeploy }) {
 
   return (
     <main className="gnome-root">
-      <h1
-        style={{
-          position: "absolute",
-          width: 1,
-          height: 1,
-          padding: 0,
-          margin: -1,
-          overflow: "hidden",
-          clip: "rect(0,0,0,0)",
-          whiteSpace: "nowrap",
-          border: 0,
-        }}
-      >
-        Faysal Ahmed — desktop
-      </h1>
+      <h1 className="visually-hidden">Faysal Ahmed — desktop</h1>
       <TopBar onActivities={tileWindows} />
 
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- background click only clears the icon selection and has a keyboard path through Tab; revisit in Phase 4 (S11) */}
-      <div className="gnome-desktop-surface" onClick={handleDesktopClick}>
+      <div ref={surfaceRef} className="gnome-desktop-surface" onClick={handleDesktopClick}>
         <div className="desktop-icon-grid">
           {DESKTOP_ICON_APPS.map((app) => (
             <button
@@ -173,7 +158,7 @@ export default function DesktopShell({ lastDeploy }) {
                 }
               }}
             >
-              <AppIcon glyph={app.glyph} color={app.color} size={40} />
+              <AppIcon glyph={app.glyph} tone={app.tone} size="sm" />
               <span className="desktop-icon-label">{app.label}</span>
             </button>
           ))}
@@ -219,7 +204,7 @@ export default function DesktopShell({ lastDeploy }) {
               title={app.label}
               aria-label={app.label}
             >
-              <AppIcon glyph={app.glyph} color={app.color} size={32} />
+              <AppIcon glyph={app.glyph} tone={app.tone} size="xs" />
             </button>
           );
         })}
@@ -233,7 +218,7 @@ export default function DesktopShell({ lastDeploy }) {
               title={w.title}
               aria-label={w.title}
             >
-              <AppIcon glyph={"\u{1F527}"} color="#3a5a9b" size={32} />
+              <AppIcon {...TOOL_ICON} size="xs" />
             </button>
           ))}
       </div>

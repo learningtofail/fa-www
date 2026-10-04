@@ -179,54 +179,26 @@ export default function Terminal({ onOpenTool }) {
 
   return (
     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- clicking anywhere in the terminal focuses its input; the input itself is the keyboard target
-    <div
-      onClick={() => inputRef.current?.focus()}
-      style={{
-        height: "100%",
-        background: "var(--term-bg)",
-        color: "var(--term-fg)",
-        fontFamily: "var(--font-terminal)",
-        fontSize: "var(--term-font-size)",
-        display: "flex",
-        flexDirection: "column",
-        padding: "var(--space-2x)",
-      }}
-    >
-      <div
-        ref={scrollRef}
-        role="log"
-        aria-live="polite"
-        aria-label="Terminal output"
-        style={{ flex: 1, overflowY: "auto" }}
-      >
+    <div className="terminal" onClick={() => inputRef.current?.focus()}>
+      <div ref={scrollRef} className="terminal__output" role="log" aria-live="polite" aria-label="Terminal output">
         {lines.map((line, i) => (
           <div
             // eslint-disable-next-line react/no-array-index-key -- append-only output list; rewritten with stable ids in Phase 4
             key={i}
-            style={{
-              marginBottom: line.type === "input" ? 0 : "var(--space-half)",
-              color:
-                line.type === "input"
-                  ? "var(--term-accent)"
-                  : line.type === "boot"
-                    ? "var(--term-dim)"
-                    : "var(--term-fg)",
-            }}
+            className={`terminal__line terminal__line--${line.type}`}
           >
             {line.text.map((t, j) => (
               // eslint-disable-next-line react/no-array-index-key -- lines of one output block never reorder
-              <div key={j}>{t === "" ? " " : t}</div>
+              <div key={j}>{t === "" ? " " : t}</div>
             ))}
           </div>
         ))}
       </div>
-      <form onSubmit={onSubmit} style={{ display: "flex", alignItems: "center", marginTop: "var(--space-half)" }}>
-        <span style={{ color: "var(--term-accent)", marginRight: "var(--space-size)" }}>
-          faysal@desktop:{pathLabel(cwd)}$
-        </span>
+      <form className="terminal__form" onSubmit={onSubmit}>
+        <span className="terminal__prompt">faysal@desktop:{pathLabel(cwd)}$</span>
         <input
           ref={inputRef}
-          className="term-input"
+          className="terminal__input"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -236,14 +208,6 @@ export default function Terminal({ onOpenTool }) {
           spellCheck={false}
           autoComplete="off"
           aria-label="Terminal command input"
-          style={{
-            flex: 1,
-            background: "transparent",
-            border: "none",
-            color: "var(--white)",
-            fontFamily: "inherit",
-            fontSize: "inherit",
-          }}
         />
       </form>
     </div>

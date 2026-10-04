@@ -1,0 +1,29 @@
+/* Window and app-view content shared by About, Contact and Now. */
+
+.content {
+  font-family: var(--font-ui);
+  font-size: var(--content-font-size);
+  line-height: var(--line-height-body);
+}
+
+.content--mono {
+  font-family: var(--font-terminal);
+  line-height: var(--line-height-terminal);
+}
+
+.content__prompt {
+  margin: 0 0 var(--content-gap);
+  color: var(--content-text-muted);
+  font-family: var(--font-terminal);
+}
+
+.contact-form {
+  margin-top: var(--content-gap);
+}
+
+.iframe-content {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+}

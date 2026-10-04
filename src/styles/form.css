@@ -2,7 +2,7 @@
    Entry and Button controls (components/controls/Entry.jsx, Button.jsx), but
    Entry's fill/text colors are flipped for a light surface — those components
    assume the dark chrome background, and the window body here is deliberately
-   opaque white (see tokens.css's --content-* note). The submit button reuses
+   opaque white (see site.tokens.css's --content-* block). The submit button reuses
    the "filled" Button variant as-is: blue-bg/white-text works on any
    background, so no adaptation was needed there. */
 

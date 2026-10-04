@@ -1,6 +1,6 @@
 /* Android-style mobile shell. Loaded only by MobileShell.jsx. No system status
    bar here on purpose — the phone already has one. Values drawn from
-   ../styles/tokens.css, matching the desktop shell's token language. */
+   the token layers, matching the desktop shell's token language. */
 
 .android-root {
   position: relative;

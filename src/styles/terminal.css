@@ -1,7 +1,57 @@
-/* Terminal.jsx is rendered inside both DesktopShell (desktop.css) and
-   MobileShell (mobile.css) — its own focus style lives here so it's correct
-   in either context rather than duplicated in both stylesheets. */
-.term-input:focus-visible {
+/* Terminal.jsx is rendered inside both DesktopShell and MobileShell, so its
+   styles live here once rather than in both shell stylesheets. */
+
+.terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-2x);
+  background: var(--term-bg);
+  color: var(--term-fg);
+  font-family: var(--font-terminal);
+  font-size: var(--term-font-size);
+}
+
+.terminal__output {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.terminal__line {
+  margin-bottom: var(--space-half);
+  color: var(--term-fg);
+}
+
+.terminal__line--input {
+  margin-bottom: 0;
+  color: var(--term-accent);
+}
+
+.terminal__line--boot {
+  color: var(--term-dim);
+}
+
+.terminal__form {
+  display: flex;
+  align-items: center;
+  margin-top: var(--space-half);
+}
+
+.terminal__prompt {
+  margin-right: var(--space-size);
+  color: var(--term-accent);
+}
+
+.terminal__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--white);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.terminal__input:focus-visible {
   outline: 2px solid var(--term-accent);
   outline-offset: 2px;
 }

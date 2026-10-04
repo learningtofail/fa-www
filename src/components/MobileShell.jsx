@@ -28,25 +28,11 @@ export default function MobileShell({ lastDeploy }) {
 
   return (
     <main className="android-root">
-      <h1
-        style={{
-          position: "absolute",
-          width: 1,
-          height: 1,
-          padding: 0,
-          margin: -1,
-          overflow: "hidden",
-          clip: "rect(0,0,0,0)",
-          whiteSpace: "nowrap",
-          border: 0,
-        }}
-      >
-        Faysal Ahmed — desktop
-      </h1>
+      <h1 className="visually-hidden">Faysal Ahmed — desktop</h1>
       <div className="app-grid">
         {APPS.map((app) => (
           <button key={app.id} className="app-icon-btn" onClick={() => handleIconTap(app)}>
-            <AppIcon glyph={app.glyph} color={app.color} size={52} fontSize={26} />
+            <AppIcon glyph={app.glyph} tone={app.tone} size="lg" />
             <span className="app-icon-label">{app.label}</span>
           </button>
         ))}

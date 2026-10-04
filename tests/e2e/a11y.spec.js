@@ -21,3 +21,32 @@ test("desktop windows with a link, a form and the terminal meet color contrast",
   const results = await new AxeBuilder({ page: /** @type {any} */ (page) }).withRules(["color-contrast"]).analyze();
   expect(results.violations).toEqual([]);
 });
+
+test("inline style attributes only carry window geometry custom properties", async ({ page }) => {
+  await page.setViewportSize(viewports.desktop);
+  await page.goto("/");
+  await page.locator(".gnome-dock").getByRole("button", { name: "Terminal" }).click();
+  const offenders = await page.evaluate(() =>
+    [...document.querySelectorAll("[style]")]
+      .map((el) => el.getAttribute("style") ?? "")
+      .filter((style) => style.split(";").some((decl) => decl.trim() && !decl.trim().startsWith("--window-"))),
+  );
+  expect(offenders).toEqual([]);
+});
+
+test("self-hosted fonts load and no third-party font request is made", async ({ page }) => {
+  const external = [];
+  page.on("request", (request) => {
+    if (!request.url().startsWith("http://127.0.0.1")) external.push(request.url());
+  });
+  await page.setViewportSize(viewports.desktop);
+  await page.goto("/");
+  await page.locator(".gnome-dock").getByRole("button", { name: "Terminal" }).click();
+  await page.evaluate(() => document.fonts.ready);
+  const loaded = await page.evaluate(() =>
+    [...document.fonts].filter((face) => face.status === "loaded").map((face) => face.family),
+  );
+  expect(loaded.some((family) => family.includes("Hanken Grotesk"))).toBe(true);
+  expect(loaded.some((family) => family.includes("JetBrains Mono"))).toBe(true);
+  expect(external.filter((url) => /fonts\.(googleapis|gstatic)\.com/.test(url))).toEqual([]);
+});
