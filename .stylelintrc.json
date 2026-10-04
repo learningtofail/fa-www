@@ -1,0 +1,18 @@
+{
+  "$comment": "Layer rule: color literals live only in the two token files. Everything else uses var(--token).",
+  "ignoreFiles": [
+    "src/styles/orchis.tokens.css",
+    "src/styles/site.tokens.css",
+    "dist/**",
+    ".astro/**",
+    "node_modules/**"
+  ],
+  "overrides": [{ "files": ["**/*.astro"], "customSyntax": "postcss-html" }],
+  "rules": {
+    "color-no-hex": true,
+    "declaration-no-important": true,
+    "selector-max-id": 0,
+    "block-no-empty": true,
+    "no-duplicate-selectors": true
+  }
+}

@@ -1,6 +1,10 @@
 ---
-import "../styles/tokens.css";
+import "@fontsource-variable/hanken-grotesk";
+import "@fontsource/instrument-serif";
+import "@fontsource-variable/jetbrains-mono";
+import "../styles/orchis.tokens.css";
 import "../styles/site.tokens.css";
+import "../styles/base.css";
 interface Props {
   title: string;
   description?: string;
@@ -34,56 +38,6 @@ const { title, description = "faysal's desktop." } = Astro.props;
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL("/og-image.png", Astro.site)} />
-    <style is:global>
-      :root {
-        color-scheme: dark;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        background: var(--wallpaper-stop-1);
-      }
-      * {
-        box-sizing: border-box;
-      }
-      body {
-        font-family: var(--font-ui);
-        font-size: var(--font-size-root);
-        line-height: var(--line-height-body);
-        color: var(--text);
-        -webkit-font-smoothing: antialiased;
-        text-wrap: pretty;
-      }
-      /* Links sit inside body text and the link color is under 3:1 against it,
-         so the underline is the non-color cue WCAG 1.4.1 requires (axe: link-in-text-block). */
-      a {
-        color: var(--link);
-        text-decoration: underline;
-        text-underline-offset: 0.15em;
-      }
-      a:hover {
-        text-decoration-thickness: 2px;
-      }
-      a:visited {
-        color: var(--link-visited);
-      }
-      :focus-visible {
-        outline: 2px solid var(--orchis-accent);
-        outline-offset: 2px;
-      }
-      code,
-      pre,
-      kbd {
-        font-family: var(--font-terminal);
-      }
-      /* ToolsFolderContent renders inside both shells, so its hover state
-         lives here rather than being duplicated in desktop.css/mobile.css. */
-      .tool-tile:hover {
-        background: color-mix(in srgb, currentColor 8%, transparent);
-      }
-    </style>
   </head>
   <body>
     <slot />

@@ -24,6 +24,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run lint:css
+      # CI always does the network diff against the pinned Orchis DS commit; locally an offline run falls back to the recorded sha256.
+      - run: npm run tokens:check -- --require-network
       - run: npm run format:check
       - run: npm run typecheck
 

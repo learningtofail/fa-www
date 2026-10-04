@@ -17,7 +17,7 @@ function loadTokens(files) {
   return tokens;
 }
 
-const tokens = loadTokens(["tokens.css", "site.tokens.css"]);
+const tokens = loadTokens(["orchis.tokens.css", "site.tokens.css"]);
 
 /** Resolves `var(--x)` aliases down to a hex value. */
 function color(name) {
