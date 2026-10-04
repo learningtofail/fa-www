@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Terminal from "../../src/components/Terminal.jsx";
+import { yearsActive } from "../../src/data/profile.js";
 
 /** Types a command into the terminal input and presses Enter. */
 async function run(user, command) {
@@ -51,7 +52,7 @@ describe("Terminal commands (current behavior)", () => {
     await run(user, "ls");
     expect(output()).toContain("about.txt   contact.txt   tools/");
     await run(user, "cat about.txt");
-    expect(output()).toContain("22 years making Google behave");
+    expect(output()).toContain(`${yearsActive()} years making Google behave`);
   });
 
   it("reports missing files, directories and arguments", async () => {

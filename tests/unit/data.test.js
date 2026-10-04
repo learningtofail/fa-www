@@ -1,6 +1,7 @@
 import { APPS, DESKTOP_ICON_APPS } from "../../src/data/apps.js";
-import { tools, toolUrl, PORTFOLIO_ORIGIN } from "../../src/data/tools.js";
-import { FILESYSTEM, HELP_TEXT } from "../../src/data/terminalContent.js";
+import { tools, toolUrl, PORTFOLIO_ORIGIN, TOOL_FRAME } from "../../src/data/tools.js";
+import { CAREER_START_YEAR, PROFILE, summary, tagline, yearsActive } from "../../src/data/profile.js";
+import { createFilesystem, HELP_TEXT } from "../../src/data/terminalContent.js";
 
 describe("app registry", () => {
   it("lists the five apps both shells render", () => {
@@ -34,7 +35,7 @@ describe("tools catalog", () => {
 
 describe("terminal content", () => {
   it("exposes the virtual filesystem the README documents", () => {
-    const root = /** @type {{ children: Record<string, any> }} */ (FILESYSTEM);
+    const root = /** @type {{ children: Record<string, any> }} */ (createFilesystem());
     expect(Object.keys(root.children).sort()).toEqual([".secrets", "about.txt", "contact.txt", "tools"]);
     expect(Object.keys(root.children[".secrets"].children).sort()).toEqual([
       "resume-link.txt",
@@ -46,5 +47,31 @@ describe("terminal content", () => {
     const help = HELP_TEXT.join("\n");
     for (const cmd of ["help", "ls", "cd", "cat", "open", "whoami", "clear"]) expect(help).toContain(cmd);
     expect(help).not.toContain("sudo");
+  });
+});
+
+describe("tool frame", () => {
+  it("grants scripts, same-origin and downloads, and nothing that lets the tool navigate or pop up", () => {
+    const flags = TOOL_FRAME.sandbox.split(" ").sort();
+    expect(flags).toEqual(["allow-downloads", "allow-same-origin", "allow-scripts"]);
+  });
+});
+
+describe("profile", () => {
+  it("computes the years figure from the career start year", () => {
+    expect(CAREER_START_YEAR).toBe(2004);
+    expect(yearsActive(new Date(2026, 9, 4))).toBe(22);
+    expect(yearsActive(new Date(2027, 0, 2))).toBe(23);
+    expect(tagline(new Date(2027, 0, 2))).toBe("23 years making Google behave.");
+  });
+
+  it("composes the summary used by About and about.txt", () => {
+    expect(summary(new Date(2026, 9, 4))).toBe(
+      "22 years making Google behave. Currently VP-track: SEO, organic growth, the occasional turnaround.",
+    );
+  });
+
+  it("holds no phone number or street address (those stay out of this repo)", () => {
+    expect(JSON.stringify(PROFILE)).not.toMatch(/\+?\d[\d\s().-]{8,}\d/);
   });
 });
