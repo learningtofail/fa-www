@@ -28,4 +28,4 @@ Lint (ESLint 9, pinned rules with commented exceptions), Prettier, `tsc --noEmit
 
 ## Delivery
 
-`.github/workflows/ci.yml`: static checks, unit tests, build plus e2e, and a non-blocking audit run on every PR and push. On push to `main`, the deploy job downloads the built `dist` artifact and rsyncs it over Tailscale to `/opt/static-web/sites/www/`.
+`.github/workflows/ci.yml`: static checks, unit tests, build plus e2e, and a blocking `npm audit --omit=dev --audit-level=high` run on every PR and push. On push to `main`, once every job (audit included) passes, the deploy job downloads the built `dist` artifact and rsyncs it over Tailscale to `/opt/static-web/sites/www/`.

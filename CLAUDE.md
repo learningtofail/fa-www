@@ -5,7 +5,7 @@ Astro 4 static site, React 18 island. See `docs/architecture.md` for the current
 ## Commands
 
 - `npm run check`: lint, format check, typecheck, unit tests. Run before every commit.
-- `npm run build` then `npm run test:e2e`: Playwright serves `astro preview`. Set `PW_CHROMIUM_PATH` to an existing Chromium binary when Playwright's own download is unavailable.
+- `npm run build` then `npm run test:e2e`: Playwright serves `astro preview`. Astro 7 `preview` backgrounds itself in non-TTY shells, so the Playwright config passes `--ignore-lock` to keep it in the foreground. Set `PW_CHROMIUM_PATH` to an existing Chromium binary when Playwright's own download is unavailable.
 - `npm run lint:fix`, `npm run format`.
 
 ## Repo map
