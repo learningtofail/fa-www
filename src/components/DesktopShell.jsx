@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef } from "react";
 import "../styles/desktop.css";
 import TopBar from "./TopBar.jsx";
 import AppIcon from "./AppIcon.jsx";
@@ -69,21 +69,6 @@ export default function DesktopShell({ lastDeploy }) {
   const minimizeWindow = useCallback((id) => {
     setWindows((prev) => ({ ...prev, [id]: { ...prev[id], minimized: true } }));
   }, []);
-
-  // Keyboard equivalent for the small × button: Escape closes whichever open
-  // window currently has focus priority (highest zIndex), so closing a window
-  // doesn't require precisely clicking a 22px target.
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key !== "Escape") return;
-      const open = Object.values(windows).filter((w) => w.open && !w.minimized);
-      if (open.length === 0) return;
-      const topmost = open.reduce((a, b) => (b.zIndex > a.zIndex ? b : a));
-      closeWindow(topmost.id);
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [windows, closeWindow]);
 
   const moveWindow = useCallback((id, x, y) => {
     setWindows((prev) => ({ ...prev, [id]: { ...prev[id], x, y } }));

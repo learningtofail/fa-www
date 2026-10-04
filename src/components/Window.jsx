@@ -1,4 +1,5 @@
 import { useRef, useCallback } from "react";
+import { isTextEntryTarget } from "../lib/keyboard.js";
 
 const MIN_WIDTH = 240;
 const MIN_HEIGHT = 160;
@@ -75,8 +76,17 @@ export default function Window({
     [id, width, height, onFocus, onResize],
   );
 
+  // Escape closes the window that holds keyboard focus, except while typing in a field.
+  const onKeyDown = useCallback(
+    (e) => {
+      if (e.key !== "Escape" || isTextEntryTarget(e.target)) return;
+      onClose(id);
+    },
+    [id, onClose],
+  );
+
   return (
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- window root focuses itself on mouse down; keyboard focus handling arrives in Phase 4 (S11)
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- the dialog root focuses itself on mouse down and closes on Escape from inside it; keyboard focus handoff arrives in Phase 4 (S11)
     <div
       className="win"
       style={{
@@ -91,6 +101,7 @@ export default function Window({
         overflow: "hidden",
       }}
       onMouseDown={() => onFocus(id)}
+      onKeyDown={onKeyDown}
       role="dialog"
       aria-label={title}
     >

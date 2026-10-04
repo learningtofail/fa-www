@@ -58,11 +58,20 @@ describe("DesktopShell", () => {
     expect(frame.getAttribute("src")).toBe("https://portfolio.faysalahmed.ca/tools/utm-auditor/");
   });
 
-  it("closes the topmost window on Escape", () => {
+  it("closes the window that holds focus on Escape", () => {
+    render(<DesktopShell lastDeploy="x" />);
+    const before = windowTitles().length;
+    const aboutBody = screen.getByRole("dialog", { name: "about.txt" }).querySelector(".win-body");
+    fireEvent.keyDown(aboutBody, { key: "Escape" });
+    expect(windowTitles()).toHaveLength(before - 1);
+    expect(windowTitles()).not.toContain("about.txt");
+  });
+
+  it("ignores Escape when no window holds focus", () => {
     render(<DesktopShell lastDeploy="x" />);
     const before = windowTitles().length;
     fireEvent.keyDown(window, { key: "Escape" });
-    expect(windowTitles()).toHaveLength(before - 1);
+    expect(windowTitles()).toHaveLength(before);
   });
 
   it("tiles open windows from Activities without losing any", async () => {
@@ -73,9 +82,9 @@ describe("DesktopShell", () => {
   });
 });
 
-// Known defect (review D4). Passes while the bug exists, fails once Escape ignores text inputs.
-describe("DesktopShell known defects (D4)", () => {
-  it.fails("keeps the terminal open when Escape is pressed inside its input", async () => {
+// Review D4: Escape must not close a window while the user types in it.
+describe("DesktopShell Escape while typing (D4)", () => {
+  it("keeps the terminal open when Escape is pressed inside its input", async () => {
     const user = userEvent.setup();
     render(<DesktopShell lastDeploy="x" />);
     await user.click(screen.getByRole("button", { name: "Terminal" }));
@@ -83,6 +92,15 @@ describe("DesktopShell known defects (D4)", () => {
     input.focus();
     await user.keyboard("{Escape}");
     expect(windowTitles()).toContain("terminal");
+  });
+
+  it("keeps the contact window open when Escape is pressed inside a form field", async () => {
+    const user = userEvent.setup();
+    render(<DesktopShell lastDeploy="x" />);
+    const contact = screen.getByRole("dialog", { name: "contact.txt" });
+    within(contact).getByPlaceholderText("Name").focus();
+    await user.keyboard("{Escape}");
+    expect(windowTitles()).toContain("contact.txt");
   });
 });
 

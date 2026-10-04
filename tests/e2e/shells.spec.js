@@ -57,12 +57,18 @@ test.describe("desktop windows", () => {
     await expect(page.getByRole("log", { name: "Terminal output" })).toContainText("convincing impression");
   });
 
-  // Known defect D4: Escape in the terminal input closes the whole window.
-  test.fixme("keeps the terminal open when Escape is pressed while typing", async ({ page }) => {
+  // D4: Escape inside a text field must not close the window.
+  test("keeps the terminal open when Escape is pressed while typing", async ({ page }) => {
     await page.locator(".gnome-dock").getByRole("button", { name: "Terminal" }).click();
     const input = page.getByRole("textbox", { name: "Terminal command input" });
     await input.press("Escape");
     await expect(input).toBeVisible();
+  });
+
+  test("closes the focused window on Escape outside text fields", async ({ page }) => {
+    await page.getByRole("button", { name: "Minimize contact.txt" }).focus();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog", { name: "contact.txt" })).toHaveCount(0);
   });
 });
 
