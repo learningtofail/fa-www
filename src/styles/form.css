@@ -76,10 +76,10 @@ textarea.gtk-field {
   white-space: nowrap;
 }
 .gtk-btn-primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--white) 10%, var(--primary));
+  background: var(--primary-hover);
 }
 .gtk-btn-primary:active:not(:disabled) {
-  background: color-mix(in srgb, var(--white) 20%, var(--primary));
+  background: var(--primary-active);
 }
 .gtk-btn-primary:disabled {
   opacity: 0.6;

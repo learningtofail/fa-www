@@ -1,5 +1,6 @@
 ---
 import "../styles/tokens.css";
+import "../styles/site.tokens.css";
 interface Props {
   title: string;
   description?: string;
@@ -55,13 +56,15 @@ const { title, description = "faysal's desktop." } = Astro.props;
         -webkit-font-smoothing: antialiased;
         text-wrap: pretty;
       }
+      /* Links sit inside body text and the link color is under 3:1 against it,
+         so the underline is the non-color cue WCAG 1.4.1 requires (axe: link-in-text-block). */
       a {
         color: var(--link);
-        text-decoration: none;
+        text-decoration: underline;
+        text-underline-offset: 0.15em;
       }
       a:hover {
-        color: var(--link);
-        text-decoration: underline;
+        text-decoration-thickness: 2px;
       }
       a:visited {
         color: var(--link-visited);

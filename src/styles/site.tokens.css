@@ -1,0 +1,22 @@
+/* Site-level token layer. Loaded after the vendored tokens.css, so anything
+   declared here wins. Layer 1 (tokens.css) is a read-only copy of the Orchis DS;
+   this file holds fa-www's own decisions and overrides.
+
+   Review D5: the DS link, primary, visited and placeholder colors are tuned for
+   dark chrome, and fail WCAG AA (4.5:1) when reused on the opaque white window
+   bodies. The values below are the AA-passing replacements.
+   tests/unit/contrast.test.js recomputes every pair listed here. */
+
+:root {
+  /* Link and primary button fill: 6.87:1 on white, white on it 6.87:1. */
+  --primary: #1558b0;
+  --primary-hover: #134f9e; /* primary darkened 10%, white text 7.96:1 */
+  --primary-active: #11468d; /* primary darkened 20%, white text 9.2:1 */
+  --link-visited: #7b1fa2; /* 8.20:1 on white */
+
+  /* Placeholder on the entry fill (#f2f2f2 rest, #ebebeb hover): 5.13:1 and 4.82:1. */
+  --placeholder-text: #666666;
+
+  /* Success text on white: 6.25:1. */
+  --content-success: #216e3b;
+}
