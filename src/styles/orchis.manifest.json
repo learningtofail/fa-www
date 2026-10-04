@@ -1,0 +1,15 @@
+{
+  "source": "learningtofail/Orchis-Desktop-Design-System",
+  "sha": "a31b8d297e2754d9c02142509da81db04a642b76",
+  "files": [
+    "tokens/fonts.css",
+    "tokens/colors.css",
+    "tokens/typography.css",
+    "tokens/spacing.css",
+    "tokens/radius.css",
+    "tokens/elevation.css",
+    "tokens/motion.css"
+  ],
+  "output": "src/styles/orchis.tokens.css",
+  "sha256": "e03a13e5ca03f28c25204618e488b14263e73448133b3d9ab9b7abd9ea0cd333"
+}

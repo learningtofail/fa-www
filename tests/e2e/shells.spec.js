@@ -57,12 +57,59 @@ test.describe("desktop windows", () => {
     await expect(page.getByRole("log", { name: "Terminal output" })).toContainText("convincing impression");
   });
 
-  // Known defect D4: Escape in the terminal input closes the whole window.
-  test.fixme("keeps the terminal open when Escape is pressed while typing", async ({ page }) => {
+  // D4: Escape inside a text field must not close the window.
+  test("keeps the terminal open when Escape is pressed while typing", async ({ page }) => {
     await page.locator(".gnome-dock").getByRole("button", { name: "Terminal" }).click();
     const input = page.getByRole("textbox", { name: "Terminal command input" });
     await input.press("Escape");
     await expect(input).toBeVisible();
+  });
+
+  test("closes the focused window on Escape outside text fields", async ({ page }) => {
+    await page.getByRole("button", { name: "Minimize contact.txt" }).focus();
+    await page.keyboard.press("Escape");
+    await expect(page.getByRole("dialog", { name: "contact.txt" })).toHaveCount(0);
+  });
+});
+
+test.describe("window dragging (D7)", () => {
+  test("drags by the titlebar and keeps the window inside the viewport", async ({ page }) => {
+    await page.setViewportSize(DESKTOP);
+    await page.goto("/");
+    const win = page.getByRole("dialog", { name: "about.txt" });
+    const bar = win.locator(".win-titlebar");
+    const before = await win.boundingBox();
+    const grab = await bar.boundingBox();
+    const startX = grab.x + 40;
+    const startY = grab.y + 10;
+    await page.mouse.move(startX, startY);
+    await page.mouse.down();
+    await page.mouse.move(startX + 100, startY + 50, { steps: 4 });
+    const moved = await win.boundingBox();
+    expect(Math.round(moved.x - before.x)).toBe(100);
+    expect(Math.round(moved.y - before.y)).toBe(50);
+    await page.mouse.move(startX + 5000, startY + 5000, { steps: 4 });
+    await page.mouse.up();
+    const pinned = await win.boundingBox();
+    expect(pinned.x + pinned.width).toBeLessThanOrEqual(DESKTOP.width + 1);
+    expect(pinned.y + pinned.height).toBeLessThanOrEqual(DESKTOP.height + 1);
+  });
+
+  test("resizes from the corner handle", async ({ page }) => {
+    await page.setViewportSize(DESKTOP);
+    await page.goto("/");
+    const win = page.getByRole("dialog", { name: "about.txt" });
+    const before = await win.boundingBox();
+    const handle = await win.locator(".win-resize-handle").boundingBox();
+    const hx = handle.x + 8;
+    const hy = handle.y + 8;
+    await page.mouse.move(hx, hy);
+    await page.mouse.down();
+    await page.mouse.move(hx + 60, hy + 40, { steps: 4 });
+    await page.mouse.up();
+    const after = await win.boundingBox();
+    expect(Math.round(after.width - before.width)).toBe(60);
+    expect(Math.round(after.height - before.height)).toBe(40);
   });
 });
 

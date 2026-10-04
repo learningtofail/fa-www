@@ -1,11 +1,11 @@
-import { useRef, useCallback } from "react";
-
-const MIN_WIDTH = 240;
-const MIN_HEIGHT = 160;
+import { useCallback, useId, useRef } from "react";
+import { useFocusReturn } from "../hooks/useFocusReturn.js";
+import { useWindowGestures } from "../hooks/useWindowGestures.js";
+import { isTextEntryTarget } from "../lib/keyboard.js";
 
 /**
- * Draggable/resizable window chrome. Purely presentational + interaction —
- * position/size/z-index state lives in Desktop.jsx.
+ * Window chrome: titlebar, controls, body and resize handle. Position, size and stacking live in
+ * the window manager; gestures live in `useWindowGestures`.
  */
 export default function Window({
   id,
@@ -23,80 +23,58 @@ export default function Window({
   noPadding,
   children,
 }) {
-  const dragState = useRef(null);
-  const resizeState = useRef(null);
+  const rootRef = useRef(null);
+  const hintId = useId();
+  useFocusReturn(rootRef);
+  const { titlebarProps, resizeHandleProps, moveHandleProps } = useWindowGestures({
+    id,
+    x,
+    y,
+    width,
+    height,
+    rootRef,
+    onFocus,
+    onMove,
+    onResize,
+  });
 
-  const onTitleBarMouseDown = useCallback(
+  // Escape closes the window that holds keyboard focus, except while typing in a field.
+  const onKeyDown = useCallback(
     (e) => {
-      // Ignore drags started on the control buttons themselves
-      if (e.target.closest("[data-window-control]")) return;
-      onFocus(id);
-      dragState.current = { startX: e.clientX, startY: e.clientY, origX: x, origY: y };
-      const onMouseMove = (ev) => {
-        if (!dragState.current) return;
-        const dx = ev.clientX - dragState.current.startX;
-        const dy = ev.clientY - dragState.current.startY;
-        onMove(id, Math.max(0, dragState.current.origX + dx), Math.max(0, dragState.current.origY + dy));
-      };
-      const onMouseUp = () => {
-        dragState.current = null;
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
+      if (e.key !== "Escape" || isTextEntryTarget(e.target)) return;
+      onClose(id);
     },
-    [id, x, y, onFocus, onMove],
+    [id, onClose],
   );
 
-  const onResizeHandleMouseDown = useCallback(
-    (e) => {
-      e.stopPropagation();
-      onFocus(id);
-      resizeState.current = { startX: e.clientX, startY: e.clientY, origW: width, origH: height };
-      const onMouseMove = (ev) => {
-        if (!resizeState.current) return;
-        const dx = ev.clientX - resizeState.current.startX;
-        const dy = ev.clientY - resizeState.current.startY;
-        onResize(
-          id,
-          Math.max(MIN_WIDTH, resizeState.current.origW + dx),
-          Math.max(MIN_HEIGHT, resizeState.current.origH + dy),
-        );
-      };
-      const onMouseUp = () => {
-        resizeState.current = null;
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
-    },
-    [id, width, height, onFocus, onResize],
-  );
+  const geometry = /** @type {React.CSSProperties} */ ({
+    "--window-x": `${x}px`,
+    "--window-y": `${y}px`,
+    "--window-width": `${width}px`,
+    "--window-height": `${height}px`,
+    "--window-z": zIndex,
+  });
 
   return (
-    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- window root focuses itself on mouse down; keyboard focus handling arrives in Phase 4 (S11)
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- the dialog root focuses itself on mouse down and closes on Escape from inside it
     <div
+      ref={rootRef}
       className="win"
-      style={{
-        position: "absolute",
-        left: x,
-        top: y,
-        width,
-        height,
-        zIndex,
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}
+      // eslint-disable-next-line react/forbid-dom-props -- sets geometry custom properties only (the documented inline-style exception in CLAUDE.md); all skin lives in desktop.css
+      style={geometry}
       onMouseDown={() => onFocus(id)}
+      onKeyDown={onKeyDown}
       role="dialog"
       aria-label={title}
+      tabIndex={-1}
     >
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- mouse-only titlebar drag, a documented gap; Pointer Events and keyboard move land in Phase 2 (D7) and Phase 4 */}
-      <div className="win-titlebar" onMouseDown={onTitleBarMouseDown}>
-        <span>{title}</span>
+      <div className="win-titlebar" {...titlebarProps}>
+        <button className="win-title" aria-describedby={hintId} {...moveHandleProps}>
+          {title}
+        </button>
+        <span id={hintId} className="visually-hidden">
+          Arrow keys move this window. Shift plus arrow keys resize it.
+        </span>
         <span className="win-titlebar-controls">
           <button
             className="win-btn"
@@ -111,13 +89,18 @@ export default function Window({
           </button>
         </span>
       </div>
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- scrollable window body must be keyboard focusable; gets role and label in Phase 4 (S11) */}
-      <div tabIndex={0} className={`win-body${noPadding ? " no-padding" : ""}`}>
+      <div
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- scrollable window body must be keyboard focusable
+        tabIndex={0}
+        role="region"
+        aria-label={`${title} content`}
+        className={`win-body${noPadding ? " no-padding" : ""}`}
+      >
         {children}
       </div>
-      <div className="win-resize-handle" onMouseDown={onResizeHandleMouseDown} aria-hidden="true">
+      <div className="win-resize-handle" {...resizeHandleProps} aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 16 16">
-          <path d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14" style={{ stroke: "var(--grey-400)" }} strokeWidth="1.5" />
+          <path className="win-resize-handle__glyph" d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14" strokeWidth="1.5" />
         </svg>
       </div>
     </div>

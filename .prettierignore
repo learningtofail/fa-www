@@ -6,5 +6,5 @@ playwright-report/
 test-results/
 coverage/
 public/
-# Vendored from the Orchis DS repo; its header forbids hand edits, so the formatter must not touch it.
-src/styles/tokens.css
+# Generated from the Orchis DS repo by `npm run tokens:sync`; the formatter must not touch it.
+src/styles/orchis.tokens.css

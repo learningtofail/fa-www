@@ -1,0 +1,76 @@
+/* Global element defaults and utilities (layer 3, shared by both shells). */
+
+:root {
+  color-scheme: dark;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--wallpaper-stop-1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-ui);
+  font-size: var(--font-size-root);
+  line-height: var(--line-height-body);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-wrap: pretty;
+}
+
+/* Links sit inside body text and the link color is under 3:1 against it, so the
+   underline is the non-color cue WCAG 1.4.1 requires (axe: link-in-text-block). */
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+a:visited {
+  color: var(--link-visited);
+}
+
+:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 2px;
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--font-terminal);
+}
+
+/* Present to assistive technology, invisible on screen. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Shown only when JavaScript is off; the desktop is a client-only island. */
+.noscript {
+  position: relative;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: var(--space-4x);
+  background: var(--win-bg);
+  color: var(--content-text);
+}

@@ -1,0 +1,119 @@
+/* Site token layer (layer 2). Loads after orchis.tokens.css, so anything declared
+   here wins. Layer 1 is a generated copy of the Orchis DS (see orchis.manifest.json);
+   this file holds fa-www's own decisions: self-hosted font names, shell chrome values,
+   window-content colors, accessibility overrides, app tones and layout metrics.
+   Component CSS (layer 3) reads these tokens and holds no color literals.
+   tests/unit/contrast.test.js recomputes every text pair declared here. */
+
+:root {
+  /* ---- Fonts: @fontsource registers the variable families under these names ---- */
+  --font-family: "Hanken Grotesk Variable", "Hanken Grotesk", Cantarell, sans-serif;
+  --font-family-mono: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* ---- Shell chrome: top bar, dock, window frame, terminal, mobile shell ---- */
+  --orchis-accent: #5e9ef4;
+  --orchis-accent-soft: rgba(94, 158, 244, 0.32);
+  --orchis-chrome: #2d2d2d;
+  --orchis-chrome-elevated: #363636;
+  --orchis-radius: 10px;
+
+  --wallpaper: linear-gradient(160deg, #2c3e50 0%, #3a5a7a 60%, #4a6d8c 100%);
+  --wallpaper-stop-1: #2c3e50;
+  --wallpaper-stop-2: #3a5a7a;
+  --wallpaper-stop-3: #4a6d8c;
+
+  --topbar-height: 30px;
+  --topbar-bg: rgba(28, 28, 28, 0.85);
+  --topbar-blur: blur(8px);
+  --topbar-fg: #eee;
+  --topbar-font-size: 0.8rem;
+
+  --dock-height: 52px;
+  --dock-bg: rgba(30, 30, 30, 0.92);
+  --dock-border: 1px solid rgba(255, 255, 255, 0.07);
+  --dock-blur: blur(10px);
+  --dock-radius: 16px;
+  --dock-gap: 0.6rem;
+  --dock-inset-bottom: 10px;
+  --dock-hover: rgba(255, 255, 255, 0.12);
+
+  --win-bg: #fff; /* window bodies are opaque light surfaces */
+  --win-border: 1px solid rgba(0, 0, 0, 0.18);
+  --win-titlebar-bg: var(--orchis-chrome-elevated);
+  --win-titlebar-fg: #e8e8e8;
+  --win-titlebar-divider: 1px solid rgba(0, 0, 0, 0.28);
+  --win-btn-size: 22px;
+  --win-btn-hover: rgba(255, 255, 255, 0.16);
+
+  --desktop-icon-width: 84px;
+  --desktop-icon-radius: 6px;
+  --desktop-icon-label-size: 0.72rem;
+  --app-tile-radius-ratio: 0.24;
+  --app-tile-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+  --term-bg: #111;
+  --term-fg: #ddd;
+  --term-accent: #7fd8ff;
+  --term-dim: #888;
+  --term-font-size: 0.82rem;
+
+  --mobile-folder-bg: rgba(30, 30, 30, 0.96);
+  --mobile-folder-radius: 20px;
+  --mobile-backdrop: rgba(0, 0, 0, 0.35);
+  --mobile-header-bg: #2b2b2b;
+  --mobile-hit-target: 52px;
+
+  --dash-bg: rgba(255, 255, 255, 0.2);
+  --dash-separator: rgba(255, 255, 255, 0.15);
+
+  /* ---- Window content: bodies are light and opaque, so the dark-chrome text and
+     fill tokens of the DS do not apply inside them ---- */
+  --content-text: #1a1a1a;
+  --content-text-muted: #6b6b6b; /* 5.33:1 on white */
+  --content-success: #216e3b; /* 6.25:1 on white */
+  --content-error: #b00020; /* 7.9:1 on white */
+  --content-entry-fill: rgba(0, 0, 0, 0.05);
+  --content-entry-fill-hover: rgba(0, 0, 0, 0.08);
+  --content-border-alt: rgba(0, 0, 0, 0.16);
+
+  /* ---- Review D5: the DS link, primary, visited and placeholder colors are tuned for
+     dark chrome and fail WCAG AA (4.5:1) on white window bodies. These replace them. ---- */
+  --primary: #1558b0; /* link and primary button fill: 6.87:1 on white, white on it 6.87:1 */
+  --primary-hover: #134f9e; /* primary darkened 10%, white text 7.96:1 */
+  --primary-active: #11468d; /* primary darkened 20%, white text 9.2:1 */
+  --link-visited: #7b1fa2; /* 8.20:1 on white */
+  --placeholder-text: #666666; /* 5.13:1 on the rest fill (#f2f2f2), 4.82:1 on hover (#ebebeb) */
+
+  /* ---- App icon tones (app registry in src/data/apps.js refers to these by name) ---- */
+  --app-tone-about: #4a7c9b;
+  --app-tone-contact: #5c9e6f;
+  --app-tone-now: #c9822a;
+  --app-tone-tools: #a25c9b;
+  --app-tone-terminal: #2b2b2b;
+  --app-tone-tool: #3a5a9b;
+
+  /* ---- Layout metrics. src/lib/layout.js reads the plain-px ones at runtime. ---- */
+  --dock-clearance: 14px; /* gap between the dock and the desktop surface */
+  --desktop-surface-bottom: calc(var(--dock-height) + var(--dock-inset-bottom) + var(--dock-clearance));
+  --tile-margin: 20px; /* Activities: space between tiled windows and the surface edge */
+  --tile-gap: 16px; /* Activities: space between neighbouring tiles */
+  --window-key-step: 16px; /* keyboard move and resize distance per key press */
+  --icon-grid-inset: 16px;
+  --content-font-size: 0.85rem;
+  --content-gap: 0.75rem;
+  --app-icon-glyph-ratio: 0.5; /* glyph size relative to the tile */
+  --icon-size-xs: 32px;
+  --icon-size-sm: 40px;
+  --icon-size-md: 48px;
+  --icon-size-lg: 52px;
+  --icon-size-xl: 56px;
+}
+
+/* Every transition in the site goes through these tokens, so one guard covers them all. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition: none;
+    --transition-shadow: none;
+    --transition-chrome: none;
+  }
+}

@@ -2,9 +2,25 @@
    Entry and Button controls (components/controls/Entry.jsx, Button.jsx), but
    Entry's fill/text colors are flipped for a light surface — those components
    assume the dark chrome background, and the window body here is deliberately
-   opaque white (see tokens.css's --content-* note). The submit button reuses
+   opaque white (see site.tokens.css's --content-* block). The submit button reuses
    the "filled" Button variant as-is: blue-bg/white-text works on any
    background, so no adaptation was needed there. */
+
+.gtk-label {
+  display: block;
+  margin-bottom: var(--space-half);
+  color: var(--content-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-caption);
+}
+
+/* Off-screen rather than display:none, because some bots skip fields that are not rendered. */
+.contact-form__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+}
 
 .gtk-field {
   display: flex;
@@ -60,10 +76,10 @@ textarea.gtk-field {
   white-space: nowrap;
 }
 .gtk-btn-primary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--white) 10%, var(--primary));
+  background: var(--primary-hover);
 }
 .gtk-btn-primary:active:not(:disabled) {
-  background: color-mix(in srgb, var(--white) 20%, var(--primary));
+  background: var(--primary-active);
 }
 .gtk-btn-primary:disabled {
   opacity: 0.6;

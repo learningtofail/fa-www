@@ -1,24 +1,19 @@
+import "../styles/content.css";
+import { PORTFOLIO_BLURB, PROFILE, TERMINAL_HINT, summary } from "../data/profile.js";
+
 export default function AboutContent() {
   return (
-    <div style={{ fontFamily: "var(--font-ui)", fontSize: "0.85rem", lineHeight: "var(--line-height-body)" }}>
-      <p
-        style={{
-          fontFamily: "var(--font-terminal)",
-          color: "var(--content-text-muted)",
-          margin: "0 0 0.75rem",
-        }}
-      >
-        faysal@desktop:~$ whoami
-      </p>
-      <p>22 years making Google behave. Currently VP-track: SEO, organic growth, the occasional turnaround.</p>
+    <div className="content">
+      <p className="content__prompt">faysal@desktop:~$ whoami</p>
+      <p>{summary()}</p>
       <p>
         Real background lives at{" "}
-        <a href="https://portfolio.faysalahmed.ca" target="_blank" rel="noreferrer">
-          portfolio.faysalahmed.ca
+        <a href={PROFILE.portfolio.url} target="_blank" rel="noreferrer">
+          {PROFILE.portfolio.label}
         </a>{" "}
-        — this is the version of the site that doesn&apos;t take itself as seriously.
+        &mdash; {PORTFOLIO_BLURB}
       </p>
-      <p>There&apos;s a terminal around here somewhere. Try it.</p>
+      <p>{TERMINAL_HINT}</p>
     </div>
   );
 }

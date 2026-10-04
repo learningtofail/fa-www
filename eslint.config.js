@@ -24,7 +24,7 @@ export default [
       globals: { ...globals.browser, ...globals.node },
     },
     plugins: { react, "react-hooks": reactHooks, "jsx-a11y": jsxA11y },
-    settings: { react: { version: "18.3" } },
+    settings: { react: { version: "19.3" } },
     rules: {
       ...react.configs.recommended.rules,
       ...react.configs["jsx-runtime"].rules,
@@ -33,14 +33,15 @@ export default [
       // JS files without PropTypes are the convention here; types come from
       // JSDoc and `npm run typecheck`, so PropTypes would duplicate them.
       "react/prop-types": "off",
-      // The standards forbid stray console output. console.error and console.warn
-      // stay allowed for genuine failure reporting until Phase 2 (D6) removes the
-      // one in ContactContent.
-      "no-console": ["error", { allow: ["warn", "error"] }],
+      // The standards forbid console output everywhere, including console.error.
+      "no-console": "error",
       "no-var": "error",
       "prefer-const": "error",
       // Index keys fail the build; the two append-only sites carry inline disables until Phase 4.
       "react/no-array-index-key": "error",
+      // Inline styles are banned. The one exception is Window, which sets geometry custom properties and says so
+      // in a disable comment (CLAUDE.md, "inline-style exception").
+      "react/forbid-dom-props": ["error", { forbid: ["style"] }],
     },
   },
   ...astro.configs["flat/recommended"],
@@ -49,6 +50,19 @@ export default [
     // Astro frontmatter is TypeScript (Props interfaces), so the Astro parser delegates to the TS parser.
     files: ["**/*.astro"],
     languageOptions: { parserOptions: { parser: tsParser } },
+  },
+  {
+    // Colors live in the token files; a hex literal in app code would bypass them. Tests and scripts may use hex.
+    files: ["src/**/*.{js,jsx}"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "Literal[value=/^#[0-9a-fA-F]{3,8}$/]",
+          message: "No hex color literals outside the token files; use a design token.",
+        },
+      ],
+    },
   },
   {
     files: ["tests/e2e/**/*.js", "playwright.config.js"],

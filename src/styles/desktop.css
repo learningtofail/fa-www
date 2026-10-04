@@ -2,8 +2,8 @@
    Chrome (topbar/dock/window titlebars/buttons) is skinned after the Orchis
    GTK theme: flat dark panels, a Material-blue accent, rounded corners
    throughout, and Material's layered elevation instead of a single blur.
-   Values are drawn from ../styles/tokens.css (see that file's provenance
-   note) rather than hardcoded here. The wallpaper gradient is independent of
+   Values come from the token layers (orchis.tokens.css, site.tokens.css) rather
+   than being hardcoded here. The wallpaper gradient is independent of
    the GTK theme itself, so it's the one thing left as a literal gradient. */
 
 .gnome-root {
@@ -72,13 +72,13 @@
   top: var(--topbar-height);
   left: 0;
   right: 0;
-  bottom: 76px;
+  bottom: var(--desktop-surface-bottom);
 }
 
 .desktop-icon-grid {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: var(--icon-grid-inset);
+  left: var(--icon-grid-inset);
   display: flex;
   flex-direction: column;
   gap: var(--space-3x);
@@ -173,9 +173,18 @@
 
 /* Window chrome (Window.jsx) — cosmetic values live here so they follow the
    GTK theme; Window.jsx keeps only structural (position/size) inline styles.
-   Window content stays deliberately light/opaque (see tokens.css's
+   Window content stays deliberately light/opaque (see site.tokens.css's
    --content-* block) even though the surrounding shell is dark chrome. */
 .win {
+  position: absolute;
+  top: var(--window-y);
+  left: var(--window-x);
+  z-index: var(--window-z);
+  display: flex;
+  flex-direction: column;
+  width: var(--window-width);
+  height: var(--window-height);
+  overflow: hidden;
   background: var(--win-bg);
   border: var(--win-border);
   border-radius: var(--radius-window);
@@ -191,9 +200,23 @@
   align-items: center;
   justify-content: space-between;
   cursor: move;
+  touch-action: none; /* let Pointer Events drag the window instead of scrolling the page */
   font-size: var(--text-titlebar);
   font-family: var(--font-ui);
   user-select: none;
+}
+.win-title {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: inherit;
+  font: inherit;
+}
+.win-title:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 4px;
+  border-radius: var(--radius-menuitem);
 }
 .win-titlebar-controls {
   display: flex;
@@ -234,4 +257,8 @@
   width: 16px;
   height: 16px;
   cursor: nwse-resize;
+  touch-action: none;
+}
+.win-resize-handle__glyph {
+  stroke: var(--grey-400);
 }

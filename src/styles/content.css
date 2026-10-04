@@ -1,0 +1,50 @@
+/* Window and app-view content shared by About, Contact and Now. */
+
+.content {
+  font-family: var(--font-ui);
+  font-size: var(--content-font-size);
+  line-height: var(--line-height-body);
+}
+
+.content--mono {
+  font-family: var(--font-terminal);
+  line-height: var(--line-height-terminal);
+}
+
+.content__prompt {
+  margin: 0 0 var(--content-gap);
+  color: var(--content-text-muted);
+  font-family: var(--font-terminal);
+}
+
+.contact-form {
+  margin-top: var(--content-gap);
+}
+
+.iframe-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.iframe-content__bar {
+  margin: 0;
+  padding: var(--space-half) var(--space-2x);
+  background: var(--content-entry-fill);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-caption);
+}
+
+.iframe-content__fallback {
+  margin: 0;
+  padding: var(--space-size) var(--space-2x);
+  color: var(--content-error);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-caption);
+}
+
+.iframe-content__frame {
+  flex: 1;
+  width: 100%;
+  border: none;
+}

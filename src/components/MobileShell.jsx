@@ -1,13 +1,38 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "../styles/mobile.css";
 import AppIcon from "./AppIcon.jsx";
-import AboutContent from "./AboutContent.jsx";
-import ContactContent from "./ContactContent.jsx";
-import NowContent from "./NowContent.jsx";
-import IframeContent from "./IframeContent.jsx";
+import MobileAppView from "./MobileAppView.jsx";
 import ToolsFolderContent from "./ToolsFolderContent.jsx";
-import Terminal from "./Terminal.jsx";
 import { APPS } from "../data/apps.js";
+import { useFocusReturn } from "../hooks/useFocusReturn.js";
+
+/**
+ * The Tools folder as a popup. Escape or a tap on the backdrop closes it, and focus returns to
+ * the folder icon.
+ * @param {{ onClose: () => void, onOpenTool: (slug: string, name: string, url: string) => void }} props
+ */
+function FolderPopup({ onClose, onOpenTool }) {
+  const popupRef = useRef(null);
+  useFocusReturn(popupRef);
+  return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- backdrop tap dismisses; the keyboard path is Escape on the dialog and the tool buttons inside
+    <div className="folder-backdrop" onClick={onClose}>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- stops backdrop dismissal on taps inside, and closes on Escape */}
+      <div
+        ref={popupRef}
+        className="folder-popup"
+        role="dialog"
+        aria-label="Tools"
+        tabIndex={-1}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.key === "Escape" && onClose()}
+      >
+        <p className="folder-popup-title">Tools</p>
+        <ToolsFolderContent onOpenTool={onOpenTool} dense />
+      </div>
+    </div>
+  );
+}
 
 export default function MobileShell({ lastDeploy }) {
   const [folderOpen, setFolderOpen] = useState(false);
@@ -28,61 +53,23 @@ export default function MobileShell({ lastDeploy }) {
 
   return (
     <main className="android-root">
-      <h1
-        style={{
-          position: "absolute",
-          width: 1,
-          height: 1,
-          padding: 0,
-          margin: -1,
-          overflow: "hidden",
-          clip: "rect(0,0,0,0)",
-          whiteSpace: "nowrap",
-          border: 0,
-        }}
-      >
-        Faysal Ahmed — desktop
-      </h1>
+      <h1 className="visually-hidden">Faysal Ahmed &mdash; desktop</h1>
       <div className="app-grid">
         {APPS.map((app) => (
           <button key={app.id} className="app-icon-btn" onClick={() => handleIconTap(app)}>
-            <AppIcon glyph={app.glyph} color={app.color} size={52} fontSize={26} />
+            <AppIcon glyph={app.glyph} tone={app.tone} size="lg" />
             <span className="app-icon-label">{app.label}</span>
           </button>
         ))}
       </div>
-
-      {folderOpen && (
-        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- modal backdrop dismiss; Escape and focus handling arrive with useFocusReturn in Phase 4 (S11)
-        <div className="folder-backdrop" onClick={() => setFolderOpen(false)}>
-          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- stops backdrop dismissal when the popup itself is clicked */}
-          <div className="folder-popup" onClick={(e) => e.stopPropagation()}>
-            <p className="folder-popup-title">Tools</p>
-            <ToolsFolderContent onOpenTool={handleOpenTool} dense />
-          </div>
-        </div>
-      )}
-
+      {folderOpen && <FolderPopup onClose={() => setFolderOpen(false)} onOpenTool={handleOpenTool} />}
       {openApp && (
-        <div className="app-view">
-          <div className="app-view-header">
-            <button className="back-btn" onClick={() => setOpenApp(null)} aria-label="Back">
-              &#8592;
-            </button>
-            <span className="app-view-title">{openApp.title}</span>
-          </div>
-          <div
-            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- scrollable region must be keyboard focusable; gets role and label in Phase 4 (S11)
-            tabIndex={0}
-            className={`app-view-body${openApp.kind === "terminal" || openApp.kind === "tool" ? " no-padding" : ""}`}
-          >
-            {openApp.kind === "window" && openApp.id === "about" && <AboutContent />}
-            {openApp.kind === "window" && openApp.id === "contact" && <ContactContent />}
-            {openApp.kind === "window" && openApp.id === "now" && <NowContent lastDeploy={lastDeploy} />}
-            {openApp.kind === "terminal" && <Terminal onOpenTool={handleOpenTool} />}
-            {openApp.kind === "tool" && <IframeContent url={openApp.url} label={openApp.title} />}
-          </div>
-        </div>
+        <MobileAppView
+          app={openApp}
+          lastDeploy={lastDeploy}
+          onBack={() => setOpenApp(null)}
+          onOpenTool={handleOpenTool}
+        />
       )}
     </main>
   );

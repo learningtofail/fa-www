@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Terminal from "../../src/components/Terminal.jsx";
+import { yearsActive } from "../../src/data/profile.js";
 
 /** Types a command into the terminal input and presses Enter. */
 async function run(user, command) {
@@ -51,7 +52,7 @@ describe("Terminal commands (current behavior)", () => {
     await run(user, "ls");
     expect(output()).toContain("about.txt   contact.txt   tools/");
     await run(user, "cat about.txt");
-    expect(output()).toContain("22 years making Google behave");
+    expect(output()).toContain(`${yearsActive()} years making Google behave`);
   });
 
   it("reports missing files, directories and arguments", async () => {
@@ -115,30 +116,62 @@ describe("Terminal commands (current behavior)", () => {
   });
 });
 
-// Known defects (review D3). `it.fails` passes while the bug exists and fails once it is fixed,
-// which forces whoever fixes it to delete the `.fails` marker in the same commit.
-describe("Terminal known defects (D3)", () => {
-  it.fails("accepts a trailing slash in cd", async () => {
+// Review D3: path handling in the terminal.
+describe("Terminal paths (D3)", () => {
+  it("accepts a trailing slash in cd", async () => {
     const { user } = setup();
     await run(user, "cd tools/");
     expect(screen.getByText("faysal@desktop:~/tools$")).toBeTruthy();
   });
 
-  it.fails("honors the path argument of ls", async () => {
+  it("honors the path argument of ls", async () => {
     const { user } = setup();
     await run(user, "ls tools");
     expect(output()).toContain("utm-auditor");
+    expect(screen.getByText("faysal@desktop:~$")).toBeTruthy();
   });
 
-  it.fails("hides dotfiles from a plain ls", async () => {
+  it("hides dotfiles from a plain ls and shows them with -a", async () => {
     const { user } = setup();
     await run(user, "ls");
     expect(output()).not.toContain(".secrets");
+    await run(user, "ls -a");
+    expect(output()).toContain(".secrets/");
   });
 
-  it.fails("resolves multi-segment paths in cat", async () => {
+  it("lists a hidden directory by path", async () => {
+    const { user } = setup();
+    await run(user, "ls .secrets");
+    expect(output()).toContain("resume-link.txt");
+  });
+
+  it("resolves multi-segment paths in cat", async () => {
     const { user } = setup();
     await run(user, "cat .secrets/resume-link.txt");
     expect(output()).toContain("the paper trail lives at");
+  });
+
+  it("cds through nested paths and parent segments", async () => {
+    const { user } = setup();
+    await run(user, "cd .secrets");
+    expect(screen.getByText("faysal@desktop:~/.secrets$")).toBeTruthy();
+    await run(user, "cd ../tools");
+    expect(screen.getByText("faysal@desktop:~/tools$")).toBeTruthy();
+    await run(user, "cd /");
+    expect(screen.getByText("faysal@desktop:~$")).toBeTruthy();
+  });
+
+  it("refuses to cd into a file and reports ls on a missing path", async () => {
+    const { user } = setup();
+    await run(user, "cd about.txt");
+    expect(output()).toContain("cd: about.txt: not a directory");
+    await run(user, "ls nowhere");
+    expect(output()).toContain("ls: nowhere: no such file or directory");
+  });
+
+  it("does not resolve inherited object keys as files", async () => {
+    const { user } = setup();
+    await run(user, "cat constructor");
+    expect(output()).toContain("cat: constructor: no such file");
   });
 });

@@ -11,6 +11,6 @@
     "strict": false,
     "noImplicitAny": false
   },
-  "include": ["src/**/*", "tests/**/*", "*.js", "*.mjs"],
+  "include": ["src/**/*", "tests/**/*", "scripts/**/*", "*.js", "*.mjs"],
   "exclude": ["dist", "node_modules"]
 }

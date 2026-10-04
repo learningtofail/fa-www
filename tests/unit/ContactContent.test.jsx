@@ -34,7 +34,6 @@ describe("ContactContent", () => {
 
   it("shows a visible error when the endpoint answers with a failure status", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 503 }));
-    vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();
     render(<ContactContent />);
     await fillAndSubmit(user);
@@ -46,7 +45,6 @@ describe("ContactContent", () => {
 
   it("shows a visible error when the network request throws", async () => {
     vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
-    vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();
     render(<ContactContent />);
     await fillAndSubmit(user);
@@ -61,12 +59,59 @@ describe("ContactContent", () => {
   });
 });
 
-// Known defect (review D6). Passes while the bug exists, fails once labels are added.
-describe("ContactContent known defects (D6)", () => {
-  it.fails("gives every visible field an accessible label", () => {
+// Review D6: labels, timeout, configurable endpoint, no inline style, no console output.
+describe("ContactContent (D6)", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it("gives every visible field a real <label>", () => {
+    const { container } = render(<ContactContent />);
+    for (const name of ["Name", "Email", "Message"]) {
+      const field = screen.getByLabelText(name);
+      const label = container.querySelector(`label[for="${field.id}"]`);
+      expect(label?.textContent).toBe(name);
+    }
+  });
+
+  it("styles the honeypot with a class, not an inline style", () => {
+    const { container } = render(<ContactContent />);
+    const honeypot = container.querySelector('input[name="website"]');
+    expect(honeypot.getAttribute("style")).toBeNull();
+    expect(honeypot.classList.contains("contact-form__honeypot")).toBe(true);
+  });
+
+  it("aborts the request and shows the error after 10 seconds", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const seen = /** @type {{ signal?: AbortSignal }} */ ({});
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((_url, init) => {
+        seen.signal = init.signal;
+        return new Promise((_resolve, reject) => {
+          init.signal.addEventListener("abort", () => reject(new DOMException("aborted", "AbortError")));
+        });
+      }),
+    );
+    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime });
     render(<ContactContent />);
-    expect(screen.getByLabelText("Name")).toBeTruthy();
-    expect(screen.getByLabelText("Email")).toBeTruthy();
-    expect(screen.getByLabelText("Message")).toBeTruthy();
+    await fillAndSubmit(user);
+    expect(seen.signal?.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(9_000);
+    expect(seen.signal?.aborted).toBe(false);
+    await vi.advanceTimersByTimeAsync(2_000);
+    expect(seen.signal?.aborted).toBe(true);
+    await waitFor(() => expect(screen.getByText(/Send failed/)).toBeTruthy());
+  });
+
+  it("does not log to the console on failure", async () => {
+    const error = vi.spyOn(console, "error");
+    vi.stubGlobal("fetch", vi.fn().mockRejectedValue(new TypeError("network down")));
+    const user = userEvent.setup();
+    render(<ContactContent />);
+    await fillAndSubmit(user);
+    await waitFor(() => expect(screen.getByText(/Send failed/)).toBeTruthy());
+    expect(error).not.toHaveBeenCalled();
   });
 });
