@@ -28,10 +28,13 @@ export const COMMAND_NOT_FOUND = "command not found. this isn't that kind of ter
 export const FILE_NOT_FOUND = (name) => `cat: ${name}: no such file. (yet.)`;
 export const IS_A_DIRECTORY = (name) => `cat: ${name}: is a directory`;
 export const NO_SUCH_DIR = (name) => `cd: ${name}: no such directory`;
+export const NOT_A_DIRECTORY = (name) => `cd: ${name}: not a directory`;
+export const LS_NOT_FOUND = (name) => `ls: ${name}: no such file or directory`;
 
 // Virtual filesystem. Each node is either { type: "file", content: string[] }
-// or { type: "dir", children: {...} }. "tools" is listed but its entries resolve
-// through open [slug], not cat — see Terminal.jsx.
+// or { type: "dir", children: {...} }. The "tools" directory is empty here and is
+// filled with one { type: "tool" } node per slug by buildFilesystem in lib/terminal/path.js.
+/** @type {import("../lib/terminal/path.js").FsNode} */
 export const FILESYSTEM = {
   type: "dir",
   children: {
@@ -57,7 +60,7 @@ export const FILESYSTEM = {
     },
     tools: {
       type: "dir",
-      children: {}, // populated dynamically from data/tools.js in Terminal.jsx
+      children: {}, // populated from data/tools.js by buildFilesystem
     },
     ".secrets": {
       type: "dir",

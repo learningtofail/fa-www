@@ -34,8 +34,9 @@ describe("tools catalog", () => {
 
 describe("terminal content", () => {
   it("exposes the virtual filesystem the README documents", () => {
-    expect(Object.keys(FILESYSTEM.children).sort()).toEqual([".secrets", "about.txt", "contact.txt", "tools"]);
-    expect(Object.keys(FILESYSTEM.children[".secrets"].children).sort()).toEqual([
+    const root = /** @type {{ children: Record<string, any> }} */ (FILESYSTEM);
+    expect(Object.keys(root.children).sort()).toEqual([".secrets", "about.txt", "contact.txt", "tools"]);
+    expect(Object.keys(root.children[".secrets"].children).sort()).toEqual([
       "resume-link.txt",
       "well-hidden-for-a-reason.txt",
     ]);

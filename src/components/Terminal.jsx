@@ -9,31 +9,14 @@ import {
   FILE_NOT_FOUND,
   IS_A_DIRECTORY,
   NO_SUCH_DIR,
+  NOT_A_DIRECTORY,
+  LS_NOT_FOUND,
   FILESYSTEM,
 } from "../data/terminalContent.js";
 import { tools, toolUrl } from "../data/tools.js";
+import { buildFilesystem, listEntries, parseLsArgs, pathLabel, resolvePath } from "../lib/terminal/path.js";
 
-function pathLabel(pathArr) {
-  return pathArr.length === 0 ? "~" : `~/${pathArr.join("/")}`;
-}
-
-function resolveDir(pathArr) {
-  let node = FILESYSTEM;
-  for (const seg of pathArr) {
-    node = node.children[seg];
-    if (!node || node.type !== "dir") return null;
-  }
-  return node;
-}
-
-function dirEntries(pathArr) {
-  const node = resolveDir(pathArr);
-  if (!node) return [];
-  if (pathArr[pathArr.length - 1] === "tools") {
-    return [...tools.map((t) => t.slug), "[more coming]"];
-  }
-  return Object.entries(node.children).map(([name, child]) => (child.type === "dir" ? `${name}/` : name));
-}
+const ROOT = buildFilesystem(FILESYSTEM, tools);
 
 export default function Terminal({ onOpenTool }) {
   const [lines, setLines] = useState([{ type: "boot", text: [BOOT_LINE] }]);
@@ -80,8 +63,21 @@ export default function Terminal({ onOpenTool }) {
           return;
 
         case "ls": {
-          const entries = dirEntries(cwd);
-          if (cwd[cwd.length - 1] === "tools") {
+          const { showAll, operands } = parseLsArgs(args);
+          const target = resolvePath(ROOT, cwd, operands[0] ?? ".");
+          if (!target) {
+            print(LS_NOT_FOUND(operands[0]));
+            return;
+          }
+          if (target.node.type !== "dir") {
+            print(target.segments[target.segments.length - 1]);
+            return;
+          }
+          const inTools = target.segments[target.segments.length - 1] === "tools";
+          const entries = inTools
+            ? [...Object.keys(target.node.children), "[more coming]"]
+            : listEntries(target.node, showAll);
+          if (inTools) {
             print([...entries, "", "use 'open [name]' to launch one."]);
           } else {
             print(entries.length ? entries.join("   ") : "(empty)");
@@ -90,20 +86,17 @@ export default function Terminal({ onOpenTool }) {
         }
 
         case "cd": {
-          if (!arg || arg === "~" || arg === "/") {
+          if (!arg) {
             setCwd([]);
             return;
           }
-          if (arg === "..") {
-            setCwd((prev) => prev.slice(0, -1));
-            return;
-          }
-          const currentNode = resolveDir(cwd);
-          const target = currentNode?.children?.[arg];
-          if (target && target.type === "dir") {
-            setCwd((prev) => [...prev, arg]);
-          } else {
+          const target = resolvePath(ROOT, cwd, arg);
+          if (!target) {
             print(NO_SUCH_DIR(arg));
+          } else if (target.node.type !== "dir") {
+            print(NOT_A_DIRECTORY(arg));
+          } else {
+            setCwd(target.segments);
           }
           return;
         }
@@ -113,21 +106,15 @@ export default function Terminal({ onOpenTool }) {
             print("cat: missing filename");
             return;
           }
-          if (cwd[cwd.length - 1] === "tools") {
-            const match = tools.find((t) => t.slug === arg);
-            if (match) {
-              print(`that's a tool, not a file. run 'open ${arg}' to launch it.`);
-              return;
-            }
-          }
-          const currentNode = resolveDir(cwd);
-          const target = currentNode?.children?.[arg];
+          const target = resolvePath(ROOT, cwd, arg);
           if (!target) {
             print(FILE_NOT_FOUND(arg));
-          } else if (target.type === "dir") {
+          } else if (target.node.type === "tool") {
+            print(`that's a tool, not a file. run 'open ${target.node.slug}' to launch it.`);
+          } else if (target.node.type === "dir") {
             print(IS_A_DIRECTORY(arg));
           } else {
-            print(target.content);
+            print(target.node.content);
           }
           return;
         }
