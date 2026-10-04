@@ -11,6 +11,20 @@ www is static and stateless. Every deploy writes a full copy of the site to `rel
   current -> releases/<sha-newest>    what Caddy serves
 ```
 
+## Roll back (by hand on lxc-staticweb)
+
+The quickest path, with no checkout needed. Run as root after `pct enter 105` on `srv-saraswati`:
+
+```bash
+cd /opt/static-web/sites/www
+ls -1 releases                                      # newest last; `readlink current` shows the live one
+ln -s releases/<previous-sha> .current.tmp && mv -T -f .current.tmp current
+readlink current
+curl -sI -H 'Host: www.faysalahmed.ca' http://127.0.0.1/ | head -n 1
+```
+
+The sections below use `activate-release.sh` over ssh from a checkout, which needs a bash shell (not Windows PowerShell).
+
 ## Roll back
 
 1. List releases from your checkout (the live one is marked). `activate-release.sh` runs on the host through ssh, so nothing needs installing there:
