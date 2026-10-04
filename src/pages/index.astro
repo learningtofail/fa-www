@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Desktop from "../components/Desktop.jsx";
+import { PORTFOLIO_BLURB, PROFILE, TERMINAL_HINT, summary } from "../data/profile.js";
 
 // Build-time timestamp — "last deploy" in the Now window. Computed here (Astro
 // frontmatter runs at build time in Node), passed down as a plain prop.
@@ -9,4 +10,20 @@ const lastDeploy = new Date().toISOString().slice(0, 10);
 
 <Base title="faysal's desktop." description="a playful landing page. there's a terminal. use it.">
   <Desktop client:only="react" lastDeploy={lastDeploy} />
+  <noscript>
+    <main class="noscript">
+      <h1>{PROFILE.name}</h1>
+      <p>{summary()}</p>
+      <p>
+        Real background lives at <a href={PROFILE.portfolio.url}>{PROFILE.portfolio.label}</a> &mdash; {PORTFOLIO_BLURB}
+      </p>
+      <p>{TERMINAL_HINT} It needs JavaScript.</p>
+      <h2>Contact</h2>
+      <p>
+        The direct line: <a href={`mailto:${PROFILE.email}`}>{PROFILE.email}</a>
+        <br />
+        The professional line: <a href={PROFILE.linkedin.url}>{PROFILE.linkedin.label}</a>
+      </p>
+    </main>
+  </noscript>
 </Base>
