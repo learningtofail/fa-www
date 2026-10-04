@@ -191,6 +191,7 @@
   align-items: center;
   justify-content: space-between;
   cursor: move;
+  touch-action: none; /* let Pointer Events drag the window instead of scrolling the page */
   font-size: var(--text-titlebar);
   font-family: var(--font-ui);
   user-select: none;
@@ -234,4 +235,5 @@
   width: 16px;
   height: 16px;
   cursor: nwse-resize;
+  touch-action: none;
 }

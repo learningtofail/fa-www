@@ -1,12 +1,25 @@
 import { useRef, useCallback } from "react";
 import { isTextEntryTarget } from "../lib/keyboard.js";
+import { clampPosition, clampSize } from "../lib/windowGeometry.js";
 
-const MIN_WIDTH = 240;
-const MIN_HEIGHT = 160;
+/**
+ * Size of the box the window is positioned in (the desktop surface), falling back to
+ * the browser viewport when the element has no layout box.
+ * @param {HTMLElement} windowEl
+ * @returns {{ width: number, height: number }}
+ */
+function boundsOf(windowEl) {
+  const parent = windowEl.offsetParent;
+  if (parent instanceof HTMLElement && parent.clientWidth > 0 && parent.clientHeight > 0) {
+    return { width: parent.clientWidth, height: parent.clientHeight };
+  }
+  return { width: window.innerWidth, height: window.innerHeight };
+}
 
 /**
  * Draggable/resizable window chrome. Purely presentational + interaction —
- * position/size/z-index state lives in Desktop.jsx.
+ * position/size/z-index state lives in Desktop.jsx. Dragging uses Pointer Events
+ * with pointer capture, so mouse, touch and pen work and no listener outlives the element.
  */
 export default function Window({
   id,
@@ -24,57 +37,70 @@ export default function Window({
   noPadding,
   children,
 }) {
-  const dragState = useRef(null);
-  const resizeState = useRef(null);
+  const rootRef = useRef(null);
+  /** @type {React.MutableRefObject<null | { mode: "move" | "resize", pointerId: number, startX: number, startY: number, origX: number, origY: number, origW: number, origH: number }>} */
+  const gesture = useRef(null);
 
-  const onTitleBarMouseDown = useCallback(
+  const beginGesture = useCallback(
+    (mode, e) => {
+      if (e.button !== 0) return;
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+      gesture.current = {
+        mode,
+        pointerId: e.pointerId,
+        startX: e.clientX,
+        startY: e.clientY,
+        origX: x,
+        origY: y,
+        origW: width,
+        origH: height,
+      };
+    },
+    [x, y, width, height],
+  );
+
+  const onTitleBarPointerDown = useCallback(
     (e) => {
       // Ignore drags started on the control buttons themselves
       if (e.target.closest("[data-window-control]")) return;
       onFocus(id);
-      dragState.current = { startX: e.clientX, startY: e.clientY, origX: x, origY: y };
-      const onMouseMove = (ev) => {
-        if (!dragState.current) return;
-        const dx = ev.clientX - dragState.current.startX;
-        const dy = ev.clientY - dragState.current.startY;
-        onMove(id, Math.max(0, dragState.current.origX + dx), Math.max(0, dragState.current.origY + dy));
-      };
-      const onMouseUp = () => {
-        dragState.current = null;
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
+      beginGesture("move", e);
     },
-    [id, x, y, onFocus, onMove],
+    [id, onFocus, beginGesture],
   );
 
-  const onResizeHandleMouseDown = useCallback(
+  const onResizePointerDown = useCallback(
     (e) => {
       e.stopPropagation();
       onFocus(id);
-      resizeState.current = { startX: e.clientX, startY: e.clientY, origW: width, origH: height };
-      const onMouseMove = (ev) => {
-        if (!resizeState.current) return;
-        const dx = ev.clientX - resizeState.current.startX;
-        const dy = ev.clientY - resizeState.current.startY;
-        onResize(
-          id,
-          Math.max(MIN_WIDTH, resizeState.current.origW + dx),
-          Math.max(MIN_HEIGHT, resizeState.current.origH + dy),
-        );
-      };
-      const onMouseUp = () => {
-        resizeState.current = null;
-        window.removeEventListener("mousemove", onMouseMove);
-        window.removeEventListener("mouseup", onMouseUp);
-      };
-      window.addEventListener("mousemove", onMouseMove);
-      window.addEventListener("mouseup", onMouseUp);
+      beginGesture("resize", e);
     },
-    [id, width, height, onFocus, onResize],
+    [id, onFocus, beginGesture],
   );
+
+  const onGesturePointerMove = useCallback(
+    (e) => {
+      const g = gesture.current;
+      if (!g || g.pointerId !== e.pointerId || !rootRef.current) return;
+      const bounds = boundsOf(rootRef.current);
+      const dx = e.clientX - g.startX;
+      const dy = e.clientY - g.startY;
+      if (g.mode === "move") {
+        const next = clampPosition({ x: g.origX + dx, y: g.origY + dy }, { width: g.origW, height: g.origH }, bounds);
+        onMove(id, next.x, next.y);
+      } else {
+        const next = clampSize({ width: g.origW + dx, height: g.origH + dy }, { x: g.origX, y: g.origY }, bounds);
+        onResize(id, next.width, next.height);
+      }
+    },
+    [id, onMove, onResize],
+  );
+
+  const endGesture = useCallback((e) => {
+    if (gesture.current?.pointerId !== e.pointerId) return;
+    gesture.current = null;
+    e.currentTarget.releasePointerCapture?.(e.pointerId);
+  }, []);
 
   // Escape closes the window that holds keyboard focus, except while typing in a field.
   const onKeyDown = useCallback(
@@ -100,13 +126,19 @@ export default function Window({
         flexDirection: "column",
         overflow: "hidden",
       }}
+      ref={rootRef}
       onMouseDown={() => onFocus(id)}
       onKeyDown={onKeyDown}
       role="dialog"
       aria-label={title}
     >
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- mouse-only titlebar drag, a documented gap; Pointer Events and keyboard move land in Phase 2 (D7) and Phase 4 */}
-      <div className="win-titlebar" onMouseDown={onTitleBarMouseDown}>
+      <div
+        className="win-titlebar"
+        onPointerDown={onTitleBarPointerDown}
+        onPointerMove={onGesturePointerMove}
+        onPointerUp={endGesture}
+        onPointerCancel={endGesture}
+      >
         <span>{title}</span>
         <span className="win-titlebar-controls">
           <button
@@ -126,7 +158,14 @@ export default function Window({
       <div tabIndex={0} className={`win-body${noPadding ? " no-padding" : ""}`}>
         {children}
       </div>
-      <div className="win-resize-handle" onMouseDown={onResizeHandleMouseDown} aria-hidden="true">
+      <div
+        className="win-resize-handle"
+        onPointerDown={onResizePointerDown}
+        onPointerMove={onGesturePointerMove}
+        onPointerUp={endGesture}
+        onPointerCancel={endGesture}
+        aria-hidden="true"
+      >
         <svg width="16" height="16" viewBox="0 0 16 16">
           <path d="M14 2 L2 14 M14 8 L8 14 M14 14 L14 14" style={{ stroke: "var(--grey-400)" }} strokeWidth="1.5" />
         </svg>
