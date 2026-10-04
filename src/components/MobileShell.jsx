@@ -53,7 +53,9 @@ export default function MobileShell({ lastDeploy }) {
       </div>
 
       {folderOpen && (
+        // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- modal backdrop dismiss; Escape and focus handling arrive with useFocusReturn in Phase 4 (S11)
         <div className="folder-backdrop" onClick={() => setFolderOpen(false)}>
+          {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- stops backdrop dismissal when the popup itself is clicked */}
           <div className="folder-popup" onClick={(e) => e.stopPropagation()}>
             <p className="folder-popup-title">Tools</p>
             <ToolsFolderContent onOpenTool={handleOpenTool} dense />
@@ -70,6 +72,7 @@ export default function MobileShell({ lastDeploy }) {
             <span className="app-view-title">{openApp.title}</span>
           </div>
           <div
+            // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- scrollable region must be keyboard focusable; gets role and label in Phase 4 (S11)
             tabIndex={0}
             className={`app-view-body${openApp.kind === "terminal" || openApp.kind === "tool" ? " no-padding" : ""}`}
           >

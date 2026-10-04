@@ -181,6 +181,7 @@ export default function Terminal({ onOpenTool }) {
   };
 
   return (
+    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- clicking anywhere in the terminal focuses its input; the input itself is the keyboard target
     <div
       onClick={() => inputRef.current?.focus()}
       style={{
@@ -197,6 +198,7 @@ export default function Terminal({ onOpenTool }) {
       <div ref={scrollRef} role="log" aria-live="polite" aria-label="Terminal output" style={{ flex: 1, overflowY: "auto" }}>
         {lines.map((line, i) => (
           <div
+            // eslint-disable-next-line react/no-array-index-key -- append-only output list; rewritten with stable ids in Phase 4
             key={i}
             style={{
               marginBottom: line.type === "input" ? 0 : "var(--space-half)",
@@ -209,6 +211,7 @@ export default function Terminal({ onOpenTool }) {
             }}
           >
             {line.text.map((t, j) => (
+              // eslint-disable-next-line react/no-array-index-key -- lines of one output block never reorder
               <div key={j}>{t === "" ? " " : t}</div>
             ))}
           </div>
@@ -225,6 +228,7 @@ export default function Terminal({ onOpenTool }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={onKeyDown}
+          // eslint-disable-next-line jsx-a11y/no-autofocus -- terminal input takes focus when its window opens; replaced by useFocusReturn in Phase 4 (S11)
           autoFocus
           spellCheck={false}
           autoComplete="off"

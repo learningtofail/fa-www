@@ -24,6 +24,7 @@ const DOCK_APP_IDS = ["about", "contact", "now", "tools", "terminal"];
 export default function DesktopShell({ lastDeploy }) {
   const zCounter = useRef(10);
   const [selectedIcon, setSelectedIcon] = useState(null);
+  // eslint-disable-next-line react-hooks/refs -- initializer reads and writes zCounter during render; replaced by a pure windowReducer in Phase 4
   const [windows, setWindows] = useState(() => {
     const initial = {};
     let z = 1;
@@ -169,6 +170,7 @@ export default function DesktopShell({ lastDeploy }) {
       </h1>
       <TopBar onActivities={tileWindows} />
 
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- background click only clears the icon selection and has a keyboard path through Tab; revisit in Phase 4 (S11) */}
       <div className="gnome-desktop-surface" onClick={handleDesktopClick}>
         <div className="desktop-icon-grid">
           {DESKTOP_ICON_APPS.map((app) => (

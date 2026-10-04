@@ -16,9 +16,9 @@ export default function AboutContent() {
         <a href="https://portfolio.faysalahmed.ca" target="_blank" rel="noreferrer">
           portfolio.faysalahmed.ca
         </a>{" "}
-        — this is the version of the site that doesn't take itself as seriously.
+        — this is the version of the site that doesn&apos;t take itself as seriously.
       </p>
-      <p>There's a terminal around here somewhere. Try it.</p>
+      <p>There&apos;s a terminal around here somewhere. Try it.</p>
     </div>
   );
 }

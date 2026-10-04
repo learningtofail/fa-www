@@ -61,6 +61,7 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
   );
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- window root focuses itself on mouse down; keyboard focus handling arrives in Phase 4 (S11)
     <div
       className="win"
       style={{
@@ -78,6 +79,7 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
       role="dialog"
       aria-label={title}
     >
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions -- mouse-only titlebar drag, a documented gap; Pointer Events and keyboard move land in Phase 2 (D7) and Phase 4 */}
       <div className="win-titlebar" onMouseDown={onTitleBarMouseDown}>
         <span>{title}</span>
         <span className="win-titlebar-controls">
@@ -94,6 +96,7 @@ export default function Window({ id, title, x, y, width, height, zIndex, onFocus
           </button>
         </span>
       </div>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- scrollable window body must be keyboard focusable; gets role and label in Phase 4 (S11) */}
       <div tabIndex={0} className={`win-body${noPadding ? " no-padding" : ""}`}>
         {children}
       </div>

@@ -3,6 +3,9 @@ import AppIcon from "./AppIcon.jsx";
 
 const TOOL_COLOR = "#3a5a9b";
 
+/**
+ * @param {{ onOpenTool: (slug: string, name: string, url: string) => void, dense?: boolean }} props
+ */
 export default function ToolsFolderContent({ onOpenTool, dense }) {
   return (
     <div

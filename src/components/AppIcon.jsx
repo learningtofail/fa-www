@@ -1,5 +1,8 @@
 // Shared icon glyph used by desktop icons, the dock, the mobile home grid, and
 // the tools folder grid — one visual language across every navigation surface.
+/**
+ * @param {{ glyph: string, color: string, size?: number, fontSize?: number }} props
+ */
 export default function AppIcon({ glyph, color, size = 44, fontSize }) {
   return (
     <div
