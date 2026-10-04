@@ -33,10 +33,8 @@ export default [
       // JS files without PropTypes are the convention here; types come from
       // JSDoc and `npm run typecheck`, so PropTypes would duplicate them.
       "react/prop-types": "off",
-      // The standards forbid stray console output. console.error and console.warn
-      // stay allowed for genuine failure reporting until Phase 2 (D6) removes the
-      // one in ContactContent.
-      "no-console": ["error", { allow: ["warn", "error"] }],
+      // The standards forbid console output everywhere, including console.error.
+      "no-console": "error",
       "no-var": "error",
       "prefer-const": "error",
       // Index keys fail the build; the two append-only sites carry inline disables until Phase 4.

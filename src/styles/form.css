@@ -6,6 +6,22 @@
    the "filled" Button variant as-is: blue-bg/white-text works on any
    background, so no adaptation was needed there. */
 
+.gtk-label {
+  display: block;
+  margin-bottom: var(--space-half);
+  color: var(--content-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-caption);
+}
+
+/* Off-screen rather than display:none, because some bots skip fields that are not rendered. */
+.contact-form__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+}
+
 .gtk-field {
   display: flex;
   align-items: center;
