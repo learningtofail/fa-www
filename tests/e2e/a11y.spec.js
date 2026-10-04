@@ -8,7 +8,9 @@ for (const [name, size] of Object.entries(viewports)) {
   test(`${name} shell has no axe violations other than color-contrast`, async ({ page }) => {
     await page.setViewportSize(size);
     await page.goto("/");
-    const results = await new AxeBuilder({ page }).disableRules(["color-contrast"]).analyze();
+    const results = await new AxeBuilder({ page: /** @type {any} */ (page) })
+      .disableRules(["color-contrast"])
+      .analyze();
     expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 }
@@ -16,6 +18,6 @@ for (const [name, size] of Object.entries(viewports)) {
 test.fixme("desktop shell meets WCAG AA color contrast (D5)", async ({ page }) => {
   await page.setViewportSize(viewports.desktop);
   await page.goto("/");
-  const results = await new AxeBuilder({ page }).withRules(["color-contrast"]).analyze();
+  const results = await new AxeBuilder({ page: /** @type {any} */ (page) }).withRules(["color-contrast"]).analyze();
   expect(results.violations).toEqual([]);
 });
