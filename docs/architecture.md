@@ -54,4 +54,10 @@ Lint (ESLint 9, pinned rules with commented exceptions), Stylelint, `tokens:chec
 
 ## Delivery
 
-`.github/workflows/ci.yml`: static checks, unit tests, build plus e2e, and a blocking `npm audit --omit=dev --audit-level=high` run on every PR and push. On push to `main`, once every job (audit included) passes, the deploy job downloads the built `dist` artifact and rsyncs it over Tailscale to `/opt/static-web/sites/www/`.
+`.github/workflows/ci.yml` jobs: `static` (ESLint, Stylelint, `tokens:check --require-network`, Prettier, typecheck), `unit`, `build` (builds once, fails on an empty `dist/index.html`, uploads the `dist` artifact), `e2e` (downloads that artifact, so the tested bytes are the deployed bytes), `audit` (blocking `npm audit --omit=dev --audit-level=high`), and `deploy`.
+
+`deploy` runs on push to `main` only, after every other job. It has `environment: production`, `permissions: contents: read`, and a queuing `concurrency` group (never cancels a running deploy). It stops with a clear error when the `SSH_KNOWN_HOSTS` secret is empty, joins the tailnet with `tailscale/github-action` pinned by commit SHA, and runs `scripts/deploy.sh` with secrets passed through `env:`.
+
+`scripts/deploy.sh` rsyncs into `releases/<sha>/` under `/opt/static-web/sites/www/` (never into the served root, so no `--delete` can touch live files), then `scripts/activate-release.sh` repoints the `current` symlink with an atomic rename and keeps the last five releases. Caddy serves `current`. Host key checking is strict against the pinned `SSH_KNOWN_HOSTS`. Both scripts have tests that run them in temp directories (`tests/unit/deploy.test.js`).
+
+Security headers and a hash-based CSP (inline Astro scripts allowed by SHA-256, no `unsafe-inline`) are proposed in `docs/caddy/Caddyfile.proposed.md` and verified against the real build by `tests/e2e/csp.spec.js`. Rollback and monitoring: `docs/rollback.md`.

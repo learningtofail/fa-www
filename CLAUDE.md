@@ -17,8 +17,12 @@ Astro 7 static site, React 19 island. See `docs/architecture.md` for the current
 - `src/data/`: apps, tools, windows (default geometry), profile (the single source for bio and contact copy and the years figure), terminal content. Pure data and pure helpers.
 - `src/styles/`: three layers. `orchis.tokens.css` is GENERATED from the Orchis DS at the commit in `orchis.manifest.json` (never edit it; `tokens:check` fails on drift). `site.tokens.css` holds fa-www's own values and overrides and loads second. Component CSS (`desktop.css`, `mobile.css`, `form.css`, `terminal.css`, `app-icon.css`, `tools-grid.css`, `content.css`, `base.css`) reads tokens only.
 - `src/lib/`: pure, unit-tested logic. `windowManager.js` (`windowReducer`), `windowGeometry.js` (clamping, keyboard gesture math), `layout.js` (layout tokens, tiling), `terminal/TerminalEngine.js` (class with `#cwd`, a `Map` command registry, injected deps, `execute(raw)` returning `{ lines, effects }`), `terminal/path.js`, `terminal/history.js`, `keyboard.js`, `config.js`.
-- `scripts/`: `tokens.mjs` (token sync and check).
+- `scripts/`: `tokens.mjs` (token sync and check), `deploy.sh` (CI deploy, env-driven, `DRY_RUN=1`), `activate-release.sh` (host-side release switch; piped over ssh), `csp-hashes.mjs` (`npm run csp:hashes`, prints the CSP hashes of the built page).
 - `tests/unit/`: Vitest + Testing Library. `tests/e2e/`: Playwright + axe.
+
+## Delivery
+
+CI builds once and uploads the `dist` artifact; the deploy job (push to `main` only, `environment: production`) downloads that exact artifact and `scripts/deploy.sh` rsyncs it to `releases/<sha>/` on the host, then switches the `current` symlink atomically. Rollback is one command: `docs/rollback.md`. The proposed Caddy block and CSP, with the host migration steps, are in `docs/caddy/Caddyfile.proposed.md`. After any Astro upgrade run `npm run build && npm run csp:hashes` and update the hashes in that doc; `tests/e2e/csp.spec.js` fails when they drift. If you change `PUBLIC_TOOLS_ORIGIN` or `PUBLIC_CONTACT_ENDPOINT`, change `frame-src` or `connect-src` in the same doc.
 
 ## Build-time configuration
 
