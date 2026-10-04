@@ -57,5 +57,19 @@ export default [
       "react-hooks/rules-of-hooks": "off",
     },
   },
+  {
+    // vitest.config.js sets `globals: true`, so test files use describe/it/expect/vi without imports.
+    files: ["tests/unit/**/*.{js,jsx}"],
+    languageOptions: {
+      globals: {
+        ...globals.vitest,
+        describe: "readonly",
+        it: "readonly",
+        expect: "readonly",
+        vi: "readonly",
+        afterEach: "readonly",
+      },
+    },
+  },
   prettier,
 ];
