@@ -2,6 +2,7 @@ import { render, screen, within, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import DesktopShell from "../../src/components/DesktopShell.jsx";
 import MobileShell from "../../src/components/MobileShell.jsx";
+import { yearsActive } from "../../src/data/profile.js";
 
 /** Dock buttons share accessible names with desktop icons, so scope queries to the dock. */
 const dockButton = (container, name) => within(container.querySelector(".gnome-dock")).getByRole("button", { name });
@@ -116,9 +117,9 @@ describe("MobileShell", () => {
     const user = userEvent.setup();
     render(<MobileShell lastDeploy="x" />);
     await user.click(screen.getByRole("button", { name: "About" }));
-    expect(screen.getByText(/22 years making Google behave/)).toBeTruthy();
+    expect(screen.getByText(new RegExp(`${yearsActive()} years making Google behave`))).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Back" }));
-    expect(screen.queryByText(/22 years making Google behave/)).toBeNull();
+    expect(screen.queryByText(new RegExp(`${yearsActive()} years making Google behave`))).toBeNull();
   });
 
   it("opens the Tools folder as a popup and a tool as a full-screen frame", async () => {
