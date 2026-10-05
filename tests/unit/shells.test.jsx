@@ -16,10 +16,10 @@ describe("DesktopShell", () => {
     expect(screen.getByText("last deploy: 2026-10-04")).toBeTruthy();
   });
 
-  it("shows four desktop icons and nine dock buttons", () => {
+  it("shows four desktop icons and ten dock buttons", () => {
     const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     expect(container.querySelectorAll(".desktop-icon")).toHaveLength(4);
-    expect(container.querySelectorAll(".gnome-dock .dock-icon-btn")).toHaveLength(9);
+    expect(container.querySelectorAll(".gnome-dock .dock-icon-btn")).toHaveLength(10);
   });
 
   it("closes and minimizes windows with the titlebar buttons", async () => {
@@ -106,7 +106,7 @@ describe("DesktopShell Escape while typing (D4)", () => {
 });
 
 describe("MobileShell", () => {
-  it("shows all nine apps on the home grid and four in the dock", () => {
+  it("shows all ten apps on the home grid and four in the dock", () => {
     const { container } = render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const grid = within(container.querySelector(".app-grid"));
     for (const label of [
@@ -114,6 +114,7 @@ describe("MobileShell", () => {
       "Contact",
       "Now",
       "Files",
+      "Text Editor",
       "Calculator",
       "Weather",
       "Image Viewer",
@@ -122,7 +123,7 @@ describe("MobileShell", () => {
     ]) {
       expect(grid.getByRole("button", { name: label })).toBeTruthy();
     }
-    expect(container.querySelectorAll(".app-grid > *")).toHaveLength(9);
+    expect(container.querySelectorAll(".app-grid > *")).toHaveLength(10);
   });
 
   it("opens an app full screen and goes back", async () => {
