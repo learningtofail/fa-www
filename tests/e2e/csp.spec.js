@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { extname, join, normalize, resolve } from "node:path";
 import { inlineHashes } from "../../scripts/lib/csp.mjs";
+import { stubOpenMeteo } from "./weatherStubs.js";
 
 const DIST = resolve("dist");
 const DOC = readFileSync("docs/caddy/Caddyfile.proposed.md", "utf8");
@@ -60,7 +61,9 @@ test.describe("proposed Content-Security-Policy", () => {
     expect(directive("style-src")).not.toContain("unsafe-inline");
   });
 
-  test("the shell, terminal, a tool window and the contact form run with no violations", async ({ page }) => {
+  test("the shell, terminal, a tool window, the weather app and the contact form run with no violations", async ({
+    page,
+  }) => {
     const problems = [];
     await page.addInitScript(() => {
       /** @type {string[]} */
@@ -81,6 +84,8 @@ test.describe("proposed Content-Security-Policy", () => {
     await page.route("https://contact-api.jrflab.dev/**", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: "{}" }),
     );
+
+    await stubOpenMeteo(page); // the policy applies to the stubbed requests too, so connect-src is exercised
 
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto(origin + "/");
@@ -103,6 +108,14 @@ test.describe("proposed Content-Security-Policy", () => {
     await page.getByRole("dialog", { name: "Tools" }).getByRole("button", { name: "UTM Governance Auditor" }).click();
     await expect(page.locator('iframe[title="UTM Governance Auditor"]')).toBeVisible();
     await expect(page.frameLocator('iframe[title="UTM Governance Auditor"]').getByText("stub tool")).toBeVisible();
+
+    await page.locator(".gnome-dock").getByRole("button", { name: "Weather" }).click();
+    const weather = page.getByRole("dialog", { name: "Weather" });
+    await expect(weather.getByText("Partly cloudy")).toBeVisible();
+    await weather.getByRole("button", { name: "Change city" }).click();
+    await weather.getByRole("searchbox", { name: "City" }).fill("Montreal");
+    await weather.getByRole("searchbox", { name: "City" }).press("Enter");
+    await expect(weather.getByRole("button", { name: "Montreal, Quebec, Canada" })).toBeVisible();
 
     problems.push(...(await page.evaluate(() => Reflect.get(window, "__cspViolations") ?? [])));
     expect(problems).toEqual([]);

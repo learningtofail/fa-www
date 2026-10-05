@@ -1,6 +1,6 @@
 /**
- * Placeholder content for the Files, Weather and Image Viewer demo windows. None of it is real:
- * replace the city and readings with real data or remove the Weather app.
+ * Placeholder content for the Files and Image Viewer demo windows. None of it is real. (Weather is live: see
+ * hooks/useWeather.js.)
  */
 
 /** @type {{ id: string, label: string, icon: string }[]} */
@@ -29,26 +29,6 @@ export const FILE_FOLDERS = [
   "Public",
   "Videos",
 ];
-
-export const WEATHER = {
-  city: "Shanghai, China",
-  temperature: 13,
-  hourly: [
-    { label: "Now", temperature: 13 },
-    { label: "22:00", temperature: 12 },
-    { label: "23:00", temperature: 12 },
-    { label: "00:00", temperature: 11 },
-    { label: "01:00", temperature: 11 },
-    { label: "02:00", temperature: 10 },
-  ],
-  daily: [
-    { label: "Mon", high: 15, low: 9 },
-    { label: "Tue", high: 16, low: 10 },
-    { label: "Wed", high: 14, low: 9 },
-    { label: "Thu", high: 17, low: 11 },
-    { label: "Fri", high: 18, low: 12 },
-  ],
-};
 
 export const VIEWER_IMAGE = {
   src: "/wallpaper-light.svg",
