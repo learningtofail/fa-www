@@ -1,7 +1,7 @@
 // Shared app registry — both DesktopShell and MobileShell read from this so the
 // set of "things on the desktop/home screen" can't drift between the two.
 // `kind` drives which content renders: "window" uses the plain content components,
-// "folder" opens the tools grid, "terminal" opens the terminal emulator.
+// "folder" opens a folder of tools (see data/folders.js), "terminal" opens the terminal emulator.
 export const APPS = [
   { id: "about", label: "About", glyph: "\u{1F5D2}", tone: "about", kind: "window" },
   { id: "contact", label: "Contact", glyph: "\u{2709}", tone: "contact", kind: "window" },
@@ -12,6 +12,7 @@ export const APPS = [
   { id: "weather", label: "Weather", glyph: "\u{26C5}", tone: "weather", kind: "window" },
   { id: "viewer", label: "Image Viewer", glyph: "\u{1F5BC}", tone: "viewer", kind: "window" },
   { id: "tools", label: "Tools", glyph: "\u{1F4C1}", tone: "tools", kind: "folder" },
+  { id: "marketing", label: "Marketing", glyph: "\u{1F4CA}", tone: "marketing", kind: "folder" },
   { id: "terminal", label: "Terminal", glyph: "\u{2328}", tone: "terminal", kind: "terminal" },
 ];
 
@@ -27,4 +28,5 @@ export const OPENABLE_APPS = Object.freeze([
   { slug: "weather", name: "Weather" },
   { slug: "calculator", name: "Calculator" },
   { slug: "viewer", name: "Image Viewer" },
+  { slug: "marketing", name: "Marketing" },
 ]);

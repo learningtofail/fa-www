@@ -49,6 +49,27 @@
 .app-icon--tool {
   background: var(--app-tone-tool);
 }
+.app-icon--marketing {
+  background: var(--app-tone-marketing);
+}
+.app-icon--mkt-measure {
+  background: var(--app-tone-mkt-measure);
+}
+.app-icon--mkt-economics {
+  background: var(--app-tone-mkt-economics);
+}
+.app-icon--mkt-paid {
+  background: var(--app-tone-mkt-paid);
+}
+.app-icon--mkt-governance {
+  background: var(--app-tone-mkt-governance);
+}
+.app-icon--mkt-seo {
+  background: var(--app-tone-mkt-seo);
+}
+.app-icon--mkt-messaging {
+  background: var(--app-tone-mkt-messaging);
+}
 .app-icon--files {
   background: var(--app-tone-files);
 }

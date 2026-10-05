@@ -4,7 +4,7 @@ import { CAREER_START_YEAR, PROFILE, summary, tagline, yearsActive } from "../..
 import { createFilesystem, HELP_TEXT } from "../../src/data/terminalContent.js";
 
 describe("app registry", () => {
-  it("lists the ten apps both shells render", () => {
+  it("lists the eleven apps both shells render", () => {
     expect(APPS.map((a) => a.id)).toEqual([
       "about",
       "contact",
@@ -15,12 +15,13 @@ describe("app registry", () => {
       "weather",
       "viewer",
       "tools",
+      "marketing",
       "terminal",
     ]);
   });
 
   it("keeps the terminal and the dock-only apps off the desktop icon grid", () => {
-    expect(DESKTOP_ICON_APPS.map((a) => a.id)).toEqual(["about", "contact", "now", "tools"]);
+    expect(DESKTOP_ICON_APPS.map((a) => a.id)).toEqual(["about", "contact", "now", "tools", "marketing"]);
   });
 
   it("gives every app a kind that a shell knows how to render", () => {

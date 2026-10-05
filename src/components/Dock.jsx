@@ -1,6 +1,7 @@
 import AppIcon from "./AppIcon.jsx";
 import { APPS } from "../data/apps.js";
 import { DOCK_APP_IDS } from "../data/windows.js";
+import { marketingIcon } from "../data/marketingTools.js";
 import { TOOL_ICON } from "../data/tools.js";
 
 /**
@@ -40,7 +41,7 @@ export default function Dock({ windows, onOpen, onFocus }) {
             title={w.title}
             aria-label={w.title}
           >
-            <AppIcon {...TOOL_ICON} size="xs" />
+            <AppIcon {...(marketingIcon(w.id.replace(/^tool:/, "")) ?? TOOL_ICON)} size="xs" />
           </button>
         ))}
     </div>

@@ -9,6 +9,7 @@ export const FIXED_WINDOWS = {
   contact: { title: "contact.txt", x: 580, y: 90, width: 380, height: 320 },
   now: { title: "status.txt", x: 180, y: 360, width: 360, height: 190 },
   tools: { title: "Tools", x: 620, y: 420, width: 420, height: 320 },
+  marketing: { title: "Marketing", x: 300, y: 70, width: 640, height: 500 },
   terminal: { title: "terminal", x: 480, y: 440, width: 520, height: 300 },
   files: { title: "Files", x: 120, y: 90, width: 700, height: 440 },
   weather: { title: "Weather", x: 80, y: 60, width: 520, height: 440 },
@@ -31,6 +32,7 @@ export const DOCK_APP_IDS = [
   "calculator",
   "viewer",
   "tools",
+  "marketing",
   "terminal",
 ];
 

@@ -36,3 +36,15 @@ export const TOOL_FRAME = Object.freeze({
   referrerPolicy: "strict-origin",
   loadTimeoutMs: 10_000,
 });
+
+/**
+ * Frame for the marketing tools. Same as TOOL_FRAME plus `allow-modals`, which "Print or save PDF" needs
+ * (a sandboxed frame cannot call window.print without it), and clipboard write for their copy buttons.
+ * The pages are on the portfolio origin under their own CSP (connect-src 'none'), so neither grant can
+ * send data anywhere. See docs/decisions/0010-marketing-apps.md.
+ */
+export const MARKETING_FRAME = Object.freeze({
+  ...TOOL_FRAME,
+  sandbox: `${TOOL_FRAME.sandbox} allow-modals`,
+  allow: "clipboard-write",
+});
