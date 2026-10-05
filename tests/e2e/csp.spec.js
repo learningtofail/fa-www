@@ -109,6 +109,13 @@ test.describe("proposed Content-Security-Policy", () => {
     await expect(page.locator('iframe[title="UTM Governance Auditor"]')).toBeVisible();
     await expect(page.frameLocator('iframe[title="UTM Governance Auditor"]').getByText("stub tool")).toBeVisible();
 
+    await page.locator(".gnome-dock").getByRole("button", { name: "Marketing" }).click();
+    await page.getByRole("dialog", { name: "Marketing" }).getByRole("button", { name: "Redirect Mapper" }).click();
+    await expect(page.locator('iframe[title="Bulk Redirect Mapper & Loop Validator"]')).toBeVisible();
+    await expect(
+      page.frameLocator('iframe[title="Bulk Redirect Mapper & Loop Validator"]').getByText("stub tool"),
+    ).toBeVisible();
+
     await page.locator(".gnome-dock").getByRole("button", { name: "Weather" }).click();
     const weather = page.getByRole("dialog", { name: "Weather" });
     await expect(weather.getByText("Partly cloudy")).toBeVisible();

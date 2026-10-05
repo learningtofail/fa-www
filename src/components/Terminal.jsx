@@ -3,6 +3,7 @@ import "../styles/terminal.css";
 import { BOOT_LINE, MESSAGES, createFilesystem } from "../data/terminalContent.js";
 import { OPENABLE_APPS } from "../data/apps.js";
 import { PROFILE } from "../data/profile.js";
+import { MARKETING_TOOLS } from "../data/marketingTools.js";
 import { tools, toolUrl } from "../data/tools.js";
 import { CommandHistory } from "../lib/terminal/history.js";
 import { TerminalEngine } from "../lib/terminal/TerminalEngine.js";
@@ -28,6 +29,7 @@ export default function Terminal({ onOpenTool, onOpenApp }) {
       new TerminalEngine({
         filesystem: buildFilesystem(createFilesystem(), tools),
         tools,
+        extraTools: MARKETING_TOOLS,
         apps: OPENABLE_APPS,
         toolUrl,
         portfolioUrl: PROFILE.portfolio.url,

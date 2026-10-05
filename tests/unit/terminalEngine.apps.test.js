@@ -53,4 +53,14 @@ describe("TerminalEngine: errors and apps", () => {
   it("works without an apps dependency", () => {
     expect(make().execute("open files").effects).toEqual([]);
   });
+
+  it("launches an extra tool with its own url, and prefers an app of the same slug", () => {
+    const extraTools = [{ slug: "mkt-one", name: "Marketing One", url: "https://x.test/marketing/mkt-one.html" }];
+    const engine = make({ extraTools });
+    expect(engine.execute("open mkt-one").effects).toEqual([
+      { type: "open-tool", slug: "mkt-one", name: "Marketing One", url: "https://x.test/marketing/mkt-one.html" },
+    ]);
+    expect(engine.execute("open tool-one").effects?.[0]).toMatchObject({ url: "/tools/tool-one/" });
+    expect(engine.execute("open nope").lines[1].type).toBe("error");
+  });
 });

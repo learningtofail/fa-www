@@ -2,19 +2,21 @@ import { useEffect, useState } from "react";
 import "../styles/content.css";
 import { TOOL_FRAME } from "../data/tools.js";
 
+/** @typedef {{ sandbox: string, referrerPolicy: import("react").HTMLAttributeReferrerPolicy, loadTimeoutMs: number, allow?: string }} Frame */
+
 /**
  * A tool page in a sandboxed frame. The frame cannot tell us whether a header such as
  * X-Frame-Options blocked it, so a plain link to open the tool in a new tab is always shown,
  * and a frame that has not loaded in time gets an explicit fallback notice.
- * @param {{ url: string, label: string }} props
+ * @param {{ url: string, label: string, frame?: Frame }} props
  */
-export default function IframeContent({ url, label }) {
+export default function IframeContent({ url, label, frame = TOOL_FRAME }) {
   const [status, setStatus] = useState("loading"); // loading | loaded | failed
 
   useEffect(() => {
-    const timer = setTimeout(() => setStatus((s) => (s === "loading" ? "failed" : s)), TOOL_FRAME.loadTimeoutMs);
+    const timer = setTimeout(() => setStatus((s) => (s === "loading" ? "failed" : s)), frame.loadTimeoutMs);
     return () => clearTimeout(timer);
-  }, [url]);
+  }, [url, frame.loadTimeoutMs]);
 
   return (
     <div className="iframe-content">
@@ -32,9 +34,10 @@ export default function IframeContent({ url, label }) {
         className="iframe-content__frame"
         src={url}
         title={label}
-        sandbox={TOOL_FRAME.sandbox}
+        sandbox={frame.sandbox}
+        allow={frame.allow}
         loading="lazy"
-        referrerPolicy={TOOL_FRAME.referrerPolicy}
+        referrerPolicy={frame.referrerPolicy}
         onLoad={() => setStatus("loaded")}
       />
     </div>
