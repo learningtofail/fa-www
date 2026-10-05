@@ -3,8 +3,7 @@ import "../styles/terminal.css";
 import { BOOT_LINE, MESSAGES, createFilesystem } from "../data/terminalContent.js";
 import { OPENABLE_APPS } from "../data/apps.js";
 import { PROFILE } from "../data/profile.js";
-import { MARKETING_TOOLS } from "../data/marketingTools.js";
-import { tools, toolUrl } from "../data/tools.js";
+import { MARKETING_TOOLS, toolPageUrl } from "../data/marketingTools.js";
 import { CommandHistory } from "../lib/terminal/history.js";
 import { TerminalEngine } from "../lib/terminal/TerminalEngine.js";
 import { buildFilesystem } from "../lib/terminal/path.js";
@@ -27,11 +26,10 @@ export default function Terminal({ onOpenTool, onOpenApp }) {
   const engine = useMemo(
     () =>
       new TerminalEngine({
-        filesystem: buildFilesystem(createFilesystem(), tools),
-        tools,
-        extraTools: MARKETING_TOOLS,
+        filesystem: buildFilesystem(createFilesystem(), MARKETING_TOOLS),
+        tools: MARKETING_TOOLS,
         apps: OPENABLE_APPS,
-        toolUrl,
+        toolUrl: (slug) => toolPageUrl(slug) ?? "",
         portfolioUrl: PROFILE.portfolio.url,
         messages: MESSAGES,
       }),

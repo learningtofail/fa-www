@@ -9,11 +9,11 @@ import {
 import { MARKETING_FRAME, TOOL_FRAME } from "../../src/data/tools.js";
 
 describe("marketing catalog", () => {
-  it("holds 21 tools in six groups, with unique slugs, names, labels and glyph per group", () => {
-    expect(MARKETING_TOOLS).toHaveLength(21);
+  it("holds 23 tools in six groups, with unique slugs, names, labels and glyph per group", () => {
+    expect(MARKETING_TOOLS).toHaveLength(23);
     expect(MARKETING_GROUPS).toHaveLength(6);
     for (const key of ["slug", "name", "label"]) {
-      expect(new Set(MARKETING_TOOLS.map((t) => t[key])).size).toBe(21);
+      expect(new Set(MARKETING_TOOLS.map((t) => t[key])).size).toBe(23);
     }
     for (const tool of MARKETING_TOOLS) {
       expect(tool.slug).toMatch(/^[a-z0-9-]+$/);
@@ -27,12 +27,17 @@ describe("marketing catalog", () => {
 
   it("builds page URLs on the tools origin under /marketing/", () => {
     expect(marketingUrl("redirect-mapper")).toBe("https://portfolio.faysalahmed.ca/marketing/redirect-mapper.html");
-    expect(MARKETING_TOOLS.every((t) => t.url === marketingUrl(t.slug))).toBe(true);
+    expect(MARKETING_TOOLS.filter((t) => !t.path).every((t) => t.url === marketingUrl(t.slug))).toBe(true);
+    expect(MARKETING_TOOLS.filter((t) => !t.path)).toHaveLength(21);
   });
 
-  it("does not reuse a slug from the five portfolio tools", () => {
-    for (const slug of ["utm-auditor", "gtm-auditor", "cac-calculator", "attribution", "disclosure-check"]) {
+  it("treats the two Astro tools as tools but not as marketing pages", () => {
+    for (const slug of ["attribution", "disclosure-check"]) {
       expect(isMarketingTool(slug)).toBe(false);
+      expect(MARKETING_TOOLS.find((t) => t.slug === slug)?.url).toBe(`https://portfolio.faysalahmed.ca/tools/${slug}/`);
+    }
+    for (const slug of ["utm-auditor", "gtm-auditor", "cac-calculator"]) {
+      expect(MARKETING_TOOLS.some((t) => t.slug === slug)).toBe(false);
     }
   });
 
@@ -42,12 +47,11 @@ describe("marketing catalog", () => {
     expect(isMarketingTool("nope")).toBe(false);
   });
 
-  it("has a folder registry for Tools and Marketing", () => {
-    expect(Object.keys(FOLDERS)).toEqual(["tools", "marketing"]);
+  it("has one folder, Marketing", () => {
+    expect(Object.keys(FOLDERS)).toEqual(["marketing"]);
     expect(isFolder("marketing")).toBe(true);
     expect(isFolder("constructor")).toBe(false);
-    expect(FOLDERS.tools.groups[0].items).toHaveLength(5);
-    expect(FOLDERS.marketing.groups.flatMap((g) => g.items)).toHaveLength(21);
+    expect(FOLDERS.marketing.groups.flatMap((g) => g.items)).toHaveLength(23);
   });
 });
 

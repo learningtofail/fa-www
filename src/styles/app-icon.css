@@ -40,9 +40,6 @@
 .app-icon--now {
   background: var(--app-tone-now);
 }
-.app-icon--tools {
-  background: var(--app-tone-tools);
-}
 .app-icon--terminal {
   background: var(--app-tone-terminal);
 }

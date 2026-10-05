@@ -19,8 +19,7 @@ import { listEntries, parseLsArgs, pathLabel, resolvePath } from "./path.js";
  * }} Messages
  * @typedef {{
  *   filesystem: import("./path.js").FsNode,
- *   tools: { slug: string, name: string }[],
- *   extraTools?: readonly { slug: string, name: string, url: string }[],
+ *   tools: readonly { slug: string, name: string }[],
  *   apps?: readonly { slug: string, name: string }[],
  *   toolUrl: (slug: string) => string,
  *   portfolioUrl: string,
@@ -45,7 +44,7 @@ export class TerminalEngine {
 
   /** @param {TerminalDeps} deps everything the engine needs, injected so tests can supply fakes */
   constructor(deps) {
-    this.#deps = { apps: [], extraTools: [], ...deps };
+    this.#deps = { apps: [], ...deps };
     this.#commands
       .set("help", () => ({ lines: deps.messages.HELP_TEXT }))
       .set("whoami", () => ({ lines: deps.messages.WHOAMI_TEXT }))
@@ -139,13 +138,6 @@ export class TerminalEngine {
     }
     const app = this.#deps.apps.find((a) => a.slug === arg);
     if (app) return { lines: [`opening ${arg}...`], effects: [{ type: "open-app", id: app.slug, name: app.name }] };
-    const extra = this.#deps.extraTools.find((t) => t.slug === arg);
-    if (extra) {
-      return {
-        lines: [`opening ${arg}...`],
-        effects: [{ type: "open-tool", slug: extra.slug, name: extra.name, url: extra.url }],
-      };
-    }
     const tool = this.#deps.tools.find((t) => t.slug === arg);
     if (!tool) return fail([`open: ${arg}: no such tool or app. try 'ls tools' or 'help'.`]);
     return {

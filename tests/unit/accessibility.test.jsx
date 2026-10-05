@@ -12,13 +12,13 @@ describe("focus handoff (S11)", () => {
   it("moves focus into a window opened from the dock and returns it when the window closes", async () => {
     const user = userEvent.setup();
     const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
-    const tools = dockButton(container, "Tools");
-    await user.click(tools);
+    const folderBtn = dockButton(container, "Marketing");
+    await user.click(folderBtn);
     // Focus is inside the new dialog once it has mounted from a user action.
-    const dialog = screen.getByRole("dialog", { name: "Tools" });
+    const dialog = screen.getByRole("dialog", { name: "Marketing" });
     expect(dialog.contains(document.activeElement)).toBe(true);
-    await user.click(within(dialog).getByRole("button", { name: "Close Tools" }));
-    expect(document.activeElement).toBe(tools);
+    await user.click(within(dialog).getByRole("button", { name: "Close Marketing" }));
+    expect(document.activeElement).toBe(folderBtn);
   });
 
   it("puts the terminal input in focus when the terminal opens", async () => {
@@ -36,10 +36,10 @@ describe("focus handoff (S11)", () => {
   it("does not move focus to an opener that has left the page", async () => {
     const user = userEvent.setup();
     const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
-    const tools = dockButton(container, "Tools");
-    await user.click(tools);
-    tools.remove();
-    await user.click(screen.getByRole("button", { name: "Close Tools" }));
+    const folderBtn = dockButton(container, "Marketing");
+    await user.click(folderBtn);
+    folderBtn.remove();
+    await user.click(screen.getByRole("button", { name: "Close Marketing" }));
     expect(document.activeElement).toBe(document.body);
   });
 
@@ -53,13 +53,13 @@ describe("focus handoff (S11)", () => {
     expect(document.activeElement).toBe(icon);
   });
 
-  it("closes the mobile tools popup on Escape and returns focus to the folder icon", async () => {
+  it("closes the mobile Marketing popup on Escape and returns focus to the folder icon", async () => {
     const user = userEvent.setup();
     render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
-    const folder = screen.getByRole("button", { name: "Tools" });
+    const folder = screen.getByRole("button", { name: "Marketing" });
     await user.click(folder);
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("dialog", { name: "Tools" })).toBeNull();
+    expect(screen.queryByRole("dialog", { name: "Marketing" })).toBeNull();
     expect(document.activeElement).toBe(folder);
   });
 

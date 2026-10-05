@@ -1,7 +1,7 @@
 import "../styles/app-icon.css";
 
 // Shared icon glyph used by desktop icons, the dock, the mobile home grid, and
-// the tools folder grid: one visual language across every navigation surface.
+// the Marketing folder grid: one visual language across every navigation surface.
 /**
  * @param {{ glyph: string, tone: string, size?: "xs" | "sm" | "md" | "lg" | "xl" }} props
  * `tone` names an `--app-tone-*` token, `size` an `--icon-size-*` token.

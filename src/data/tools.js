@@ -1,22 +1,4 @@
-import { config } from "../lib/config.js";
-
-// Mirrors the locked slugs in fa-portfolio/src/data/tools.js (phase-4-tool-slugs.md).
-// Two separate repos/domains, so this list is duplicated rather than shared — keep
-// in sync by hand if a slug changes. Canonical hosting is always portfolio.faysalahmed.ca.
-// The origin is configurable (PUBLIC_TOOLS_ORIGIN, see lib/config.js) and defaults to the production one.
-export const PORTFOLIO_ORIGIN = config.toolsOrigin;
-
-export const tools = [
-  { slug: "utm-auditor", name: "UTM Governance Auditor" },
-  { slug: "gtm-auditor", name: "GTM Container Auditor" },
-  { slug: "cac-calculator", name: "CAC / Margin / Payback Calculator" },
-  { slug: "attribution", name: "Multi-Touch Attribution" },
-  { slug: "disclosure-check", name: "Disclosure Language Checker" },
-];
-
-export function toolUrl(slug) {
-  return `${PORTFOLIO_ORIGIN}/tools/${slug}/`;
-}
+// Tool frame constants. The catalog of tools lives in marketingTools.js (it mirrors fa-portfolio by hand).
 
 /** Icon shared by every tool tile and dock button; `tone` names an `--app-tone-*` token. */
 export const TOOL_ICON = Object.freeze({ glyph: "\u{1F527}", tone: "tool" });

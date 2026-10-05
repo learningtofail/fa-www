@@ -4,7 +4,7 @@ Status: accepted. Flags live in `TOOL_FRAME` in `src/data/tools.js`.
 
 ## Decision
 
-The Tools folder opens `https://portfolio.faysalahmed.ca/tools/<slug>/` (origin from `PUBLIC_TOOLS_ORIGIN`) in an iframe with:
+The two Astro tools in the Marketing folder open `https://portfolio.faysalahmed.ca/tools/<slug>/` (origin from `PUBLIC_TOOLS_ORIGIN`) in an iframe with:
 
 `sandbox="allow-scripts allow-same-origin allow-downloads"`, `referrerpolicy="strict-origin"`, `loading="lazy"`.
 

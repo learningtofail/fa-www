@@ -37,7 +37,7 @@ test("each tool opens as its own app: window, dock button and frame flags", asyn
   await page.goto("/");
   await page.locator(".gnome-dock").getByRole("button", { name: "Marketing" }).click();
   const folder = page.getByRole("dialog", { name: "Marketing" });
-  await expect(folder.locator(".tools-grid__tile")).toHaveCount(21);
+  await expect(folder.locator(".tools-grid__tile")).toHaveCount(23);
   await folder.getByRole("button", { name: "Experiment Analyzer" }).click();
   await page.locator(".gnome-dock").getByRole("button", { name: "Marketing" }).click(); // the new window covers the folder
   await folder.getByRole("button", { name: "Redirect Mapper" }).click();
@@ -77,7 +77,7 @@ test("the phone shell shows the folder as a popup and opens a tool full screen, 
   await page.goto("/");
   await page.locator(".app-grid").getByRole("button", { name: "Marketing" }).click();
   const popup = page.getByRole("dialog", { name: "Marketing" });
-  await expect(popup.locator(".tools-grid__tile")).toHaveCount(21);
+  await expect(popup.locator(".tools-grid__tile")).toHaveCount(23);
   const popupAxe = await new AxeBuilder({ page: /** @type {any} */ (page) }).analyze();
   expect(popupAxe.violations.map((v) => v.id)).toEqual([]);
   await popup.getByRole("button", { name: "Quality Score" }).click();

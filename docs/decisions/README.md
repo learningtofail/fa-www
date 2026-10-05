@@ -14,3 +14,4 @@ Short records of choices that are easy to undo by accident. Each says what was d
 | [0008](0008-text-editor.md)                  | Text Editor app: client-only, local draft   |
 | [0009](0009-live-weather.md)                 | Live Weather app: Open-Meteo, city search   |
 | [0010](0010-marketing-apps.md)               | Marketing tools as individual apps          |
+| [0011](0011-single-marketing-folder.md)      | One Marketing folder, no Tools folder       |
