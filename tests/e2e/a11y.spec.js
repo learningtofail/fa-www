@@ -1,6 +1,10 @@
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "@playwright/test";
 
+// Axe samples colors at one instant, and buttons fade between states (--transition-chrome). Reduced motion turns the
+// fades off, so a slow runner cannot catch a color mid-transition and report a false color-contrast failure.
+test.use({ contextOptions: { reducedMotion: "reduce" } });
+
 const viewports = { desktop: { width: 1280, height: 800 }, mobile: { width: 390, height: 844 } };
 
 // All axe rules run, color-contrast included (review D5 fixed the token pairs).
