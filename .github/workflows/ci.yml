@@ -74,7 +74,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist
@@ -113,7 +113,7 @@ jobs:
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4 # for scripts/ only; the site comes from the artifact
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: dist
           path: dist
