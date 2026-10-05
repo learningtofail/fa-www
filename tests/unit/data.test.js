@@ -4,11 +4,21 @@ import { CAREER_START_YEAR, PROFILE, summary, tagline, yearsActive } from "../..
 import { createFilesystem, HELP_TEXT } from "../../src/data/terminalContent.js";
 
 describe("app registry", () => {
-  it("lists the five apps both shells render", () => {
-    expect(APPS.map((a) => a.id)).toEqual(["about", "contact", "now", "tools", "terminal"]);
+  it("lists the nine apps both shells render", () => {
+    expect(APPS.map((a) => a.id)).toEqual([
+      "about",
+      "contact",
+      "now",
+      "files",
+      "calculator",
+      "weather",
+      "viewer",
+      "tools",
+      "terminal",
+    ]);
   });
 
-  it("keeps the terminal off the desktop icon grid", () => {
+  it("keeps the terminal and the dock-only apps off the desktop icon grid", () => {
     expect(DESKTOP_ICON_APPS.map((a) => a.id)).toEqual(["about", "contact", "now", "tools"]);
   });
 

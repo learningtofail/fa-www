@@ -2,7 +2,14 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import Window from "../../src/components/Window.jsx";
 
 function setup(overrides = {}) {
-  const handlers = { onFocus: vi.fn(), onClose: vi.fn(), onMinimize: vi.fn(), onMove: vi.fn(), onResize: vi.fn() };
+  const handlers = {
+    onFocus: vi.fn(),
+    onClose: vi.fn(),
+    onMinimize: vi.fn(),
+    onMaximize: vi.fn(),
+    onMove: vi.fn(),
+    onResize: vi.fn(),
+  };
   const view = render(
     <Window
       id="w"

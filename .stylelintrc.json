@@ -3,6 +3,7 @@
   "ignoreFiles": [
     "src/styles/orchis.tokens.css",
     "src/styles/site.tokens.css",
+    "src/styles/site.light.tokens.css",
     "dist/**",
     ".astro/**",
     "node_modules/**"

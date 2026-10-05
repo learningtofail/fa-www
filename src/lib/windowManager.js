@@ -4,10 +4,12 @@ import { clampPosition, clampSize } from "./windowGeometry.js";
 /**
  * Pure window state for the desktop shell. `windowReducer` never touches the DOM: anything that
  * depends on the screen (the desktop surface size, layout tokens) arrives in the action.
+ * Changed from the original: `maximize` action, `maximized` and `restore` fields.
  *
  * @typedef {{
  *   id: string, title: string, x: number, y: number, width: number, height: number,
  *   open: boolean, minimized: boolean, zIndex: number, isTool?: boolean, url?: string,
+ *   maximized?: boolean, restore?: { x: number, y: number, width: number, height: number },
  * }} WindowState
  * @typedef {{ windows: WindowState[], zCounter: number }} WindowsState
  * @typedef {{ width: number, height: number }} Surface
@@ -22,6 +24,7 @@ import { clampPosition, clampSize } from "./windowGeometry.js";
  *   | { type: "close", id: string }
  *   | { type: "focus", id: string }
  *   | { type: "minimize", id: string }
+ *   | { type: "maximize", id: string, surface?: Surface }
  *   | { type: "move", id: string, x: number, y: number }
  *   | { type: "resize", id: string, width: number, height: number }
  *   | { type: "tile", surface: Surface, tokens: Pick<import("./layout.js").LayoutTokens, "tileMargin" | "tileGap"> }
@@ -66,6 +69,16 @@ function fitToSurface(win, surface) {
   const size = clampSize({ width: win.width, height: win.height }, { x: 0, y: 0 }, surface);
   const position = clampPosition({ x: win.x, y: win.y }, size, surface);
   return { ...win, ...size, ...position };
+}
+
+/**
+ * @param {WindowState} win
+ * @returns {WindowState} `win` back at its pre-maximize geometry (same reference when not maximized)
+ */
+function restored(win) {
+  if (!win.maximized) return win;
+  const { restore, ...rest } = win;
+  return { ...rest, ...restore, maximized: false };
 }
 
 /**
@@ -137,7 +150,7 @@ export function createWindowReducer(defaults) {
         const target = state.windows.find((w) => w.id === action.id);
         if (!target) return state;
         if (target.isTool) return { ...state, windows: state.windows.filter((w) => w.id !== action.id) };
-        return updateWindow(state, action.id, (w) => ({ ...w, open: false }));
+        return updateWindow(state, action.id, (w) => ({ ...restored(w), open: false }));
       }
 
       case "focus":
@@ -146,11 +159,31 @@ export function createWindowReducer(defaults) {
       case "minimize":
         return updateWindow(state, action.id, (w) => ({ ...w, minimized: true }));
 
+      case "maximize": {
+        const next = updateWindow(state, action.id, (w) => {
+          if (w.maximized) return fitToSurface(restored(w), action.surface);
+          if (!action.surface) return w;
+          const { x, y, width, height } = w;
+          return {
+            ...w,
+            x: 0,
+            y: 0,
+            width: action.surface.width,
+            height: action.surface.height,
+            maximized: true,
+            restore: { x, y, width, height },
+          };
+        });
+        return raise(next, action.id);
+      }
+
       case "move":
-        return updateWindow(state, action.id, (w) => ({ ...w, x: action.x, y: action.y }));
+        return updateWindow(state, action.id, (w) => (w.maximized ? w : { ...w, x: action.x, y: action.y }));
 
       case "resize":
-        return updateWindow(state, action.id, (w) => ({ ...w, width: action.width, height: action.height }));
+        return updateWindow(state, action.id, (w) =>
+          w.maximized ? w : { ...w, width: action.width, height: action.height },
+        );
 
       case "tile": {
         const ids = visibleWindows(state.windows).map((w) => w.id);
@@ -160,13 +193,20 @@ export function createWindowReducer(defaults) {
           ...state,
           windows: state.windows.map((w) => {
             const index = ids.indexOf(w.id);
-            return index === -1 ? w : { ...w, ...rects[index] };
+            return index === -1 ? w : { ...restored(w), ...rects[index] };
           }),
         };
       }
 
       case "fit":
-        return { ...state, windows: state.windows.map((w) => (w.open ? fitToSurface(w, action.surface) : w)) };
+        return {
+          ...state,
+          windows: state.windows.map((w) => {
+            if (!w.open) return w;
+            if (w.maximized) return { ...w, x: 0, y: 0, width: action.surface.width, height: action.surface.height };
+            return fitToSurface(w, action.surface);
+          }),
+        };
 
       default:
         return state;

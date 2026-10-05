@@ -1,21 +1,25 @@
 import { useRef } from "react";
 import { useFocusReturn } from "../hooks/useFocusReturn.js";
+import { NO_PADDING_WINDOWS } from "../data/windows.js";
+import Icon from "./Icon.jsx";
 import WindowContent from "./WindowContent.jsx";
 
 /**
  * Full-screen app on the mobile shell. Focus moves in on open and returns to the home-screen
  * icon (or tool tile) that opened it when the user goes back.
+ * Changed from the original: line-icon back button, `onOpenApp`, edge-to-edge bodies for the new apps.
  * @param {{
  *   app: { id: string, title: string, kind: string, url?: string },
  *   lastDeploy: string,
  *   onBack: () => void,
  *   onOpenTool: (slug: string, name: string, url: string) => void,
+ *   onOpenApp: (id: string) => void,
  * }} props
  */
-export default function MobileAppView({ app, lastDeploy, onBack, onOpenTool }) {
+export default function MobileAppView({ app, lastDeploy, onBack, onOpenTool, onOpenApp }) {
   const rootRef = useRef(null);
   useFocusReturn(rootRef);
-  const bare = app.kind === "terminal" || app.kind === "tool";
+  const bare = app.kind === "terminal" || app.kind === "tool" || NO_PADDING_WINDOWS.has(app.id);
   const win = {
     ...app,
     isTool: app.kind === "tool",
@@ -40,7 +44,7 @@ export default function MobileAppView({ app, lastDeploy, onBack, onOpenTool }) {
     >
       <div className="app-view-header">
         <button className="back-btn" onClick={onBack} aria-label="Back">
-          &#8592;
+          <Icon name="back" />
         </button>
         <span className="app-view-title">{app.title}</span>
       </div>
@@ -51,7 +55,7 @@ export default function MobileAppView({ app, lastDeploy, onBack, onOpenTool }) {
         aria-label={`${app.title} content`}
         className={`app-view-body${bare ? " no-padding" : ""}`}
       >
-        <WindowContent win={win} lastDeploy={lastDeploy} onOpenTool={onOpenTool} />
+        <WindowContent win={win} lastDeploy={lastDeploy} onOpenTool={onOpenTool} onOpenApp={onOpenApp} />
       </div>
     </div>
   );

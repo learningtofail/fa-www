@@ -1,41 +1,31 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import "../styles/mobile.css";
 import AppIcon from "./AppIcon.jsx";
 import MobileAppView from "./MobileAppView.jsx";
-import ToolsFolderContent from "./ToolsFolderContent.jsx";
+import MobileFolderPopup from "./MobileFolderPopup.jsx";
+import MobileStatusBar from "./MobileStatusBar.jsx";
+import QuickSettings from "./QuickSettings.jsx";
 import { APPS } from "../data/apps.js";
-import { useFocusReturn } from "../hooks/useFocusReturn.js";
+import { MOBILE_DOCK_IDS } from "../data/windows.js";
+import { useNow } from "../hooks/useNow.js";
+import { formatDate, formatTime } from "../lib/clock.js";
+
+const PANEL_ID = "quick-settings-mobile";
+const DOCK_APPS = MOBILE_DOCK_IDS.map((id) => APPS.find((a) => a.id === id)).filter(Boolean);
 
 /**
- * The Tools folder as a popup. Escape or a tap on the backdrop closes it, and focus returns to
- * the folder icon.
- * @param {{ onClose: () => void, onOpenTool: (slug: string, name: string, url: string) => void }} props
+ * GNOME-mobile home: status bar, large clock, app grid, dock. Apps open full screen in
+ * `MobileAppView`; the Tools folder is a popup; the status bar opens Quick Settings as a sheet.
+ * @param {{
+ *   lastDeploy: string,
+ *   theme?: "light" | "dark",
+ *   onThemeChange?: (theme: "light" | "dark") => void,
+ * }} props
  */
-function FolderPopup({ onClose, onOpenTool }) {
-  const popupRef = useRef(null);
-  useFocusReturn(popupRef);
-  return (
-    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- backdrop tap dismisses; the keyboard path is Escape on the dialog and the tool buttons inside
-    <div className="folder-backdrop" onClick={onClose}>
-      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- stops backdrop dismissal on taps inside, and closes on Escape */}
-      <div
-        ref={popupRef}
-        className="folder-popup"
-        role="dialog"
-        aria-label="Tools"
-        tabIndex={-1}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.key === "Escape" && onClose()}
-      >
-        <p className="folder-popup-title">Tools</p>
-        <ToolsFolderContent onOpenTool={onOpenTool} dense />
-      </div>
-    </div>
-  );
-}
-
-export default function MobileShell({ lastDeploy }) {
+export default function MobileShell({ lastDeploy, theme = "light", onThemeChange = () => {} }) {
+  const now = useNow();
   const [folderOpen, setFolderOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [openApp, setOpenApp] = useState(null); // { id, title, kind, url? }
 
   const handleIconTap = (app) => {
@@ -51,24 +41,54 @@ export default function MobileShell({ lastDeploy }) {
     setOpenApp({ id: `tool:${slug}`, title: name, kind: "tool", url });
   };
 
+  const handleOpenApp = (id) => {
+    const app = APPS.find((a) => a.id === id);
+    if (app) handleIconTap(app);
+  };
+
+  const renderTile = (app, size, className) => (
+    <button key={app.id} className={className} onClick={() => handleIconTap(app)} aria-label={app.label}>
+      <AppIcon glyph={app.glyph} tone={app.tone} size={size} />
+      {size === "lg" && <span className="app-icon-label">{app.label}</span>}
+    </button>
+  );
+
   return (
     <main className="android-root">
       <h1 className="visually-hidden">Faysal Ahmed &mdash; desktop</h1>
-      <div className="app-grid">
-        {APPS.map((app) => (
-          <button key={app.id} className="app-icon-btn" onClick={() => handleIconTap(app)}>
-            <AppIcon glyph={app.glyph} tone={app.tone} size="lg" />
-            <span className="app-icon-label">{app.label}</span>
-          </button>
-        ))}
+      <MobileStatusBar
+        time={formatTime(now)}
+        expanded={panelOpen}
+        controls={PANEL_ID}
+        onToggle={() => setPanelOpen((open) => !open)}
+      />
+      <div className="mobile-home">
+        <div className="mobile-clock">
+          <p className="mobile-clock__time">{formatTime(now)}</p>
+          <p className="mobile-clock__date">{formatDate(now)}</p>
+        </div>
+        <div className="app-grid">{APPS.map((app) => renderTile(app, "lg", "app-icon-btn"))}</div>
+        <nav className="mobile-dock" aria-label="Dock">
+          {DOCK_APPS.map((app) => renderTile(app, "md", "mobile-dock__btn"))}
+        </nav>
       </div>
-      {folderOpen && <FolderPopup onClose={() => setFolderOpen(false)} onOpenTool={handleOpenTool} />}
+      {panelOpen && (
+        <QuickSettings
+          id={PANEL_ID}
+          variant="sheet"
+          theme={theme}
+          onThemeChange={onThemeChange}
+          onClose={() => setPanelOpen(false)}
+        />
+      )}
+      {folderOpen && <MobileFolderPopup onClose={() => setFolderOpen(false)} onOpenTool={handleOpenTool} />}
       {openApp && (
         <MobileAppView
           app={openApp}
           lastDeploy={lastDeploy}
           onBack={() => setOpenApp(null)}
           onOpenTool={handleOpenTool}
+          onOpenApp={handleOpenApp}
         />
       )}
     </main>

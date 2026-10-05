@@ -14,7 +14,7 @@ const output = () => screen.getByRole("log", { name: "Terminal output" }).textCo
 function setup() {
   const onOpenTool = vi.fn();
   const user = userEvent.setup();
-  render(<Terminal onOpenTool={onOpenTool} />);
+  render(<Terminal onOpenTool={onOpenTool} onOpenApp={vi.fn()} />);
   return { user, onOpenTool };
 }
 

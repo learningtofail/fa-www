@@ -21,6 +21,10 @@ describe("createInitialState", () => {
       ["now", true, 3],
       ["tools", false, 0],
       ["terminal", false, 0],
+      ["files", false, 0],
+      ["weather", false, 0],
+      ["calculator", false, 0],
+      ["viewer", false, 0],
     ]);
     expect(state.zCounter).toBe(4);
   });
