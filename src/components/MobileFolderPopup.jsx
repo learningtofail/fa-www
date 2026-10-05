@@ -1,13 +1,14 @@
 import { useRef } from "react";
-import ToolsFolderContent from "./ToolsFolderContent.jsx";
+import FolderContent from "./FolderContent.jsx";
+import { FOLDERS } from "../data/folders.js";
 import { useFocusReturn } from "../hooks/useFocusReturn.js";
 
 /**
- * The Tools folder as a popup. Escape or a tap on the backdrop closes it, and focus returns to
+ * A folder (Tools or Marketing) as a popup. Escape or a tap on the backdrop closes it, and focus returns to
  * the folder icon. Unchanged from the original MobileShell.
- * @param {{ onClose: () => void, onOpenTool: (slug: string, name: string, url: string) => void }} props
+ * @param {{ folder: string, onClose: () => void, onOpenTool: (slug: string, name: string, url: string) => void }} props
  */
-export default function MobileFolderPopup({ onClose, onOpenTool }) {
+export default function MobileFolderPopup({ folder, onClose, onOpenTool }) {
   const popupRef = useRef(null);
   useFocusReturn(popupRef);
   return (
@@ -18,13 +19,13 @@ export default function MobileFolderPopup({ onClose, onOpenTool }) {
         ref={popupRef}
         className="folder-popup"
         role="dialog"
-        aria-label="Tools"
+        aria-label={FOLDERS[folder]?.title}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={(e) => e.key === "Escape" && onClose()}
       >
-        <p className="folder-popup-title">Tools</p>
-        <ToolsFolderContent onOpenTool={onOpenTool} dense />
+        <p className="folder-popup-title">{FOLDERS[folder]?.title}</p>
+        <FolderContent folder={folder} onOpenTool={onOpenTool} dense />
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ fa-www and fa-portfolio share nothing at build time. This page lists what ties t
 
 The Tools folder in www opens pages from `https://portfolio.faysalahmed.ca/tools/<slug>/` in a sandboxed iframe (`src/data/tools.js`). A portfolio outage or a renamed slug degrades that one feature, not the site: every tool window keeps an "Open in a new tab" link, so users are never stuck.
 
+The Marketing folder opens `https://portfolio.faysalahmed.ca/marketing/<slug>.html`. Those 21 pages are monitored from the fa-portfolio side (`docs/monitoring.md` there); `src/data/marketingTools.js` is a hand-kept mirror of the file list.
+
 `src/data/tools.js` is a hand-kept mirror of the slug list in fa-portfolio. There is no build or CI link, so drift is caught by monitoring, not by a test.
 
 ## Uptime Kuma: one keyword monitor per tool
