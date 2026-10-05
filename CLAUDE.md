@@ -18,6 +18,7 @@ Astro 7 static site, React 19 island. See `docs/architecture.md` for the current
 - `src/styles/`: three layers. `orchis.tokens.css` is GENERATED from the Orchis DS at the commit in `orchis.manifest.json` (never edit it; `tokens:check` fails on drift). `site.tokens.css` holds fa-www's own values and overrides and loads second. Component CSS (`desktop.css`, `mobile.css`, `form.css`, `terminal.css`, `app-icon.css`, `tools-grid.css`, `content.css`, `base.css`) reads tokens only.
 - `src/lib/`: pure, unit-tested logic. `windowManager.js` (`windowReducer`), `windowGeometry.js` (clamping, keyboard gesture math), `layout.js` (layout tokens, tiling), `terminal/TerminalEngine.js` (class with `#cwd`, a `Map` command registry, injected deps, `execute(raw)` returning `{ lines, effects }`), `terminal/path.js`, `terminal/history.js`, `keyboard.js`, `config.js`.
 - `scripts/`: `tokens.mjs` (token sync and check), `deploy.sh` (CI deploy, env-driven, `DRY_RUN=1`), `activate-release.sh` (host-side release switch; piped over ssh), `csp-hashes.mjs` (`npm run csp:hashes`, prints the CSP hashes of the built page).
+- `docs/decisions/`: short decision records (client:only shell, robots and noindex, iframe sandbox, keyboard policy, inline-style exception, make-private runbook). Add one when you change any of those, and update CLAUDE.md in the same PR when files move.
 - `tests/unit/`: Vitest + Testing Library. `tests/e2e/`: Playwright + axe.
 
 ## Delivery
