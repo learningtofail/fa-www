@@ -45,13 +45,14 @@ function colorIn(map, name) {
 
 const color = (name) => colorIn(tokens, name);
 
-/** Resolves a token that is a hex or an `rgba(0, 0, 0, a)` black overlay, composited over `bg`. */
+/** Resolves a token that is a hex or an `rgba(r, g, b, a)` overlay, composited over `bg`. */
 function solid(map, name, bg) {
   const value = resolveAlias(map, name);
   if (value.startsWith("#")) return value;
-  const m = value.match(/^rgba\(\s*0\s*,\s*0\s*,\s*0\s*,\s*([\d.]+)\s*\)$/);
-  if (!m) throw new Error(`${name} is neither a hex nor a black rgba (${value})`);
-  return composite("#000000", Number(m[1]), bg);
+  const m = value.match(/^rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)$/);
+  if (!m) throw new Error(`${name} is neither a hex nor an rgba (${value})`);
+  const hex = `#${[m[1], m[2], m[3]].map((c) => Number(c).toString(16).padStart(2, "0")).join("")}`;
+  return composite(hex, Number(m[4]), bg);
 }
 
 const WHITE = color("--win-bg");
@@ -102,6 +103,19 @@ describe("D5: text contrast meets WCAG AA (4.5:1)", () => {
     expect(color("--link")).toBe("#1558b0");
     expect(color("--link-visited")).toBe("#7b1fa2");
     expect(color("--content-success")).toBe("#216e3b");
+  });
+});
+
+describe("error text meets WCAG AA on the window base and the grey bars in both themes", () => {
+  const GREY_BAR = (map, base) => solid(map, "--secondary-fill", base);
+  it.each([
+    ["dark", tokens],
+    ["light", lightTokens],
+  ])("%s theme", (_theme, map) => {
+    const base = colorIn(map, "--base");
+    for (const bg of [base, GREY_BAR(map, base)]) {
+      expect(contrastRatio(colorIn(map, "--text-error"), bg)).toBeGreaterThanOrEqual(AA_TEXT);
+    }
   });
 });
 

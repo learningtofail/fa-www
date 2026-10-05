@@ -72,6 +72,7 @@
   --content-text-muted: #6b6b6b; /* 5.33:1 on white */
   --content-success: #216e3b; /* 6.25:1 on white */
   --content-error: #b00020; /* 7.9:1 on white */
+  --text-error: #ff9e95; /* error text on the dark theme surfaces: 5.47:1 on the dark window base (stock --error is 2.95:1) */
   --content-entry-fill: rgba(0, 0, 0, 0.05);
   --content-entry-fill-hover: rgba(0, 0, 0, 0.08);
   --content-border-alt: rgba(0, 0, 0, 0.16);

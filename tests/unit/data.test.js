@@ -4,12 +4,13 @@ import { CAREER_START_YEAR, PROFILE, summary, tagline, yearsActive } from "../..
 import { createFilesystem, HELP_TEXT } from "../../src/data/terminalContent.js";
 
 describe("app registry", () => {
-  it("lists the nine apps both shells render", () => {
+  it("lists the ten apps both shells render", () => {
     expect(APPS.map((a) => a.id)).toEqual([
       "about",
       "contact",
       "now",
       "files",
+      "editor",
       "calculator",
       "weather",
       "viewer",

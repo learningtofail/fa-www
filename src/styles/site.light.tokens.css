@@ -15,6 +15,7 @@
   --calc-key-height: 38px;
   --app-tone-calculator: var(--orange-dark);
   --app-tone-files: var(--blue-dark);
+  --app-tone-editor: var(--pink-dark);
   --app-tone-weather: var(--teal-dark);
   --app-tone-viewer: var(--purple-dark);
   --folder-back: var(--blue-light);
@@ -73,6 +74,7 @@
   --link-visited: var(--purple-dark);
   --warning: var(--yellow-dark);
   --error: var(--red-dark);
+  --text-error: #b00020; /* error text on light surfaces: 7.33:1 on white, 6.14:1 on the grey bars (stock --error is 3.55:1) */
   --success: var(--sea-dark);
 
   /* fa-www window chrome follows the surface tokens instead of the dark titlebar */

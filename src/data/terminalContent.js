@@ -10,7 +10,7 @@ export const HELP_TEXT = [
   "  ls              list what's here",
   "  cd [dir]        go somewhere",
   "  cat [file]      read something",
-  "  open [thing]    open a tool or an app (files, weather, calculator, viewer)",
+  "  open [thing]    open a tool or an app (files, editor, weather, calculator, viewer)",
   "  whoami          bold of you to ask",
   "  clear           clean slate",
   "",

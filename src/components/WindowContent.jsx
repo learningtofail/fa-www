@@ -6,6 +6,7 @@ import IframeContent from "./IframeContent.jsx";
 import ImageViewerContent from "./ImageViewerContent.jsx";
 import NowContent from "./NowContent.jsx";
 import Terminal from "./Terminal.jsx";
+import TextEditorContent from "./TextEditorContent.jsx";
 import ToolsFolderContent from "./ToolsFolderContent.jsx";
 import WeatherContent from "./WeatherContent.jsx";
 
@@ -39,6 +40,8 @@ export default function WindowContent({ win, lastDeploy, onOpenTool, onOpenApp }
       return <CalculatorContent />;
     case "viewer":
       return <ImageViewerContent />;
+    case "editor":
+      return <TextEditorContent />;
     default:
       return null;
   }
