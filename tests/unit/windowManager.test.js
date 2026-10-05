@@ -25,6 +25,7 @@ describe("createInitialState", () => {
       ["weather", false, 0],
       ["calculator", false, 0],
       ["viewer", false, 0],
+      ["editor", false, 0],
     ]);
     expect(state.zCounter).toBe(4);
   });

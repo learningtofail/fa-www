@@ -27,5 +27,7 @@ export const ICON_PATHS = {
   trash: "M3 4.5h10M6 4.5V3h4v1.5M4.5 4.5l.7 9h5.6l.7-9",
   plus: "M8 3v10M3 8h10",
   minus: "M3 8h10",
+  folder: "M2 4.5h4l1.5 1.5H14v7H2z",
+  wrap: "M2 4h12M2 8h9a2 2 0 010 4H8M9.5 10.5L8 12l1.5 1.5M2 12h3",
   moon: "M13 9.5A5.5 5.5 0 116.5 3a4.5 4.5 0 006.5 6.5z",
 };

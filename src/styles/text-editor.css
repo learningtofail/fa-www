@@ -1,0 +1,126 @@
+/* TextEditorContent.jsx. The window body has no padding (NO_PADDING_WINDOWS).
+   Zoom is a data attribute so no inline style is needed. Keep these steps in sync with EDITOR_ZOOM_STEPS. */
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--base);
+  color: var(--text);
+  font-family: var(--font-ui);
+}
+
+.editor__bar {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-size);
+  padding: var(--space-size) var(--space-2x);
+  border-bottom: 1px solid var(--divider);
+}
+.editor__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-size);
+  min-height: var(--size-medium);
+  padding: 0 var(--space-2x);
+  border: none;
+  border-radius: var(--radius-material);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  transition: var(--transition-chrome);
+}
+.editor__btn--icon {
+  justify-content: center;
+  width: var(--size-medium);
+  padding: 0;
+  color: var(--text-secondary);
+}
+.editor__btn:hover:not(:disabled) {
+  background: var(--overlay-hover);
+}
+.editor__btn[aria-pressed="true"] {
+  background: var(--overlay-checked);
+  color: var(--text);
+}
+.editor__btn:disabled {
+  color: var(--text-disabled);
+  cursor: default;
+}
+.editor__btn:focus-visible,
+.editor__name:focus-visible,
+.editor__text:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 2px;
+}
+.editor__name {
+  flex: 1;
+  min-width: 8ch;
+  min-height: var(--size-medium);
+  padding: 0 var(--space-size);
+  border: none;
+  border-radius: var(--radius-material);
+  background: var(--entry-fill);
+  color: var(--text);
+  font: inherit;
+}
+.editor__zoom {
+  min-width: 4ch;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.editor__text {
+  flex: 1;
+  min-height: 0;
+  padding: var(--space-2x) var(--space-3x);
+  border: none;
+  background: var(--base);
+  color: var(--text);
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-root);
+  line-height: var(--line-height-terminal);
+  resize: none;
+  tab-size: 4;
+}
+.editor__text::placeholder {
+  color: var(--placeholder-text);
+}
+.editor__text[data-zoom="75"] {
+  font-size: calc(var(--font-size-root) * 0.75);
+}
+.editor__text[data-zoom="125"] {
+  font-size: calc(var(--font-size-root) * 1.25);
+}
+.editor__text[data-zoom="150"] {
+  font-size: calc(var(--font-size-root) * 1.5);
+}
+.editor__text[data-zoom="200"] {
+  font-size: calc(var(--font-size-root) * 2);
+}
+
+.editor__error {
+  flex: none;
+  margin: 0;
+  padding: var(--space-size) var(--space-2x);
+  border-top: 1px solid var(--divider);
+  color: var(--text-error);
+}
+.editor__status {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  gap: var(--space-3x);
+  padding: var(--space-size) var(--space-2x);
+  border-top: 1px solid var(--divider);
+  background: var(--background);
+  color: var(--text-secondary);
+  font-size: var(--font-size-caption);
+  font-variant-numeric: tabular-nums;
+}
+.editor__state {
+  margin-left: auto;
+}
