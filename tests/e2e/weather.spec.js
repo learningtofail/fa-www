@@ -2,6 +2,10 @@ import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "@playwright/test";
 import { stubOpenMeteo } from "./weatherStubs.js";
 
+// Axe samples colors at one instant, and buttons fade between states (--transition-chrome). Reduced motion turns the
+// fades off, so a slow runner cannot catch a color mid-transition and report a false color-contrast failure.
+test.use({ contextOptions: { reducedMotion: "reduce" } });
+
 const DESKTOP = { width: 1280, height: 800 };
 const PHONE = { width: 390, height: 844 };
 const THEME_KEY = "fa-www:theme";
@@ -42,6 +46,11 @@ for (const theme of /** @type {const} */ (["light", "dark"])) {
     expect(results.violations.map((v) => v.id)).toEqual([]);
   });
 }
+
+test("the axe specs run with reduced motion, so colors are not sampled mid-transition", async ({ page }) => {
+  await page.goto("/");
+  expect(await page.evaluate(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches)).toBe(true);
+});
 
 test("shows current conditions, the hourly strip and the daily forecast", async ({ page }) => {
   await stubOpenMeteo(page);

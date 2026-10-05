@@ -2,6 +2,10 @@ import { test, expect } from "@playwright/test";
 import { createServer } from "node:http";
 import AxeBuilder from "@axe-core/playwright";
 
+// Axe samples colors at one instant, and buttons fade between states (--transition-chrome). Reduced motion turns the
+// fades off, so a slow runner cannot catch a color mid-transition and report a false color-contrast failure.
+test.use({ contextOptions: { reducedMotion: "reduce" } });
+
 const DESKTOP = { width: 1280, height: 800 };
 const TOOL_URL = "https://portfolio.faysalahmed.ca/tools/utm-auditor/";
 
