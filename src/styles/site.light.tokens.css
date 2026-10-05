@@ -18,6 +18,13 @@
   --app-tone-editor: var(--pink-dark);
   --app-tone-weather: var(--teal-dark);
   --app-tone-viewer: var(--purple-dark);
+  --app-tone-marketing: var(--red-dark);
+  --app-tone-mkt-measure: var(--blue-dark);
+  --app-tone-mkt-economics: var(--green-dark);
+  --app-tone-mkt-paid: var(--orange-dark);
+  --app-tone-mkt-governance: var(--purple-dark);
+  --app-tone-mkt-seo: var(--teal-dark);
+  --app-tone-mkt-messaging: var(--pink-dark);
   --folder-back: var(--blue-light);
   --folder-front-top: color-mix(in srgb, var(--blue-light), white 35%);
   --folder-front-bottom: var(--blue-light);

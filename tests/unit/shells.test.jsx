@@ -16,10 +16,10 @@ describe("DesktopShell", () => {
     expect(screen.getByText("last deploy: 2026-10-04")).toBeTruthy();
   });
 
-  it("shows four desktop icons and ten dock buttons", () => {
+  it("shows five desktop icons and eleven dock buttons", () => {
     const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
-    expect(container.querySelectorAll(".desktop-icon")).toHaveLength(4);
-    expect(container.querySelectorAll(".gnome-dock .dock-icon-btn")).toHaveLength(10);
+    expect(container.querySelectorAll(".desktop-icon")).toHaveLength(5);
+    expect(container.querySelectorAll(".gnome-dock .dock-icon-btn")).toHaveLength(11);
   });
 
   it("closes and minimizes windows with the titlebar buttons", async () => {
@@ -57,6 +57,36 @@ describe("DesktopShell", () => {
     await user.click(within(folder).getByRole("button", { name: "UTM Governance Auditor" }));
     const frame = screen.getAllByTitle("UTM Governance Auditor").find((el) => el.tagName === "IFRAME");
     expect(frame.getAttribute("src")).toBe("https://portfolio.faysalahmed.ca/tools/utm-auditor/");
+  });
+
+  it("opens a marketing tool as its own window, with its own dock icon and the marketing frame", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
+    await user.click(dockButton(container, "Marketing"));
+    const folder = screen.getByRole("dialog", { name: "Marketing" });
+    expect(folder.querySelectorAll(".tools-grid__tile")).toHaveLength(21);
+    expect(within(folder).getByRole("heading", { name: "Technical SEO" })).toBeTruthy();
+    await user.click(within(folder).getByRole("button", { name: "Redirect Mapper" }));
+    const name = "Bulk Redirect Mapper & Loop Validator";
+    const frame = screen.getAllByTitle(name).find((el) => el.tagName === "IFRAME");
+    expect(frame.getAttribute("src")).toBe("https://portfolio.faysalahmed.ca/marketing/redirect-mapper.html");
+    expect(frame.getAttribute("sandbox")).toContain("allow-modals");
+    expect(frame.getAttribute("sandbox")).toContain("allow-same-origin");
+    expect(frame.getAttribute("allow")).toBe("clipboard-write");
+    const dockIcon = within(container.querySelector(".gnome-dock")).getByRole("button", { name });
+    expect(dockIcon.querySelector(".app-icon--mkt-seo")?.textContent).toBe("\u{1F500}");
+  });
+
+  it("keeps the plain tool frame for the five portfolio tools", async () => {
+    const user = userEvent.setup();
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
+    await user.click(dockButton(container, "Tools"));
+    await user.click(
+      within(screen.getByRole("dialog", { name: "Tools" })).getByRole("button", { name: "UTM Governance Auditor" }),
+    );
+    const frame = screen.getAllByTitle("UTM Governance Auditor").find((el) => el.tagName === "IFRAME");
+    expect(frame.getAttribute("sandbox")).not.toContain("allow-modals");
+    expect(frame.hasAttribute("allow")).toBe(false);
   });
 
   it("closes the window that holds focus on Escape", () => {
@@ -106,7 +136,7 @@ describe("DesktopShell Escape while typing (D4)", () => {
 });
 
 describe("MobileShell", () => {
-  it("shows all ten apps on the home grid and four in the dock", () => {
+  it("shows all eleven apps on the home grid and four in the dock", () => {
     const { container } = render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const grid = within(container.querySelector(".app-grid"));
     for (const label of [
@@ -119,11 +149,12 @@ describe("MobileShell", () => {
       "Weather",
       "Image Viewer",
       "Tools",
+      "Marketing",
       "Terminal",
     ]) {
       expect(grid.getByRole("button", { name: label })).toBeTruthy();
     }
-    expect(container.querySelectorAll(".app-grid > *")).toHaveLength(10);
+    expect(container.querySelectorAll(".app-grid > *")).toHaveLength(11);
   });
 
   it("opens an app full screen and goes back", async () => {
@@ -142,6 +173,19 @@ describe("MobileShell", () => {
     await user.click(screen.getByRole("button", { name: "GTM Container Auditor" }));
     expect(screen.getByTitle("GTM Container Auditor").getAttribute("src")).toBe(
       "https://portfolio.faysalahmed.ca/tools/gtm-auditor/",
+    );
+  });
+
+  it("opens the Marketing folder as a popup and a marketing tool as a full-screen frame", async () => {
+    const user = userEvent.setup();
+    render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
+    await user.click(screen.getByRole("button", { name: "Marketing" }));
+    const popup = screen.getByRole("dialog", { name: "Marketing" });
+    expect(within(popup).getAllByRole("button")).toHaveLength(21);
+    await user.click(within(popup).getByRole("button", { name: "CAC Payback" }));
+    expect(screen.queryByRole("dialog", { name: "Marketing" })).toBeNull();
+    expect(screen.getByTitle("CAC, Margin & Payback Modeler").getAttribute("src")).toBe(
+      "https://portfolio.faysalahmed.ca/marketing/cac-payback-modeler.html",
     );
   });
 

@@ -37,3 +37,16 @@
   line-height: var(--line-height-tight);
   text-align: center;
 }
+
+.folder__group + .folder__group {
+  margin-top: var(--space-2x);
+}
+
+.folder__heading {
+  margin: 0;
+  padding: var(--space-2x) var(--space-2x) 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-caption);
+  font-weight: var(--type-title-weight);
+  letter-spacing: 0.02em;
+}

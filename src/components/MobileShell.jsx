@@ -15,7 +15,7 @@ const DOCK_APPS = MOBILE_DOCK_IDS.map((id) => APPS.find((a) => a.id === id)).fil
 
 /**
  * GNOME-mobile home: status bar, large clock, app grid, dock. Apps open full screen in
- * `MobileAppView`; the Tools folder is a popup; the status bar opens Quick Settings as a sheet.
+ * `MobileAppView`; the Tools and Marketing folders are popups; the status bar opens Quick Settings as a sheet.
  * @param {{
  *   lastDeploy: string,
  *   theme?: "light" | "dark",
@@ -24,20 +24,20 @@ const DOCK_APPS = MOBILE_DOCK_IDS.map((id) => APPS.find((a) => a.id === id)).fil
  */
 export default function MobileShell({ lastDeploy, theme = "light", onThemeChange = () => {} }) {
   const now = useNow();
-  const [folderOpen, setFolderOpen] = useState(false);
+  const [folderOpen, setFolderOpen] = useState(/** @type {string | null} */ (null)); // id of the open folder
   const [panelOpen, setPanelOpen] = useState(false);
   const [openApp, setOpenApp] = useState(null); // { id, title, kind, url? }
 
   const handleIconTap = (app) => {
     if (app.kind === "folder") {
-      setFolderOpen(true);
+      setFolderOpen(app.id);
       return;
     }
     setOpenApp({ id: app.id, title: app.label, kind: app.kind });
   };
 
   const handleOpenTool = (slug, name, url) => {
-    setFolderOpen(false);
+    setFolderOpen(null);
     setOpenApp({ id: `tool:${slug}`, title: name, kind: "tool", url });
   };
 
@@ -81,7 +81,9 @@ export default function MobileShell({ lastDeploy, theme = "light", onThemeChange
           onClose={() => setPanelOpen(false)}
         />
       )}
-      {folderOpen && <MobileFolderPopup onClose={() => setFolderOpen(false)} onOpenTool={handleOpenTool} />}
+      {folderOpen && (
+        <MobileFolderPopup folder={folderOpen} onClose={() => setFolderOpen(null)} onOpenTool={handleOpenTool} />
+      )}
       {openApp && (
         <MobileAppView
           app={openApp}

@@ -20,6 +20,7 @@ describe("createInitialState", () => {
       ["contact", true, 2],
       ["now", true, 3],
       ["tools", false, 0],
+      ["marketing", false, 0],
       ["terminal", false, 0],
       ["files", false, 0],
       ["weather", false, 0],
