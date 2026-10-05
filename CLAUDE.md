@@ -22,6 +22,8 @@ Astro 7 static site, React 19 island. See `docs/architecture.md` for the current
 
 ## Delivery
 
+Monitoring, the shared-config copy policy and the Uptime Kuma checks are in `docs/monitoring.md`. Keep its tool table in step with `src/data/tools.js`.
+
 CI builds once and uploads the `dist` artifact; the deploy job (push to `main` only, `environment: production`) downloads that exact artifact and `scripts/deploy.sh` rsyncs it to `releases/<sha>/` on the host, then switches the `current` symlink atomically. Rollback is one command: `docs/rollback.md`. The proposed Caddy block and CSP, with the host migration steps, are in `docs/caddy/Caddyfile.proposed.md`. After any Astro upgrade run `npm run build && npm run csp:hashes` and update the hashes in that doc; `tests/e2e/csp.spec.js` fails when they drift. If you change `PUBLIC_TOOLS_ORIGIN` or `PUBLIC_CONTACT_ENDPOINT`, change `frame-src` or `connect-src` in the same doc.
 
 ## Build-time configuration
