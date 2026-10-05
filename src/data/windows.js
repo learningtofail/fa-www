@@ -11,7 +11,7 @@ export const FIXED_WINDOWS = {
   tools: { title: "Tools", x: 620, y: 420, width: 420, height: 320 },
   terminal: { title: "terminal", x: 480, y: 440, width: 520, height: 300 },
   files: { title: "Files", x: 120, y: 90, width: 700, height: 440 },
-  weather: { title: "Weather", x: 80, y: 70, width: 480, height: 340 },
+  weather: { title: "Weather", x: 80, y: 60, width: 520, height: 440 },
   calculator: { title: "Calculator", x: 700, y: 80, width: 320, height: 420 },
   viewer: { title: "Image Viewer", x: 560, y: 120, width: 440, height: 340 },
   editor: { title: "Text Editor", x: 200, y: 110, width: 560, height: 400 },

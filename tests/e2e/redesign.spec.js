@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { test, expect } from "@playwright/test";
+import { stubOpenMeteo } from "./weatherStubs.js";
 
 const DESKTOP = { width: 1280, height: 800 };
 const PHONE = { width: 390, height: 844 };
@@ -12,6 +13,7 @@ async function startWithTheme(page, theme) {
 
 for (const theme of /** @type {const} */ (["light", "dark"])) {
   test(`${theme} theme: the new apps and Quick Settings have no axe violations`, async ({ page }) => {
+    await stubOpenMeteo(page);
     await startWithTheme(page, theme);
     await page.setViewportSize(DESKTOP);
     await page.goto("/");

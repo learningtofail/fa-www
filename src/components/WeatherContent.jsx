@@ -1,61 +1,78 @@
 import { useState } from "react";
 import "../styles/weather.css";
 import Icon from "./Icon.jsx";
-import { WEATHER } from "../data/desktopDemo.js";
+import WeatherForecast from "./WeatherForecast.jsx";
+import WeatherNow from "./WeatherNow.jsx";
+import WeatherSearch from "./WeatherSearch.jsx";
+import { useWeather } from "../hooks/useWeather.js";
+import { useWeatherPrefs } from "../hooks/useWeatherPrefs.js";
+import { placeLabel } from "../lib/weather/places.js";
 
-const TABS = [
-  { id: "hourly", label: "Hourly" },
-  { id: "daily", label: "Daily" },
+const UNITS = [
+  { id: "celsius", label: "°C" },
+  { id: "fahrenheit", label: "°F" },
 ];
 
-/** Weather window body: current conditions plus an Hourly / Daily switch. Placeholder data. */
+/** Weather window body: live conditions and forecast for a chosen city (Open-Meteo, fetched in the browser). */
 export default function WeatherContent() {
-  const [tab, setTab] = useState("hourly");
+  const { place, unit, setPlace, setUnit } = useWeatherPrefs();
+  const weather = useWeather(place, unit);
+  const [searching, setSearching] = useState(false);
 
   return (
     <div className="weather">
-      <div className="weather__tabs" role="tablist" aria-label="Forecast range">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            className="weather__tab"
-            role="tab"
-            aria-selected={tab === t.id}
-            onClick={() => setTab(t.id)}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
-      <div className="weather__now">
-        <Icon name="moon" className="weather__moon" />
-        <div>
-          <p className="weather__city">{WEATHER.city}</p>
-          <p className="weather__temp">{WEATHER.temperature}°</p>
+      <div className="weather__bar">
+        <p className="weather__place">{placeLabel(place)}</p>
+        <button className="weather__btn" aria-expanded={searching} onClick={() => setSearching((open) => !open)}>
+          <Icon name="search" />
+          Change city
+        </button>
+        <div className="weather__units" role="group" aria-label="Temperature unit">
+          {UNITS.map((u) => (
+            <button
+              key={u.id}
+              className="weather__btn weather__btn--unit"
+              aria-pressed={unit === u.id}
+              onClick={() => setUnit(u.id)}
+            >
+              {u.label}
+            </button>
+          ))}
         </div>
       </div>
-      <div
-        className="weather__panel"
-        role="tabpanel"
-        aria-label={tab === "hourly" ? "Hourly forecast" : "Daily forecast"}
-      >
-        <ul className="weather__strip">
-          {tab === "hourly"
-            ? WEATHER.hourly.map((h) => (
-                <li key={h.label} className="weather__cell">
-                  <span>{h.label}</span>
-                  <b>{h.temperature}°</b>
-                </li>
-              ))
-            : WEATHER.daily.map((d) => (
-                <li key={d.label} className="weather__cell">
-                  <span>{d.label}</span>
-                  <b>{d.high}°</b>
-                  <span>{d.low}°</span>
-                </li>
-              ))}
-        </ul>
-      </div>
+      {searching && (
+        <WeatherSearch
+          onChoose={(chosen) => {
+            setPlace(chosen);
+            setSearching(false);
+          }}
+          onCancel={() => setSearching(false)}
+        />
+      )}
+      {weather.status === "loading" && (
+        <p className="weather__message weather__message--fill" role="status">
+          Loading forecast…
+        </p>
+      )}
+      {weather.status === "error" && (
+        <div className="weather__message weather__message--fill weather__message--error" role="alert">
+          <p>{weather.error}</p>
+          <button className="weather__btn" onClick={weather.retry}>
+            Try again
+          </button>
+        </div>
+      )}
+      {weather.forecast && (
+        <>
+          <WeatherNow current={weather.forecast.current} />
+          <WeatherForecast forecast={weather.forecast} />
+        </>
+      )}
+      <p className="weather__credit">
+        <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">
+          Weather data by Open-Meteo.com
+        </a>
+      </p>
     </div>
   );
 }
