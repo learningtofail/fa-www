@@ -1,0 +1,12 @@
+/* Icon.jsx. Size is the DS base icon size; color is whatever the parent sets. */
+
+.icon {
+  width: var(--icon-size-base);
+  height: var(--icon-size-base);
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

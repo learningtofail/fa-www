@@ -11,7 +11,7 @@ const dockButton = (container, name) => within(container.querySelector(".gnome-d
 describe("focus handoff (S11)", () => {
   it("moves focus into a window opened from the dock and returns it when the window closes", async () => {
     const user = userEvent.setup();
-    const { container } = render(<DesktopShell lastDeploy="x" />);
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const tools = dockButton(container, "Tools");
     await user.click(tools);
     // Focus is inside the new dialog once it has mounted from a user action.
@@ -23,19 +23,19 @@ describe("focus handoff (S11)", () => {
 
   it("puts the terminal input in focus when the terminal opens", async () => {
     const user = userEvent.setup();
-    const { container } = render(<DesktopShell lastDeploy="x" />);
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(dockButton(container, "Terminal"));
     expect(document.activeElement).toBe(screen.getByRole("textbox", { name: "Terminal command input" }));
   });
 
   it("does not steal focus for the windows that are open at page load", () => {
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     expect(document.activeElement).toBe(document.body);
   });
 
   it("does not move focus to an opener that has left the page", async () => {
     const user = userEvent.setup();
-    const { container } = render(<DesktopShell lastDeploy="x" />);
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const tools = dockButton(container, "Tools");
     await user.click(tools);
     tools.remove();
@@ -45,7 +45,7 @@ describe("focus handoff (S11)", () => {
 
   it("returns focus to the home-screen icon when a mobile app view closes", async () => {
     const user = userEvent.setup();
-    render(<MobileShell lastDeploy="x" />);
+    render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const icon = screen.getByRole("button", { name: "About" });
     await user.click(icon);
     expect(screen.getByRole("dialog", { name: "About" }).contains(document.activeElement)).toBe(true);
@@ -55,7 +55,7 @@ describe("focus handoff (S11)", () => {
 
   it("closes the mobile tools popup on Escape and returns focus to the folder icon", async () => {
     const user = userEvent.setup();
-    render(<MobileShell lastDeploy="x" />);
+    render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const folder = screen.getByRole("button", { name: "Tools" });
     await user.click(folder);
     await user.keyboard("{Escape}");
@@ -65,7 +65,7 @@ describe("focus handoff (S11)", () => {
 
   it("closes a mobile app view on Escape", async () => {
     const user = userEvent.setup();
-    render(<MobileShell lastDeploy="x" />);
+    render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "About" }));
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog", { name: "About" })).toBeNull();
@@ -74,7 +74,14 @@ describe("focus handoff (S11)", () => {
 
 describe("window keyboard policy", () => {
   function setup() {
-    const handlers = { onFocus: vi.fn(), onClose: vi.fn(), onMinimize: vi.fn(), onMove: vi.fn(), onResize: vi.fn() };
+    const handlers = {
+      onFocus: vi.fn(),
+      onClose: vi.fn(),
+      onMinimize: vi.fn(),
+      onMaximize: vi.fn(),
+      onMove: vi.fn(),
+      onResize: vi.fn(),
+    };
     document.documentElement.style.setProperty("--window-key-step", "16px");
     vi.stubGlobal("innerWidth", 1000);
     vi.stubGlobal("innerHeight", 600);
@@ -165,11 +172,25 @@ describe("IframeContent", () => {
 });
 
 describe("desktop chrome", () => {
-  it("hides the decorative tray emoji from assistive technology", () => {
-    const { container } = render(<DesktopShell lastDeploy="x" />);
-    const tray = container.querySelectorAll(".gnome-tray span");
-    expect(tray).toHaveLength(3);
-    for (const el of tray) expect(el.getAttribute("aria-hidden")).toBe("true");
+  it("names the tray button and hides its decorative icons from assistive technology", () => {
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
+    const button = screen.getByRole("button", { name: "Quick settings" });
+    expect(button.getAttribute("aria-expanded")).toBe("false");
+    const icons = container.querySelectorAll(".gnome-tray svg");
+    expect(icons).toHaveLength(3);
+    for (const el of icons) expect(el.getAttribute("aria-hidden")).toBe("true");
+  });
+
+  it("opens Quick Settings, closes it on Escape and returns focus to the tray button", async () => {
+    const user = userEvent.setup();
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
+    const button = screen.getByRole("button", { name: "Quick settings" });
+    await user.click(button);
+    expect(button.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByRole("dialog", { name: "Quick settings" })).toBeTruthy();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog", { name: "Quick settings" })).toBeNull();
+    expect(document.activeElement).toBe(button);
   });
 
   it("tiles windows into the measured desktop surface through the layout tokens", async () => {
@@ -178,7 +199,7 @@ describe("desktop chrome", () => {
     document.documentElement.style.setProperty("--tile-gap", "16px");
     vi.stubGlobal("innerWidth", 1000);
     vi.stubGlobal("innerHeight", 600);
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Activities" }));
     const about = screen.getByRole("dialog", { name: "about.txt" });
     expect(about.style.getPropertyValue("--window-x")).toBe("20px");
@@ -189,7 +210,7 @@ describe("desktop chrome", () => {
 
   it("clears the icon selection when the user clicks away", async () => {
     const user = userEvent.setup();
-    const { container } = render(<DesktopShell lastDeploy="x" />);
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const icon = container.querySelector(".desktop-icon");
     await user.click(icon);
     expect(icon.classList.contains("selected")).toBe(true);

@@ -1,0 +1,46 @@
+/* Window titlebar buttons (Window.jsx). Imported by Window.jsx.
+   REPLACES the `.win-btn` and `.win-btn:hover` rules in desktop.css: delete those two blocks.
+   Orchis titlebuttons: circular, minimize yellow, maximize green, close red (DS tokens
+   --titlebutton-min / -max / -close). */
+
+.win-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--win-btn-size);
+  height: var(--win-btn-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-circular);
+  color: var(--titlebutton-glyph);
+  cursor: pointer;
+  transition: var(--transition-chrome);
+}
+.win-btn--min {
+  background: var(--titlebutton-min);
+}
+.win-btn--max {
+  background: var(--titlebutton-max);
+}
+.win-btn--close {
+  background: var(--titlebutton-close);
+}
+.win-btn:hover {
+  filter: brightness(0.92);
+}
+.win-btn:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 2px;
+}
+.win-btn__glyph {
+  width: 10px;
+  height: 10px;
+  stroke-width: 2;
+}
+.win--maximized {
+  border-radius: 0;
+}
+.win--maximized .win-titlebar {
+  border-radius: 0;
+  cursor: default;
+}

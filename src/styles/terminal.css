@@ -1,30 +1,40 @@
 /* Terminal.jsx is rendered inside both DesktopShell and MobileShell, so its
-   styles live here once rather than in both shell stylesheets. */
+   styles live here once rather than in both shell stylesheets.
+   Changed from the original: error lines in red, selectable output, terminal line height token.
+   The body stays dark in both themes (it sits inside a light window in the light theme). */
 
 .terminal {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: var(--space-2x);
+  padding: var(--space-2x) var(--space-3x);
   background: var(--term-bg);
   color: var(--term-fg);
   font-family: var(--font-terminal);
   font-size: var(--term-font-size);
+  line-height: var(--line-height-terminal);
 }
 
 .terminal__output {
   flex: 1;
   overflow-y: auto;
+  user-select: text;
 }
 
 .terminal__line {
   margin-bottom: var(--space-half);
   color: var(--term-fg);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .terminal__line--input {
   margin-bottom: 0;
   color: var(--term-accent);
+}
+
+.terminal__line--error {
+  color: var(--term-error);
 }
 
 .terminal__line--boot {
@@ -40,10 +50,13 @@
 .terminal__prompt {
   margin-right: var(--space-size);
   color: var(--term-accent);
+  white-space: pre;
 }
 
 .terminal__input {
   flex: 1;
+  min-width: 0;
+  padding: 0;
   border: none;
   background: transparent;
   color: var(--white);

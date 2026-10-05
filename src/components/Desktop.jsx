@@ -1,4 +1,5 @@
 import { useIsMobile } from "../hooks/useIsMobile.js";
+import { useTheme } from "../hooks/useTheme.js";
 import DesktopShell from "./DesktopShell.jsx";
 import MobileShell from "./MobileShell.jsx";
 
@@ -6,8 +7,13 @@ import MobileShell from "./MobileShell.jsx";
 // desktop (top bar, desktop icons, floating draggable windows, dock) and an
 // Android-style mobile shell (icon grid, folder pop-up, full-screen app views).
 // useIsMobile() tracks the viewport live, so resizing across the breakpoint swaps
-// shells rather than just checking once on load.
+// shells rather than just checking once on load. useTheme() lives here so both shells follow it.
 export default function Desktop({ lastDeploy }) {
   const isMobile = useIsMobile();
-  return isMobile ? <MobileShell lastDeploy={lastDeploy} /> : <DesktopShell lastDeploy={lastDeploy} />;
+  const { theme, setTheme } = useTheme();
+  return isMobile ? (
+    <MobileShell lastDeploy={lastDeploy} theme={theme} onThemeChange={setTheme} />
+  ) : (
+    <DesktopShell lastDeploy={lastDeploy} theme={theme} onThemeChange={setTheme} />
+  );
 }

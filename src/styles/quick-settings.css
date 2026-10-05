@@ -1,0 +1,104 @@
+/* QuickSettings.jsx. Rendered as a sibling of the top bar inside .gnome-root, so it positions
+   against the desktop and is not affected by the top bar's backdrop-filter. */
+
+.qs-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 1050;
+}
+
+.qs {
+  position: absolute;
+  top: calc(var(--topbar-height) + var(--space-size));
+  right: var(--space-size);
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2x);
+  width: min(var(--qs-width), calc(100% - var(--space-2x)));
+  padding: var(--space-3x);
+  border-radius: var(--radius-popup);
+  background: var(--popover);
+  color: var(--text);
+  box-shadow: var(--shadow-z12);
+  font-family: var(--font-ui);
+}
+
+/* Phone: full-width sheet under the status bar instead of a popover under the top bar. */
+.qs--sheet {
+  top: var(--mobile-status-height);
+  right: 0;
+  left: 0;
+  width: auto;
+  border-radius: 0 0 var(--radius-popup) var(--radius-popup);
+}
+
+.qs__volume {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2x);
+  padding: 0 var(--space-half);
+}
+.qs__slider {
+  flex: 1;
+  accent-color: var(--primary);
+}
+
+.qs__toggles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2x);
+}
+.qs__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2x);
+  height: var(--size-large);
+  padding: 0 var(--space-3x);
+  border: none;
+  border-radius: var(--radius-circular);
+  background: var(--button-fill);
+  color: var(--text);
+  font: inherit;
+  font-weight: var(--type-button-weight);
+  cursor: pointer;
+  transition: var(--transition-chrome);
+}
+.qs__toggle:hover {
+  background: var(--overlay-focus-hover);
+}
+.qs__toggle[aria-pressed="true"] {
+  background: var(--primary);
+  color: var(--primary-text);
+}
+.qs__toggle[aria-pressed="true"]:hover {
+  background: var(--primary-hover);
+}
+.qs__toggle:focus-visible,
+.qs__slider:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 2px;
+}
+
+/* Top bar tray button that opens the panel (replaces the emoji spans in .gnome-tray). */
+.gnome-tray__btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2x);
+  height: var(--size-small);
+  padding: 0 var(--space-2x);
+  border: none;
+  border-radius: var(--radius-circular);
+  background: transparent;
+  color: var(--topbar-fg);
+  cursor: pointer;
+  transition: var(--transition-chrome);
+}
+.gnome-tray__btn:hover,
+.gnome-tray__btn[aria-expanded="true"] {
+  background: var(--overlay-active);
+}
+.gnome-tray__btn:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 2px;
+}

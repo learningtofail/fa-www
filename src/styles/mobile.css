@@ -1,6 +1,6 @@
-/* Android-style mobile shell. Loaded only by MobileShell.jsx. No system status
-   bar here on purpose — the phone already has one. Values drawn from
-   the token layers, matching the desktop shell's token language. */
+/* GNOME-mobile shell. Loaded only by MobileShell.jsx. Replaces the Android-style mobile.css.
+   Class names from the original (.android-root, .app-grid, .app-icon-btn, .folder-*, .app-view*,
+   .back-btn) are kept so existing selectors and tests keep working. Values come from the token layers. */
 
 .android-root {
   position: relative;
@@ -11,13 +11,72 @@
   font-family: var(--font-ui);
 }
 
+/* ---- Status bar ---- */
+.mobile-status {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: var(--mobile-status-height);
+  padding: 0 var(--space-3x);
+  border: none;
+  background: var(--topbar-bg);
+  backdrop-filter: var(--topbar-blur);
+  color: var(--topbar-fg);
+  font: inherit;
+  font-size: var(--topbar-font-size);
+  font-weight: var(--type-panel-weight);
+  font-feature-settings: var(--type-panel-feature-settings);
+  cursor: pointer;
+}
+.mobile-status__tray {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2x);
+}
+.mobile-status:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: -2px;
+}
+
+/* ---- Home ---- */
+.mobile-home {
+  position: absolute;
+  inset: var(--mobile-status-height) 0 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-4x) var(--space-3x) 0;
+}
+.mobile-clock {
+  padding: var(--space-2x) var(--space-half) var(--space-4x);
+  color: var(--white);
+  text-shadow: var(--label-text-shadow);
+}
+.mobile-clock__time {
+  margin: 0;
+  font-size: var(--mobile-clock-size);
+  font-weight: var(--type-title-weight);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.mobile-clock__date {
+  margin: var(--space-size) 0 0;
+  font-size: var(--font-size-subheading);
+}
+
 .app-grid {
   display: grid;
+  flex: 1;
   grid-template-columns: repeat(auto-fill, minmax(var(--desktop-icon-width), 1fr));
-  gap: var(--space-4x) var(--space-2x);
-  padding: var(--space-4x) var(--space-2x);
-  height: 100%;
+  gap: var(--space-4x) var(--space-size);
   align-content: start;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .app-icon-btn {
@@ -36,7 +95,6 @@
 .app-icon-btn:active {
   background: var(--overlay-hover);
 }
-
 .app-icon-label {
   color: var(--white);
   font-size: 0.75rem;
@@ -44,12 +102,44 @@
   text-shadow: var(--label-text-shadow);
 }
 
+.mobile-dock {
+  display: flex;
+  flex: none;
+  justify-content: space-around;
+  margin: var(--space-2x) 0 var(--space-3x);
+  padding: var(--space-2x) var(--space-3x);
+  border: var(--dock-border);
+  border-radius: var(--radius-dash);
+  background: var(--dock-bg);
+  backdrop-filter: var(--dock-blur);
+  box-shadow: var(--shadow-dock);
+}
+.mobile-dock__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--mobile-hit-target);
+  min-height: var(--mobile-hit-target);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-material);
+  background: none;
+  cursor: pointer;
+  transition: var(--transition-chrome);
+}
+.mobile-dock__btn:hover,
+.mobile-dock__btn:active {
+  background: var(--dock-hover);
+}
+
 .app-icon-btn:focus-visible,
+.mobile-dock__btn:focus-visible,
 .back-btn:focus-visible {
-  outline: 2px solid var(--term-accent);
+  outline: 2px solid var(--orchis-accent);
   outline-offset: 2px;
 }
 
+/* ---- Tools folder popup ---- */
 .folder-backdrop {
   position: absolute;
   inset: 0;
@@ -60,7 +150,6 @@
   justify-content: center;
   padding: var(--space-4x);
 }
-
 .folder-popup {
   background: var(--mobile-folder-bg);
   border-radius: var(--mobile-folder-radius);
@@ -69,58 +158,61 @@
   max-height: 70vh;
   overflow-y: auto;
   box-shadow: var(--shadow-z16);
+  color: var(--text);
 }
-
 .folder-popup-title {
-  color: var(--topbar-fg);
+  color: var(--text);
   font-size: var(--font-size-subheading);
   font-weight: var(--type-title-weight);
   margin: 0 0 var(--space-2x);
   text-align: center;
 }
 
+/* ---- Full-screen app view (below the status bar, which stays on top) ---- */
 .app-view {
   position: absolute;
   inset: 0;
-  background: var(--win-bg);
   z-index: 100;
   display: flex;
   flex-direction: column;
+  padding-top: var(--mobile-status-height);
+  background: var(--win-bg);
 }
-
 .app-view-header {
   display: flex;
   align-items: center;
   gap: var(--space-2x);
-  padding: var(--space-3x) var(--space-2x);
+  flex-shrink: 0;
+  padding: var(--space-2x);
+  border-bottom: 1px solid var(--divider);
   background: var(--mobile-header-bg);
-  color: var(--white);
-  flex-shrink: 0;
+  color: var(--win-titlebar-fg);
 }
-
 .back-btn {
-  background: var(--overlay-active);
-  border: none;
-  color: var(--white);
-  border-radius: var(--radius-circular);
-  width: 32px;
-  height: 32px;
-  font-size: var(--font-size-subheading);
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  width: var(--size-medium);
+  height: var(--size-medium);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-circular);
+  background: var(--overlay-active);
+  color: inherit;
+  cursor: pointer;
   transition: var(--transition-chrome);
 }
 .back-btn:hover {
   background: var(--overlay-focus-hover);
 }
-
 .app-view-title {
   font-size: var(--type-subheading-size);
-  font-weight: 600;
+  font-weight: var(--type-body-2-weight);
 }
-
 .app-view-body {
   flex: 1;
+  min-height: 0;
   overflow: auto;
   padding: var(--space-2x);
   color: var(--content-text);

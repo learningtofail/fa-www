@@ -10,6 +10,7 @@ const reducer = createWindowReducer(DEFAULTS);
 /**
  * Window state for the desktop shell. The reducer is pure; this hook measures the desktop
  * surface (the edge where the DOM is read) and hands the size to it.
+ * Changed from the original: `maximize`.
  * @param {React.RefObject<HTMLElement | null>} surfaceRef element the windows are positioned in
  */
 export function useWindowManager(surfaceRef) {
@@ -41,6 +42,7 @@ export function useWindowManager(surfaceRef) {
       close: (id) => dispatch({ type: "close", id }),
       focus: (id) => dispatch({ type: "focus", id }),
       minimize: (id) => dispatch({ type: "minimize", id }),
+      maximize: (id) => dispatch({ type: "maximize", id, surface: measure() }),
       move: (id, x, y) => dispatch({ type: "move", id, x, y }),
       resize: (id, width, height) => dispatch({ type: "resize", id, width, height }),
       tile: () => {

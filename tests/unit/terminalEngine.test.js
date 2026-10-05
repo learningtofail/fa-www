@@ -18,6 +18,7 @@ function makeEngine() {
 }
 
 const output = (result) => result.lines.filter((l) => l.type === "output").flatMap((l) => l.text);
+const errors = (result) => result.lines.filter((l) => l.type === "error").flatMap((l) => l.text);
 
 describe("TerminalEngine", () => {
   it("starts at the root with a prompt", () => {
@@ -40,7 +41,7 @@ describe("TerminalEngine", () => {
   it("answers unknown commands, including names that exist on Object.prototype", () => {
     const engine = makeEngine();
     for (const name of ["frobnicate", "constructor", "toString", "__proto__"]) {
-      expect(output(engine.execute(name))).toEqual([MESSAGES.COMMAND_NOT_FOUND]);
+      expect(errors(engine.execute(name))).toEqual([MESSAGES.COMMAND_NOT_FOUND]);
     }
   });
 
@@ -65,8 +66,8 @@ describe("TerminalEngine", () => {
 
     it("reports bad cd targets and keeps the cwd", () => {
       const engine = makeEngine();
-      expect(output(engine.execute("cd nowhere"))).toEqual([MESSAGES.NO_SUCH_DIR("nowhere")]);
-      expect(output(engine.execute("cd about.txt"))).toEqual([MESSAGES.NOT_A_DIRECTORY("about.txt")]);
+      expect(errors(engine.execute("cd nowhere"))).toEqual([MESSAGES.NO_SUCH_DIR("nowhere")]);
+      expect(errors(engine.execute("cd about.txt"))).toEqual([MESSAGES.NOT_A_DIRECTORY("about.txt")]);
       expect(engine.prompt).toBe("faysal@desktop:~$");
     });
 
@@ -102,7 +103,7 @@ describe("TerminalEngine", () => {
     it("handles a file, an empty result and a missing path", () => {
       const engine = makeEngine();
       expect(output(engine.execute("ls about.txt"))).toEqual(["about.txt"]);
-      expect(output(engine.execute("ls nowhere"))).toEqual([MESSAGES.LS_NOT_FOUND("nowhere")]);
+      expect(errors(engine.execute("ls nowhere"))).toEqual([MESSAGES.LS_NOT_FOUND("nowhere")]);
       const empty = new TerminalEngine({
         filesystem: { type: "dir", children: {} },
         tools: [],
@@ -127,9 +128,9 @@ describe("TerminalEngine", () => {
 
     it("reports missing files, directories, tools and a missing argument", () => {
       const engine = makeEngine();
-      expect(output(engine.execute("cat"))).toEqual(["cat: missing filename"]);
-      expect(output(engine.execute("cat nope"))).toEqual([MESSAGES.FILE_NOT_FOUND("nope")]);
-      expect(output(engine.execute("cat tools"))).toEqual([MESSAGES.IS_A_DIRECTORY("tools")]);
+      expect(errors(engine.execute("cat"))).toEqual(["cat: missing filename"]);
+      expect(errors(engine.execute("cat nope"))).toEqual([MESSAGES.FILE_NOT_FOUND("nope")]);
+      expect(errors(engine.execute("cat tools"))).toEqual([MESSAGES.IS_A_DIRECTORY("tools")]);
       expect(output(engine.execute("cat tools/alpha"))[0]).toContain("that's a tool, not a file");
     });
   });
@@ -153,10 +154,10 @@ describe("TerminalEngine", () => {
     it("explains a missing argument and an unknown tool, with no effects", () => {
       const engine = makeEngine();
       const none = engine.execute("open");
-      expect(output(none)[0]).toContain("open: what, though?");
+      expect(errors(none)[0]).toContain("open: what, though?");
       expect(none.effects).toEqual([]);
       const unknown = engine.execute("open gamma");
-      expect(output(unknown)).toEqual(["open: gamma: no such tool. try 'ls tools' or 'help'."]);
+      expect(errors(unknown)).toEqual(["open: gamma: no such tool or app. try 'ls tools' or 'help'."]);
       expect(unknown.effects).toEqual([]);
     });
   });

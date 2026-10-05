@@ -11,20 +11,20 @@ const windowTitles = () => screen.queryAllByRole("dialog").map((w) => w.getAttri
 
 describe("DesktopShell", () => {
   it("opens with about, contact and status windows", () => {
-    render(<DesktopShell lastDeploy="2026-10-04" />);
+    render(<DesktopShell lastDeploy="2026-10-04" theme="light" onThemeChange={vi.fn()} />);
     expect(windowTitles().sort()).toEqual(["about.txt", "contact.txt", "status.txt"]);
     expect(screen.getByText("last deploy: 2026-10-04")).toBeTruthy();
   });
 
-  it("shows four desktop icons and five dock buttons", () => {
-    const { container } = render(<DesktopShell lastDeploy="x" />);
+  it("shows four desktop icons and nine dock buttons", () => {
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     expect(container.querySelectorAll(".desktop-icon")).toHaveLength(4);
-    expect(container.querySelectorAll(".gnome-dock .dock-icon-btn")).toHaveLength(5);
+    expect(container.querySelectorAll(".gnome-dock .dock-icon-btn")).toHaveLength(9);
   });
 
   it("closes and minimizes windows with the titlebar buttons", async () => {
     const user = userEvent.setup();
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Close about.txt" }));
     expect(windowTitles()).not.toContain("about.txt");
     await user.click(screen.getByRole("button", { name: "Minimize contact.txt" }));
@@ -33,7 +33,7 @@ describe("DesktopShell", () => {
 
   it("restores a closed window from the dock", async () => {
     const user = userEvent.setup();
-    const { container } = render(<DesktopShell lastDeploy="x" />);
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Close about.txt" }));
     await user.click(dockButton(container, "About"));
     expect(windowTitles()).toContain("about.txt");
@@ -41,7 +41,7 @@ describe("DesktopShell", () => {
 
   it("opens a desktop icon with Enter, which stands in for double-click", async () => {
     const user = userEvent.setup();
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Close about.txt" }));
     const icon = screen.getAllByRole("button", { name: "About" }).find((b) => b.classList.contains("desktop-icon"));
     icon.focus();
@@ -51,7 +51,7 @@ describe("DesktopShell", () => {
 
   it("opens a tool in an iframe window from the Tools folder", async () => {
     const user = userEvent.setup();
-    const { container } = render(<DesktopShell lastDeploy="x" />);
+    const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(dockButton(container, "Tools"));
     const folder = screen.getByRole("dialog", { name: "Tools" });
     await user.click(within(folder).getByRole("button", { name: "UTM Governance Auditor" }));
@@ -60,7 +60,7 @@ describe("DesktopShell", () => {
   });
 
   it("closes the window that holds focus on Escape", () => {
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const before = windowTitles().length;
     const aboutBody = screen.getByRole("dialog", { name: "about.txt" }).querySelector(".win-body");
     fireEvent.keyDown(aboutBody, { key: "Escape" });
@@ -69,7 +69,7 @@ describe("DesktopShell", () => {
   });
 
   it("ignores Escape when no window holds focus", () => {
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const before = windowTitles().length;
     fireEvent.keyDown(window, { key: "Escape" });
     expect(windowTitles()).toHaveLength(before);
@@ -77,7 +77,7 @@ describe("DesktopShell", () => {
 
   it("tiles open windows from Activities without losing any", async () => {
     const user = userEvent.setup();
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Activities" }));
     expect(windowTitles()).toHaveLength(3);
   });
@@ -87,7 +87,7 @@ describe("DesktopShell", () => {
 describe("DesktopShell Escape while typing (D4)", () => {
   it("keeps the terminal open when Escape is pressed inside its input", async () => {
     const user = userEvent.setup();
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Terminal" }));
     const input = screen.getByRole("textbox", { name: "Terminal command input" });
     input.focus();
@@ -97,7 +97,7 @@ describe("DesktopShell Escape while typing (D4)", () => {
 
   it("keeps the contact window open when Escape is pressed inside a form field", async () => {
     const user = userEvent.setup();
-    render(<DesktopShell lastDeploy="x" />);
+    render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const contact = screen.getByRole("dialog", { name: "contact.txt" });
     within(contact).getByPlaceholderText("Name").focus();
     await user.keyboard("{Escape}");
@@ -106,16 +106,28 @@ describe("DesktopShell Escape while typing (D4)", () => {
 });
 
 describe("MobileShell", () => {
-  it("shows all five apps on the home grid", () => {
-    render(<MobileShell lastDeploy="x" />);
-    for (const label of ["About", "Contact", "Now", "Tools", "Terminal"]) {
-      expect(screen.getByRole("button", { name: label })).toBeTruthy();
+  it("shows all nine apps on the home grid and four in the dock", () => {
+    const { container } = render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
+    const grid = within(container.querySelector(".app-grid"));
+    for (const label of [
+      "About",
+      "Contact",
+      "Now",
+      "Files",
+      "Calculator",
+      "Weather",
+      "Image Viewer",
+      "Tools",
+      "Terminal",
+    ]) {
+      expect(grid.getByRole("button", { name: label })).toBeTruthy();
     }
+    expect(container.querySelectorAll(".app-grid > *")).toHaveLength(9);
   });
 
   it("opens an app full screen and goes back", async () => {
     const user = userEvent.setup();
-    render(<MobileShell lastDeploy="x" />);
+    render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "About" }));
     expect(screen.getByText(new RegExp(`${yearsActive()} years making Google behave`))).toBeTruthy();
     await user.click(screen.getByRole("button", { name: "Back" }));
@@ -124,7 +136,7 @@ describe("MobileShell", () => {
 
   it("opens the Tools folder as a popup and a tool as a full-screen frame", async () => {
     const user = userEvent.setup();
-    render(<MobileShell lastDeploy="x" />);
+    render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Tools" }));
     await user.click(screen.getByRole("button", { name: "GTM Container Auditor" }));
     expect(screen.getByTitle("GTM Container Auditor").getAttribute("src")).toBe(
@@ -134,7 +146,7 @@ describe("MobileShell", () => {
 
   it("runs the terminal full screen", async () => {
     const user = userEvent.setup();
-    render(<MobileShell lastDeploy="x" />);
+    render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Terminal" }));
     await user.type(screen.getByRole("textbox", { name: "Terminal command input" }), "whoami{Enter}");
     expect(screen.getByRole("log").textContent).toContain("convincing impression");

@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "../styles/terminal.css";
 import { BOOT_LINE, MESSAGES, createFilesystem } from "../data/terminalContent.js";
+import { OPENABLE_APPS } from "../data/apps.js";
 import { PROFILE } from "../data/profile.js";
 import { tools, toolUrl } from "../data/tools.js";
 import { CommandHistory } from "../lib/terminal/history.js";
@@ -14,15 +15,20 @@ const BOOT_LINES = [{ id: 0, type: "boot", text: [BOOT_LINE] }];
 
 /**
  * Renders the terminal. Parsing and state live in `TerminalEngine`; this component prints its
- * lines and carries out its effects.
- * @param {{ onOpenTool: (slug: string, name: string, url: string) => void }} props
+ * lines and carries out its effects. Changed from the original: `onOpenApp` (for `open files`
+ * and friends), error lines, and Ctrl+L to clear.
+ * @param {{
+ *   onOpenTool: (slug: string, name: string, url: string) => void,
+ *   onOpenApp: (id: string) => void,
+ * }} props
  */
-export default function Terminal({ onOpenTool }) {
+export default function Terminal({ onOpenTool, onOpenApp }) {
   const engine = useMemo(
     () =>
       new TerminalEngine({
         filesystem: buildFilesystem(createFilesystem(), tools),
         tools,
+        apps: OPENABLE_APPS,
         toolUrl,
         portfolioUrl: PROFILE.portfolio.url,
         messages: MESSAGES,
@@ -50,6 +56,7 @@ export default function Terminal({ onOpenTool }) {
     for (const effect of effects) {
       if (effect.type === "open-url") window.open(effect.url, "_blank", "noopener");
       if (effect.type === "open-tool") onOpenTool(effect.slug, effect.name, effect.url);
+      if (effect.type === "open-app") onOpenApp(effect.id);
     }
   };
 
@@ -66,6 +73,11 @@ export default function Terminal({ onOpenTool }) {
   };
 
   const onKeyDown = (e) => {
+    if (e.key === "l" && e.ctrlKey) {
+      e.preventDefault();
+      setLines([]);
+      return;
+    }
     if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
     e.preventDefault();
     const recalled = e.key === "ArrowUp" ? history.current.previous() : history.current.next();

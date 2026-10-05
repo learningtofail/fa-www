@@ -1,4 +1,5 @@
-/* AppIcon.jsx. Size and tone are modifiers, so no per-instance inline style is needed. */
+/* AppIcon.jsx. Size and tone are modifiers, so no per-instance inline style is needed.
+   Changed from the original: four new tones (files, calculator, weather, viewer). */
 
 .app-icon {
   --app-icon-size: var(--icon-size-lg);
@@ -47,4 +48,16 @@
 }
 .app-icon--tool {
   background: var(--app-tone-tool);
+}
+.app-icon--files {
+  background: var(--app-tone-files);
+}
+.app-icon--calculator {
+  background: var(--app-tone-calculator);
+}
+.app-icon--weather {
+  background: var(--app-tone-weather);
+}
+.app-icon--viewer {
+  background: var(--app-tone-viewer);
 }

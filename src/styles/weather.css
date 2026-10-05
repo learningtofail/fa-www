@@ -1,0 +1,94 @@
+/* WeatherContent.jsx. The window body has no padding (NO_PADDING_WINDOWS). */
+
+.weather {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--base);
+  color: var(--text);
+  font-family: var(--font-ui);
+}
+
+.weather__tabs {
+  display: flex;
+  flex: none;
+  align-self: center;
+  gap: var(--space-half);
+  margin: var(--space-2x);
+  padding: var(--space-half);
+  border-radius: var(--radius-material);
+  background: var(--secondary-fill);
+}
+.weather__tab {
+  padding: var(--space-half) var(--space-4x);
+  border: none;
+  border-radius: var(--radius-menu);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-weight: var(--type-body-2-weight);
+  cursor: pointer;
+  transition: var(--transition-chrome);
+}
+.weather__tab[aria-selected="true"] {
+  background: var(--primary);
+  color: var(--primary-text);
+}
+.weather__tab:focus-visible {
+  outline: 2px solid var(--orchis-accent);
+  outline-offset: 2px;
+}
+
+.weather__now {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-3x);
+  padding: var(--space-2x) var(--space-4x);
+}
+.weather__moon {
+  width: 72px;
+  height: 72px;
+  fill: var(--yellow-light);
+  stroke: none;
+}
+.weather__city {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-root);
+}
+.weather__temp {
+  margin: 0;
+  font-size: var(--type-display-1-size);
+  font-weight: var(--type-title-weight);
+  line-height: var(--line-height-tight);
+}
+
+.weather__panel {
+  flex: none;
+}
+.weather__strip {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-size);
+  margin: 0;
+  padding: var(--space-2x) var(--space-3x);
+  overflow-x: auto;
+  border-top: 1px solid var(--divider);
+  background: var(--background);
+  list-style: none;
+}
+.weather__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-half);
+  min-width: 48px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-caption);
+}
+.weather__cell b {
+  color: var(--text);
+  font-size: var(--font-size-root);
+  font-weight: var(--type-body-2-weight);
+}

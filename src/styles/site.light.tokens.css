@@ -1,0 +1,94 @@
+/* Layer 2b: light variant of the Orchis shell. Import AFTER site.tokens.css.
+   Values come from Orchis src/_sass/_colors.scss with $variant: light, $theme: default (blue).
+   Colors identical in both variants (top bar, dock, terminal) are NOT redefined.
+   This file uses STOCK Orchis colors for the accent: --primary is $blue-dark (#1A73E8), which
+   replaces the review-D5 override (#1558b0) from site.tokens.css while the light theme is on.
+   #1A73E8 on white is 4.50:1, right at the WCAG AA limit, and 4.02:1 on the grey (#f2f2f2) bars
+   inside windows, so text links use the D5 blue (#1558b0) instead (--link below). Primary fills
+   keep stock Orchis. The dark theme keeps the D5 values throughout. */
+
+/* Theme-neutral tokens used by the new components. */
+:root {
+  --titlebutton-glyph: rgba(0, 0, 0, 0.6);
+  --qs-width: 370px;
+  --calc-display-height: 64px;
+  --calc-key-height: 38px;
+  --app-tone-calculator: var(--orange-dark);
+  --app-tone-files: var(--blue-dark);
+  --app-tone-weather: var(--teal-dark);
+  --app-tone-viewer: var(--purple-dark);
+  --folder-back: var(--blue-light);
+  --folder-front-top: color-mix(in srgb, var(--blue-light), white 35%);
+  --folder-front-bottom: var(--blue-light);
+  --term-error: #ff7b72; /* red on --term-bg (#111): 7.9:1 */
+  --mobile-status-height: 32px;
+  --mobile-clock-size: 54px;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* Surfaces (background(a) = white, (b) = grey-050, (c) = grey-100) */
+  --background: var(--bg-c);
+  --surface: var(--bg-a);
+  --base: var(--bg-a);
+  --base-alt: var(--bg-b);
+  --popover: var(--bg-a);
+  --titlebar: var(--bg-a);
+  --titlebar-backdrop: var(--bg-b);
+
+  /* Text on a light background */
+  --text: rgba(0, 0, 0, 0.87);
+  --text-secondary: rgba(0, 0, 0, 0.6);
+  --text-disabled: rgba(0, 0, 0, 0.38);
+  --text-secondary-disabled: rgba(0, 0, 0, 0.26);
+  --track: rgba(0, 0, 0, 0.26);
+  --track-disabled: rgba(0, 0, 0, 0.15);
+  --divider: rgba(0, 0, 0, 0.12);
+  --secondary-fill: rgba(0, 0, 0, 0.08);
+  --fill: rgba(0, 0, 0, 0.04);
+
+  /* Overlay states (currentColor alpha in GTK; black on a light surface) */
+  --overlay-normal: rgba(0, 0, 0, 0.05);
+  --overlay-hover: rgba(0, 0, 0, 0.08);
+  --overlay-focus: rgba(0, 0, 0, 0.08);
+  --overlay-focus-hover: rgba(0, 0, 0, 0.16);
+  --overlay-active: rgba(0, 0, 0, 0.12);
+  --overlay-checked: rgba(0, 0, 0, 0.1);
+  --overlay-selected: rgba(0, 0, 0, 0.06);
+  --button-fill: rgba(0, 0, 0, 0.05);
+  --entry-fill: rgba(0, 0, 0, 0.05);
+
+  /* Accent: stock Orchis. Hover and active are the accent mixed toward black. */
+  --primary: var(--blue-dark);
+  --primary-hover: color-mix(in srgb, var(--blue-dark), black 8%);
+  --primary-active: color-mix(in srgb, var(--blue-dark), black 16%);
+  --link: #1558b0; /* review-D5 blue for text links: 6.1:1 on the grey tool-frame bar, where stock #1A73E8 is 4.02:1 */
+  --placeholder-text: #666666;
+
+  /* Borders and semantic colors */
+  --frame: rgba(0, 0, 0, 0.1);
+  --border: rgba(0, 0, 0, 0.12);
+  --solid-border: #dbdbdb;
+  --link-visited: var(--purple-dark);
+  --warning: var(--yellow-dark);
+  --error: var(--red-dark);
+  --success: var(--sea-dark);
+
+  /* fa-www window chrome follows the surface tokens instead of the dark titlebar */
+  --win-titlebar-bg: var(--titlebar);
+  --win-titlebar-fg: var(--text);
+  --win-titlebar-divider: 1px solid var(--divider);
+  --win-btn-hover: var(--overlay-hover);
+  --win-border: 1px solid var(--border);
+  --shadow-window: var(--shadow-z16);
+  --mobile-header-bg: var(--titlebar);
+  --mobile-folder-bg: var(--popover);
+
+  /* Wallpaper: SVG curves with a gradient fallback. The stops feed html/body in base.css. */
+  --wallpaper:
+    url("/wallpaper-light.svg") center / cover no-repeat, linear-gradient(135deg, #f4506a 0%, #b8429f 45%, #5b6bc4 100%);
+  --wallpaper-stop-1: #5b6bc4;
+  --wallpaper-stop-2: #b8429f;
+  --wallpaper-stop-3: #f4506a;
+}

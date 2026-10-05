@@ -63,10 +63,6 @@
   gap: var(--space-2x);
   font-size: var(--font-size-subheading);
 }
-.gnome-tray span {
-  cursor: default;
-}
-
 .gnome-desktop-surface {
   position: absolute;
   top: var(--topbar-height);
@@ -221,22 +217,6 @@
 .win-titlebar-controls {
   display: flex;
   gap: var(--space-half);
-}
-.win-btn {
-  background: transparent;
-  border: none;
-  color: var(--win-titlebar-fg);
-  cursor: pointer;
-  font-size: 0.7rem;
-  width: var(--win-btn-size);
-  height: var(--win-btn-size);
-  line-height: var(--win-btn-size);
-  text-align: center;
-  border-radius: var(--radius-circular);
-  transition: var(--transition-chrome);
-}
-.win-btn:hover {
-  background: var(--win-btn-hover);
 }
 .win-body {
   flex: 1;
