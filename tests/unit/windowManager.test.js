@@ -19,7 +19,6 @@ describe("createInitialState", () => {
       ["about", true, 1],
       ["contact", true, 2],
       ["now", true, 3],
-      ["tools", false, 0],
       ["marketing", false, 0],
       ["terminal", false, 0],
       ["files", false, 0],
@@ -163,7 +162,7 @@ describe("tile", () => {
     expect(about.x).toBe(20);
     expect(contact.x).toBeGreaterThan(about.x);
     expect(find(state, "now")).toMatchObject(FIXED_WINDOWS.now);
-    expect(find(state, "tools")).toMatchObject(FIXED_WINDOWS.tools);
+    expect(find(state, "marketing")).toMatchObject(FIXED_WINDOWS.marketing);
   });
 
   it("does nothing when no window is visible", () => {

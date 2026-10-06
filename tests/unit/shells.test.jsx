@@ -16,10 +16,10 @@ describe("DesktopShell", () => {
     expect(screen.getByText("last deploy: 2026-10-04")).toBeTruthy();
   });
 
-  it("shows five desktop icons and eleven dock buttons", () => {
+  it("shows four desktop icons and ten dock buttons", () => {
     const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
-    expect(container.querySelectorAll(".desktop-icon")).toHaveLength(5);
-    expect(container.querySelectorAll(".gnome-dock .dock-icon-btn")).toHaveLength(11);
+    expect(container.querySelectorAll(".desktop-icon")).toHaveLength(4);
+    expect(container.querySelectorAll(".gnome-dock .dock-icon-btn")).toHaveLength(10);
   });
 
   it("closes and minimizes windows with the titlebar buttons", async () => {
@@ -49,14 +49,14 @@ describe("DesktopShell", () => {
     expect(windowTitles()).toContain("about.txt");
   });
 
-  it("opens a tool in an iframe window from the Tools folder", async () => {
+  it("opens an Astro tool from the Marketing folder in an iframe window", async () => {
     const user = userEvent.setup();
     const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
-    await user.click(dockButton(container, "Tools"));
-    const folder = screen.getByRole("dialog", { name: "Tools" });
-    await user.click(within(folder).getByRole("button", { name: "UTM Governance Auditor" }));
-    const frame = screen.getAllByTitle("UTM Governance Auditor").find((el) => el.tagName === "IFRAME");
-    expect(frame.getAttribute("src")).toBe("https://portfolio.faysalahmed.ca/tools/utm-auditor/");
+    await user.click(dockButton(container, "Marketing"));
+    const folder = screen.getByRole("dialog", { name: "Marketing" });
+    await user.click(within(folder).getByRole("button", { name: "Multi-Touch" }));
+    const frame = screen.getAllByTitle("Multi-Touch Attribution").find((el) => el.tagName === "IFRAME");
+    expect(frame.getAttribute("src")).toBe("https://portfolio.faysalahmed.ca/tools/attribution/");
   });
 
   it("opens a marketing tool as its own window, with its own dock icon and the marketing frame", async () => {
@@ -64,7 +64,7 @@ describe("DesktopShell", () => {
     const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(dockButton(container, "Marketing"));
     const folder = screen.getByRole("dialog", { name: "Marketing" });
-    expect(folder.querySelectorAll(".tools-grid__tile")).toHaveLength(21);
+    expect(folder.querySelectorAll(".tools-grid__tile")).toHaveLength(23);
     expect(within(folder).getByRole("heading", { name: "Technical SEO" })).toBeTruthy();
     await user.click(within(folder).getByRole("button", { name: "Redirect Mapper" }));
     const name = "Bulk Redirect Mapper & Loop Validator";
@@ -77,14 +77,14 @@ describe("DesktopShell", () => {
     expect(dockIcon.querySelector(".app-icon--mkt-seo")?.textContent).toBe("\u{1F500}");
   });
 
-  it("keeps the plain tool frame for the five portfolio tools", async () => {
+  it("keeps the plain tool frame for the two Astro tools in the Marketing folder", async () => {
     const user = userEvent.setup();
     const { container } = render(<DesktopShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
-    await user.click(dockButton(container, "Tools"));
+    await user.click(dockButton(container, "Marketing"));
     await user.click(
-      within(screen.getByRole("dialog", { name: "Tools" })).getByRole("button", { name: "UTM Governance Auditor" }),
+      within(screen.getByRole("dialog", { name: "Marketing" })).getByRole("button", { name: "Disclosure Check" }),
     );
-    const frame = screen.getAllByTitle("UTM Governance Auditor").find((el) => el.tagName === "IFRAME");
+    const frame = screen.getAllByTitle("Disclosure Language Checker").find((el) => el.tagName === "IFRAME");
     expect(frame.getAttribute("sandbox")).not.toContain("allow-modals");
     expect(frame.hasAttribute("allow")).toBe(false);
   });
@@ -136,7 +136,7 @@ describe("DesktopShell Escape while typing (D4)", () => {
 });
 
 describe("MobileShell", () => {
-  it("shows all eleven apps on the home grid and four in the dock", () => {
+  it("shows all ten apps on the home grid and four in the dock", () => {
     const { container } = render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     const grid = within(container.querySelector(".app-grid"));
     for (const label of [
@@ -148,13 +148,12 @@ describe("MobileShell", () => {
       "Calculator",
       "Weather",
       "Image Viewer",
-      "Tools",
       "Marketing",
       "Terminal",
     ]) {
       expect(grid.getByRole("button", { name: label })).toBeTruthy();
     }
-    expect(container.querySelectorAll(".app-grid > *")).toHaveLength(11);
+    expect(container.querySelectorAll(".app-grid > *")).toHaveLength(10);
   });
 
   it("opens an app full screen and goes back", async () => {
@@ -166,13 +165,13 @@ describe("MobileShell", () => {
     expect(screen.queryByText(new RegExp(`${yearsActive()} years making Google behave`))).toBeNull();
   });
 
-  it("opens the Tools folder as a popup and a tool as a full-screen frame", async () => {
+  it("opens an Astro tool from the Marketing popup as a full-screen frame", async () => {
     const user = userEvent.setup();
     render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
-    await user.click(screen.getByRole("button", { name: "Tools" }));
-    await user.click(screen.getByRole("button", { name: "GTM Container Auditor" }));
-    expect(screen.getByTitle("GTM Container Auditor").getAttribute("src")).toBe(
-      "https://portfolio.faysalahmed.ca/tools/gtm-auditor/",
+    await user.click(screen.getByRole("button", { name: "Marketing" }));
+    await user.click(screen.getByRole("button", { name: "Disclosure Check" }));
+    expect(screen.getByTitle("Disclosure Language Checker").getAttribute("src")).toBe(
+      "https://portfolio.faysalahmed.ca/tools/disclosure-check/",
     );
   });
 
@@ -181,7 +180,7 @@ describe("MobileShell", () => {
     render(<MobileShell lastDeploy="x" theme="light" onThemeChange={vi.fn()} />);
     await user.click(screen.getByRole("button", { name: "Marketing" }));
     const popup = screen.getByRole("dialog", { name: "Marketing" });
-    expect(within(popup).getAllByRole("button")).toHaveLength(21);
+    expect(within(popup).getAllByRole("button")).toHaveLength(23);
     await user.click(within(popup).getByRole("button", { name: "CAC Payback" }));
     expect(screen.queryByRole("dialog", { name: "Marketing" })).toBeNull();
     expect(screen.getByTitle("CAC, Margin & Payback Modeler").getAttribute("src")).toBe(

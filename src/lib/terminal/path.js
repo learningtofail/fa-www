@@ -15,7 +15,7 @@
 /**
  * Returns a copy of `root` whose `tools/` directory holds one `tool` node per slug.
  * @param {FsNode} root
- * @param {{ slug: string }[]} toolList
+ * @param {readonly { slug: string }[]} toolList
  * @returns {FsNode}
  */
 export function buildFilesystem(root, toolList) {

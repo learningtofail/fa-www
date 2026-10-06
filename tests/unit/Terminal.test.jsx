@@ -71,11 +71,11 @@ describe("Terminal commands (current behavior)", () => {
     const { user } = setup();
     await run(user, "cd tools");
     await run(user, "ls");
-    for (const slug of ["utm-auditor", "gtm-auditor", "cac-calculator", "attribution", "disclosure-check"]) {
+    for (const slug of ["utm-governance-auditor", "cac-payback-modeler", "attribution", "disclosure-check"]) {
       expect(output()).toContain(slug);
     }
     expect(output()).toContain("[more coming]");
-    await run(user, "cat utm-auditor");
+    await run(user, "cat attribution");
     expect(output()).toContain("that's a tool, not a file");
   });
 
@@ -89,11 +89,21 @@ describe("Terminal commands (current behavior)", () => {
 
   it("opens a tool through the onOpenTool callback", async () => {
     const { user, onOpenTool } = setup();
-    await run(user, "open utm-auditor");
+    await run(user, "open utm-governance-auditor");
     expect(onOpenTool).toHaveBeenCalledWith(
-      "utm-auditor",
+      "utm-governance-auditor",
       "UTM Governance Auditor",
-      "https://portfolio.faysalahmed.ca/tools/utm-auditor/",
+      "https://portfolio.faysalahmed.ca/marketing/utm-governance-auditor.html",
+    );
+  });
+
+  it("opens an Astro tool at its /tools/ URL", async () => {
+    const { user, onOpenTool } = setup();
+    await run(user, "open attribution");
+    expect(onOpenTool).toHaveBeenCalledWith(
+      "attribution",
+      "Multi-Touch Attribution",
+      "https://portfolio.faysalahmed.ca/tools/attribution/",
     );
   });
 
@@ -127,7 +137,7 @@ describe("Terminal paths (D3)", () => {
   it("honors the path argument of ls", async () => {
     const { user } = setup();
     await run(user, "ls tools");
-    expect(output()).toContain("utm-auditor");
+    expect(output()).toContain("utm-governance-auditor");
     expect(screen.getByText("faysal@desktop:~$")).toBeTruthy();
   });
 

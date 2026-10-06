@@ -104,10 +104,10 @@ test.describe("proposed Content-Security-Policy", () => {
     await input.press("Enter");
     await expect(page.getByRole("log", { name: "Terminal output" })).toContainText(/help/i);
 
-    await page.locator(".gnome-dock").getByRole("button", { name: "Tools" }).click();
-    await page.getByRole("dialog", { name: "Tools" }).getByRole("button", { name: "UTM Governance Auditor" }).click();
-    await expect(page.locator('iframe[title="UTM Governance Auditor"]')).toBeVisible();
-    await expect(page.frameLocator('iframe[title="UTM Governance Auditor"]').getByText("stub tool")).toBeVisible();
+    await page.locator(".gnome-dock").getByRole("button", { name: "Marketing" }).click();
+    await page.getByRole("dialog", { name: "Marketing" }).getByRole("button", { name: "Multi-Touch" }).click();
+    await expect(page.locator('iframe[title="Multi-Touch Attribution"]')).toBeVisible();
+    await expect(page.frameLocator('iframe[title="Multi-Touch Attribution"]').getByText("stub tool")).toBeVisible();
 
     await page.locator(".gnome-dock").getByRole("button", { name: "Marketing" }).click();
     await page.getByRole("dialog", { name: "Marketing" }).getByRole("button", { name: "Redirect Mapper" }).click();

@@ -7,7 +7,7 @@ import AxeBuilder from "@axe-core/playwright";
 test.use({ contextOptions: { reducedMotion: "reduce" } });
 
 const DESKTOP = { width: 1280, height: 800 };
-const TOOL_URL = "https://portfolio.faysalahmed.ca/tools/utm-auditor/";
+const TOOL_URL = "https://portfolio.faysalahmed.ca/tools/attribution/";
 
 test.describe("window keyboard policy", () => {
   test("moves a window with the arrow keys and resizes it with Shift plus arrows", async ({ page }) => {
@@ -68,7 +68,7 @@ test("shows the About and Contact text when JavaScript is off", async ({ browser
 const STUB_HTML = `<!doctype html><meta charset="utf-8"><title>stub tool</title>
 <input type="file" id="file" aria-label="Choose file"><button id="dl">Download</button>
 <output id="out"></output><output id="module"></output><output id="storage"></output>
-<script type="module" src="/tools/utm-auditor/stub.js"></script>`;
+<script type="module" src="/tools/attribution/stub.js"></script>`;
 const STUB_JS = `
 document.getElementById("module").textContent = "module ran";
 try { localStorage.setItem("k", "v"); document.getElementById("storage").textContent = "storage ok"; }
@@ -99,12 +99,12 @@ test.describe("tool iframe sandbox flags", () => {
     await stubPortfolio(page);
     await page.setViewportSize(DESKTOP);
     await page.goto("/");
-    await page.locator(".gnome-dock").getByRole("button", { name: "Tools" }).click();
-    await page.getByRole("dialog", { name: "Tools" }).getByRole("button", { name: "UTM Governance Auditor" }).click();
+    await page.locator(".gnome-dock").getByRole("button", { name: "Marketing" }).click();
+    await page.getByRole("dialog", { name: "Marketing" }).getByRole("button", { name: "Multi-Touch" }).click();
 
-    const frameEl = page.locator('iframe[title="UTM Governance Auditor"]');
+    const frameEl = page.locator('iframe[title="Multi-Touch Attribution"]');
     await expect(frameEl).toHaveAttribute("sandbox", "allow-scripts allow-same-origin allow-downloads");
-    const frame = page.frameLocator('iframe[title="UTM Governance Auditor"]');
+    const frame = page.frameLocator('iframe[title="Multi-Touch Attribution"]');
     await expect(frame.locator("#module")).toHaveText("module ran");
     await expect(frame.locator("#storage")).toHaveText("storage ok");
 
@@ -119,9 +119,9 @@ test.describe("tool iframe sandbox flags", () => {
     await stubPortfolio(page);
     await page.setViewportSize(DESKTOP);
     await page.goto("/");
-    await page.locator(".gnome-dock").getByRole("button", { name: "Tools" }).click();
-    await page.getByRole("dialog", { name: "Tools" }).getByRole("button", { name: "UTM Governance Auditor" }).click();
-    const link = page.getByRole("link", { name: "Open UTM Governance Auditor in a new tab" });
+    await page.locator(".gnome-dock").getByRole("button", { name: "Marketing" }).click();
+    await page.getByRole("dialog", { name: "Marketing" }).getByRole("button", { name: "Multi-Touch" }).click();
+    const link = page.getByRole("link", { name: "Open Multi-Touch Attribution in a new tab" });
     await expect(link).toHaveAttribute("href", TOOL_URL);
     await expect(link).toHaveAttribute("target", "_blank");
   });
@@ -137,7 +137,7 @@ test.describe("tool iframe sandbox flags", () => {
     });
     await new Promise((resolve) => server.listen(0, "localhost", () => resolve(undefined)));
     const { port } = /** @type {import("node:net").AddressInfo} */ (server.address());
-    const url = `http://localhost:${port}/tools/utm-auditor/`;
+    const url = `http://localhost:${port}/tools/attribution/`;
     try {
       await page.goto("/");
       const addFrame = (name, sandbox) =>
@@ -178,9 +178,9 @@ test("the desktop with a tool window open has no axe violations in the page itse
   await stubPortfolio(page);
   await page.setViewportSize(DESKTOP);
   await page.goto("/");
-  await page.locator(".gnome-dock").getByRole("button", { name: "Tools" }).click();
-  await page.getByRole("dialog", { name: "Tools" }).getByRole("button", { name: "UTM Governance Auditor" }).click();
-  await expect(page.locator('iframe[title="UTM Governance Auditor"]')).toBeVisible();
+  await page.locator(".gnome-dock").getByRole("button", { name: "Marketing" }).click();
+  await page.getByRole("dialog", { name: "Marketing" }).getByRole("button", { name: "Multi-Touch" }).click();
+  await expect(page.locator('iframe[title="Multi-Touch Attribution"]')).toBeVisible();
   const results = await new AxeBuilder({ page: /** @type {any} */ (page) }).exclude("iframe").analyze();
   expect(results.violations.map((v) => v.id)).toEqual([]);
 });

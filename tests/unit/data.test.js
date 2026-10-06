@@ -1,10 +1,12 @@
 import { APPS, DESKTOP_ICON_APPS } from "../../src/data/apps.js";
-import { tools, toolUrl, PORTFOLIO_ORIGIN, TOOL_FRAME } from "../../src/data/tools.js";
+import { TOOL_FRAME } from "../../src/data/tools.js";
+import { MARKETING_TOOLS, toolPageUrl } from "../../src/data/marketingTools.js";
+import { config } from "../../src/lib/config.js";
 import { CAREER_START_YEAR, PROFILE, summary, tagline, yearsActive } from "../../src/data/profile.js";
 import { createFilesystem, HELP_TEXT } from "../../src/data/terminalContent.js";
 
 describe("app registry", () => {
-  it("lists the eleven apps both shells render", () => {
+  it("lists the ten apps both shells render", () => {
     expect(APPS.map((a) => a.id)).toEqual([
       "about",
       "contact",
@@ -14,14 +16,13 @@ describe("app registry", () => {
       "calculator",
       "weather",
       "viewer",
-      "tools",
       "marketing",
       "terminal",
     ]);
   });
 
   it("keeps the terminal and the dock-only apps off the desktop icon grid", () => {
-    expect(DESKTOP_ICON_APPS.map((a) => a.id)).toEqual(["about", "contact", "now", "tools", "marketing"]);
+    expect(DESKTOP_ICON_APPS.map((a) => a.id)).toEqual(["about", "contact", "now", "marketing"]);
   });
 
   it("gives every app a kind that a shell knows how to render", () => {
@@ -30,18 +31,15 @@ describe("app registry", () => {
 });
 
 describe("tools catalog", () => {
-  it("holds the five locked slugs", () => {
-    expect(tools.map((t) => t.slug)).toEqual([
-      "utm-auditor",
-      "gtm-auditor",
-      "cac-calculator",
-      "attribution",
-      "disclosure-check",
-    ]);
+  it("holds the 21 marketing pages and the two Astro tools", () => {
+    expect(MARKETING_TOOLS).toHaveLength(23);
+    expect(MARKETING_TOOLS.filter((t) => t.path).map((t) => t.slug)).toEqual(["attribution", "disclosure-check"]);
   });
 
-  it("builds tool URLs on the portfolio origin with a trailing slash", () => {
-    expect(toolUrl("utm-auditor")).toBe(`${PORTFOLIO_ORIGIN}/tools/utm-auditor/`);
+  it("builds Astro tool URLs with a trailing slash and marketing URLs as .html files", () => {
+    expect(toolPageUrl("attribution")).toBe(`${config.toolsOrigin}/tools/attribution/`);
+    expect(toolPageUrl("utm-governance-auditor")).toBe(`${config.toolsOrigin}/marketing/utm-governance-auditor.html`);
+    expect(toolPageUrl("nope")).toBeUndefined();
   });
 });
 

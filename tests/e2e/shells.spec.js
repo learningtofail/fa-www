@@ -126,15 +126,15 @@ test.describe("contact form", () => {
   });
 });
 
-test.describe("mobile tools", () => {
+test.describe("mobile Marketing folder", () => {
   test("opens a tool full screen inside an iframe", async ({ page }) => {
     await page.setViewportSize(MOBILE);
     await page.route("https://portfolio.faysalahmed.ca/**", (route) =>
       route.fulfill({ contentType: "text/html", body: "<title>stub</title><p>stub tool</p>" }),
     );
     await page.goto("/");
-    await page.getByRole("button", { name: "Tools" }).click();
-    await page.getByRole("button", { name: "UTM Governance Auditor" }).click();
-    await expect(page.locator('iframe[title="UTM Governance Auditor"]')).toBeVisible();
+    await page.getByRole("button", { name: "Marketing" }).click();
+    await page.getByRole("button", { name: "Multi-Touch" }).click();
+    await expect(page.locator('iframe[title="Multi-Touch Attribution"]')).toBeVisible();
   });
 });
