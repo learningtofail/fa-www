@@ -80,8 +80,8 @@ test("the phone shell shows the folder as a popup and opens a tool full screen, 
   await expect(popup.locator(".tools-grid__tile")).toHaveCount(23);
   const popupAxe = await new AxeBuilder({ page: /** @type {any} */ (page) }).analyze();
   expect(popupAxe.violations.map((v) => v.id)).toEqual([]);
-  await popup.getByRole("button", { name: "Quality Score" }).click();
-  await expect(page.locator('iframe[title="Paid Ad Quality Score & Landing Page Checklist Scorer"]')).toBeVisible();
+  await popup.getByRole("button", { name: "Readiness Check" }).click();
+  await expect(page.locator('iframe[title="Ad Copy & Landing Page Readiness Checklist"]')).toBeVisible();
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
   expect(overflow).toBe(false);
   const results = await new AxeBuilder({ page: /** @type {any} */ (page) }).analyze();

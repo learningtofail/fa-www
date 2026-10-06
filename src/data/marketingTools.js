@@ -118,8 +118,8 @@ export const MARKETING_GROUPS = Object.freeze([
       },
       {
         slug: "quality-score-scorer",
-        name: "Paid Ad Quality Score & Landing Page Checklist Scorer",
-        label: "Quality Score",
+        name: "Ad Copy & Landing Page Readiness Checklist",
+        label: "Readiness Check",
         glyph: "\u{2705}",
       },
     ],
@@ -171,7 +171,7 @@ export const MARKETING_GROUPS = Object.freeze([
       },
       {
         slug: "ad-claims-flagger",
-        name: "Ad Claims Substantiation & Compliance Flagger",
+        name: "Ad Claims Flagger",
         label: "Ad Claims Flagger",
         glyph: "\u{1F6A9}",
       },
